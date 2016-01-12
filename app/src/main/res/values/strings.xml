@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GetBetter</string>
+    <string name="signin_title">Sign In</string>
+    <string name="login_desc_title">GetBetter Tele-Diagnosis System</string>
+    <string name="login_desc">As part of a research project of De La Salle University, the GetBetter
+        Tele-Diagnosis System was designed and developed with financial support form UNICEF, UNDP,
+        World Bank, the WHO Special Programme for Research and Training in Tropical Diseases (WHO-TDR).
+        The GetBetter team sincerely hopes that this GetBetter Tele-Diagnosis System will be
+        instrumental in providing quality healthcare to people from rural, poor and geographically
+        isolated areas. We believe that the poor and the marginalized should be able to benefit from
+        the major strides of progress in Internet and database technology, and ICT in general.</string>
+    <string name="existing_patient">EXISTING PATIENT</string>
+</resources>
