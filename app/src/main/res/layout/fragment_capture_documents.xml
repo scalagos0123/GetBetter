@@ -118,6 +118,13 @@
                             android:layout_marginRight="30dp"
                             android:layout_marginLeft="30dp"/>
 
+                        <TextView android:id="@+id/patient_info_image_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No image uploaded yet"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorPrimary"/>
+
                     </TableRow>
 
                     <TableRow
@@ -152,6 +159,13 @@
                             android:layout_marginRight="30dp"
                             android:layout_marginLeft="30dp"/>
 
+                        <TextView android:id="@+id/family_history_image_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No Image uploaded yet"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorPrimary"/>
+
                     </TableRow>
 
                     <TableRow
@@ -159,7 +173,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp">
 
-                        <LinearLayout android:orientation="horizontal"
+                        <LinearLayout
+                            android:id="@+id/capture_chief_complaint"
+                            android:orientation="horizontal"
                             android:padding="10dp"
                             android:background="@drawable/button_ellipse"
                             android:layout_marginBottom="10dp"
@@ -184,6 +200,13 @@
                             android:textSize="24sp"
                             android:layout_marginRight="30dp"
                             android:layout_marginLeft="30dp"/>
+
+                        <TextView android:id="@+id/chief_complaint_image_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No Image uploaded yet"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorPrimary"/>
 
                     </TableRow>
 

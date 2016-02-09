@@ -55,7 +55,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
     private static final int REQUEST_IMAGE1 = 100;
 
-    private NewPatientSessionManager newPatientSessionManager;
+    NewPatientSessionManager newPatientSessionManager;
 
 
 

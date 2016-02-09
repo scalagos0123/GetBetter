@@ -29,6 +29,9 @@ public class NewPatientSessionManager {
     public static final String NEW_PATIENT_DOC_IMAGE1 = "newPatientDocImage1";
     public static final String NEW_PATIENT_DOC_IMAGE2 = "newPatientDocImage2";
     public static final String NEW_PATIENT_DOC_IMAGE3 = "newPatientDocImage3";
+    public static final String NEW_PATIENT_DOC_IMAGE1_TITLE = "newPatientDocImage1Title";
+    public static final String NEW_PATIENT_DOC_IMAGE2_TITLE = "newPatientDocImage2Title";
+    public static final String NEW_PATIENT_DOC_IMAGE3_TITLE = "newPatientDocImage3Title";
 
 
     public NewPatientSessionManager (Context context) {
@@ -67,16 +70,23 @@ public class NewPatientSessionManager {
         newPatient.put(NEW_PATIENT_DOC_IMAGE1, pref.getString(NEW_PATIENT_DOC_IMAGE1, null));
         newPatient.put(NEW_PATIENT_DOC_IMAGE2, pref.getString(NEW_PATIENT_DOC_IMAGE2, null));
         newPatient.put(NEW_PATIENT_DOC_IMAGE3, pref.getString(NEW_PATIENT_DOC_IMAGE3, null));
+        newPatient.put(NEW_PATIENT_DOC_IMAGE1_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE1_TITLE, null));
+        newPatient.put(NEW_PATIENT_DOC_IMAGE2_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE2_TITLE, null));
+        newPatient.put(NEW_PATIENT_DOC_IMAGE3_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE3_TITLE, null));
 
         return newPatient;
 
     }
 
-    public void setDocImages(String docImage1, String docImage2, String docImage3) {
+    public void setDocImages(String docImage1, String docImage2, String docImage3,
+                             String docImage1Title, String docImage2Title, String docImage3Title) {
 
         editor.putString(NEW_PATIENT_DOC_IMAGE1, docImage1);
         editor.putString(NEW_PATIENT_DOC_IMAGE2, docImage2);
         editor.putString(NEW_PATIENT_DOC_IMAGE3, docImage3);
+        editor.putString(NEW_PATIENT_DOC_IMAGE1_TITLE, docImage1Title);
+        editor.putString(NEW_PATIENT_DOC_IMAGE2_TITLE, docImage2Title);
+        editor.putString(NEW_PATIENT_DOC_IMAGE3_TITLE, docImage3Title);
         editor.commit();
     }
 
