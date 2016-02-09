@@ -10,4 +10,16 @@
         isolated areas. We believe that the poor and the marginalized should be able to benefit from
         the major strides of progress in Internet and database technology, and ICT in general.</string>
     <string name="existing_patient">EXISTING PATIENT</string>
+
+    <string-array name="civil_statuses">
+        <item>Single</item>
+        <item>Married</item>
+        <item>Separated</item>
+        <item>Widowed</item>
+    </string-array>
+
+    <string-array name="genders">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>

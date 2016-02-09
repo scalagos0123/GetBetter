@@ -4,14 +4,17 @@ package com.dlsu.getbetter.getbetter;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,8 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.objects.Patient;
+import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
 
@@ -34,13 +39,23 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private EditText middleNameInput;
     private EditText lastNameInput;
     private TextView displayBirthday;
+    private Spinner genderSpinner;
+    private Spinner civilStatusSpinner;
+    private ImageView setProfilePicBtn;
+    private TextView profilePicPlaceholder;
 
     private int year, month, day;
     private String birthDate;
     private String genderSelected;
     private String civilStatusSelected;
+    private String encoded;
+
+    private ArrayAdapter<CharSequence> genderAdapter;
+    private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
+
+    private NewPatientSessionManager newPatientSessionManager;
 
 
 
@@ -59,6 +74,17 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         birthDate = year + "-" + month + "-" + day;
 
+        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
+
+        genderAdapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.genders, android.R.layout.simple_spinner_item);
+
+        civilStatusAdapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.civil_statuses, android.R.layout.simple_spinner_item);
+
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        civilStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 
     }
 
@@ -73,16 +99,21 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         Button setBirthday = (Button)rootView.findViewById(R.id.new_patient_set_birthday_btn);
         Button nextButton = (Button)rootView.findViewById(R.id.new_patient_next_btn);
 
-        ImageView setProfilePicBtn = (ImageView)rootView.findViewById(R.id.profile_picture_select);
+        setProfilePicBtn = (ImageView)rootView.findViewById(R.id.profile_picture_select);
 
         firstNameInput = (EditText)rootView.findViewById(R.id.first_name_input);
         middleNameInput = (EditText)rootView.findViewById(R.id.middle_name_input);
         lastNameInput = (EditText)rootView.findViewById(R.id.last_name_input);
+        profilePicPlaceholder = (TextView)rootView.findViewById(R.id.profile_picture_select_placeholder);
 
-        Spinner genderSpinner = (Spinner)rootView.findViewById(R.id.gender_spinner);
-        Spinner civilStatusSpinner = (Spinner)rootView.findViewById(R.id.civil_status_spinner);
+
+        genderSpinner = (Spinner)rootView.findViewById(R.id.gender_spinner);
+        civilStatusSpinner = (Spinner)rootView.findViewById(R.id.civil_status_spinner);
 
         displayBirthday = (TextView)rootView.findViewById(R.id.display_birthday);
+
+        genderSpinner.setAdapter(genderAdapter);
+        civilStatusSpinner.setAdapter(civilStatusAdapter);
 
         nextButton.setOnClickListener(this);
         genderSpinner.setOnItemSelectedListener(this);
@@ -103,6 +134,8 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         int id = v.getId();
 
         if(id == R.id.new_patient_next_btn) {
+
+            savePatientInfo();
 
             CaptureDocumentsFragment captureDocumentsFragment = new CaptureDocumentsFragment();
             getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
@@ -145,6 +178,9 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         Patient newPatient = new Patient(firstName, middleName, lastName,
                 birthDate, genderSelected, civilStatusSelected);
+
+        newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
+                birthDate, genderSelected, civilStatusSelected, encoded);
 
         Log.d("First Name", newPatient.getFirstName());
         Log.d("Middle Name", newPatient.getMiddleName());
@@ -231,6 +267,20 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if(requestCode == REQUEST_IMAGE1 && resultCode == Activity.RESULT_OK) {
+
+            Bitmap photo = (Bitmap)data.getExtras().get("data");
+            setProfilePicBtn.setImageBitmap(photo);
+            profilePicPlaceholder.setText("");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            if (photo != null) {
+                photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            }
+            byte[] b = baos.toByteArray();
+
+            encoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+
+            Log.d("image byte", encoded + "");
 
         }
     }
