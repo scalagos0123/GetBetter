@@ -70,7 +70,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="HISTORY OF PRESENT ILLNESS"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="24sp"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -85,8 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/button_ellipse">
+                    android:layout_centerVertical="true">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -120,11 +120,48 @@
 
                 </RelativeLayout>
 
-                <MediaController
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/hpi_media_player"
-                    />
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_centerHorizontal="true">
+
+                        <Button
+                            android:id="@+id/hpi_record_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Record"
+                            android:textColor="@color/cardBackground"
+                            android:background="@color/greenButton"/>
+
+                        <Button
+                            android:id="@+id/hpi_stop_record_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Stop"
+                            android:textColor="@color/cardBackground"
+                            android:background="@color/redButton"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"/>
+
+                        <Button
+                            android:id="@+id/hpi_play_recorded_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Play"
+                            android:textColor="@color/cardBackground"
+                            android:background="@color/blueButton"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
