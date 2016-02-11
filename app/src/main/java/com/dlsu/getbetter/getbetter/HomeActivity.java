@@ -50,7 +50,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        Intent intent = new Intent(this, NewPatientRecordActivity.class);
+        Intent intent = new Intent(this, ExistingPatientActivity.class);
         startActivity(intent);
 
     }
