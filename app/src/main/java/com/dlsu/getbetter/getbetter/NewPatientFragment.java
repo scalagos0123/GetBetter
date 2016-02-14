@@ -39,8 +39,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private EditText middleNameInput;
     private EditText lastNameInput;
     private TextView displayBirthday;
-    private Spinner genderSpinner;
-    private Spinner civilStatusSpinner;
     private ImageView setProfilePicBtn;
     private TextView profilePicPlaceholder;
 
@@ -54,7 +52,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
-
     NewPatientSessionManager newPatientSessionManager;
 
 
@@ -107,8 +104,8 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         profilePicPlaceholder = (TextView)rootView.findViewById(R.id.profile_picture_select_placeholder);
 
 
-        genderSpinner = (Spinner)rootView.findViewById(R.id.gender_spinner);
-        civilStatusSpinner = (Spinner)rootView.findViewById(R.id.civil_status_spinner);
+        Spinner genderSpinner = (Spinner) rootView.findViewById(R.id.gender_spinner);
+        Spinner civilStatusSpinner = (Spinner) rootView.findViewById(R.id.civil_status_spinner);
 
         displayBirthday = (TextView)rootView.findViewById(R.id.display_birthday);
 

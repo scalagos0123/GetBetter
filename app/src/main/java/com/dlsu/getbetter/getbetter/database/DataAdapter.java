@@ -1,5 +1,6 @@
 package com.dlsu.getbetter.getbetter.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +21,10 @@ public class DataAdapter {
     private final Context myContext;
     private SQLiteDatabase getBetterDb;
     private DatabaseHelper getBetterDatabaseHelper;
+
+    private static final String USER_TABLE = "tbl_users";
+    private static final String USER_TABLE_UPLOAD = "tbl_users_upload";
+
 
     public DataAdapter(Context context) {
         this.myContext = context;
@@ -81,9 +86,40 @@ public class DataAdapter {
         }
     }
 
+    public long insertPatientInfo(String firstName, String middleName, String lastName,
+                                  String birthDate, String gender, String civilStatus,
+                                  String profileImage) {
 
-    
+        int genderId;
+        int civilId;
+        long rowId;
 
+        String genderSql = "SELECT _id FROM tbl_genders WHERE gender_name = '" + gender + "'";
+        Cursor cGender = getBetterDb.rawQuery(genderSql, null);
+        cGender.moveToFirst();
+        genderId = cGender.getInt(cGender.getColumnIndex("_id"));
+        cGender.close();
+
+        String civilSql = "SELECT _id FROM tbl_civil_statuses WHERE civil_status_name = '" + civilStatus + "'";
+        Cursor cCivil = getBetterDb.rawQuery(civilSql, null);
+        cCivil.moveToFirst();
+        civilId = cCivil.getInt(cCivil.getColumnIndex("_id"));
+        cCivil.close();
+
+        ContentValues cv = new ContentValues();
+        cv.put("first_name", firstName);
+        cv.put("middle_name", middleName);
+        cv.put("last_name", lastName);
+        cv.put("birthdate", birthDate);
+        cv.put("gender_id", genderId);
+        cv.put("civil_status_id", civilId);
+        cv.put("profile_url", profileImage);
+
+        rowId = getBetterDb.insert(USER_TABLE, null, cv);
+        getBetterDb.insert(USER_TABLE_UPLOAD, null, cv);
+
+        return rowId;
+    }
 
 
 }

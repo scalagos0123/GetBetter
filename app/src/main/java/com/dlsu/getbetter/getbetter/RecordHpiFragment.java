@@ -1,10 +1,15 @@
 package com.dlsu.getbetter.getbetter;
 
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +27,10 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     private Button nextBtn, recordBtn, stopRecBtn, playRecBtn;
     private MediaRecorder hpiRecorder;
     private String outputFile;
-
-
+    private AudioRecord audioRecord;
+    private AudioTrack audioTrack;
+    private short[] lin;
+    private int num;
 
 
 
@@ -37,12 +44,23 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
 
+        int audioBufferSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT) * 2;
+
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100,
+                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, audioBufferSize);
+
+        audioTrack = new AudioTrack(AudioManager.MODE_IN_COMMUNICATION, 44100,
+                AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, audioBufferSize, AudioTrack.MODE_STREAM);
+
+        lin = new short[1024];
+        num = 0;
+
         hpiRecorder = new MediaRecorder();
         hpiRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         hpiRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         hpiRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         hpiRecorder.setOutputFile(outputFile);
-
 
     }
 
@@ -84,24 +102,31 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
             try {
 
-                hpiRecorder.prepare();
-                hpiRecorder.start();
+                audioRecord.startRecording();
+                num = audioRecord.read(lin, 0, 1024);
+//                hpiRecorder.prepare();
+//                hpiRecorder.start();
             } catch (IllegalStateException e) {
 
                 e.printStackTrace();
 
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
             stopRecBtn.setEnabled(true);
             Toast.makeText(this.getContext(), "Now Recording....", Toast.LENGTH_LONG).show();
 
         } else if (id == R.id.hpi_stop_record_btn) {
 
-            hpiRecorder.stop();
-            hpiRecorder.release();
-            hpiRecorder = null;
+            audioRecord.stop();
+            audioRecord.release();
+
+            Log.e("audio", String.valueOf(lin));
+//            hpiRecorder.stop();
+//            hpiRecorder.release();
+//            hpiRecorder = null;
 
             stopRecBtn.setEnabled(false);
             playRecBtn.setEnabled(true);
@@ -110,6 +135,9 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
         } else if (id == R.id.hpi_play_recorded_btn) {
 
             MediaPlayer mp = new MediaPlayer();
+
+            audioTrack.play();
+            audioTrack.write(lin, 0, num);
 
             try {
 
@@ -129,8 +157,6 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
             mp.start();
 
         }
-
     }
-
 
 }
