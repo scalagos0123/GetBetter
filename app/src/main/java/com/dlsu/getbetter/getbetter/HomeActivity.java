@@ -34,6 +34,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         viewCreatePatientBtn.setOnClickListener(this);
 
+        // TODO: 14/02/2016 store health center id in a shared preferences
+
     }
 
     public void initializeDatabase () {

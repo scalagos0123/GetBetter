@@ -174,7 +174,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         String lastName = this.lastNameInput.getText().toString();
 
         Patient newPatient = new Patient(firstName, middleName, lastName,
-                birthDate, genderSelected, civilStatusSelected);
+                birthDate, genderSelected, civilStatusSelected, encoded);
 
         newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
                 birthDate, genderSelected, civilStatusSelected, encoded);

@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
-import com.dlsu.getbetter.getbetter.objects.Patient;
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
 
@@ -34,7 +33,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.Years;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -55,8 +53,9 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private String patientCivilStatus;
 
     private byte[] imageAsBytes;
-    private static final int REQUEST_IMAGE1 = 100;
-    private static final int REQUEST_IMAGE2 = 200;
+    private static final int REQUEST_IMAGE_ATTACHMENT = 100;
+    private static final int REQUEST_IMAGE_DOCUMENT = 200;
+    private static final int REQUEST_VIDEO_ATTACHMENT = 300;
 
 
     private RecyclerView.Adapter fileAdapter;
@@ -179,15 +178,18 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } else if (id == R.id.summary_page_take_pic_btn) {
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_IMAGE1);
+            startActivityForResult(intent, REQUEST_IMAGE_ATTACHMENT);
 
         } else if (id == R.id.summary_page_take_pic_doc_btn) {
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_IMAGE2);
+            startActivityForResult(intent, REQUEST_IMAGE_DOCUMENT);
 
         } else if (id == R.id.summary_page_rec_video_btn) {
 
+            Intent intent =new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+            startActivityForResult(intent, REQUEST_VIDEO_ATTACHMENT);
 
         }
 
@@ -200,12 +202,15 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
             switch (requestCode) {
 
-                case REQUEST_IMAGE1:
+                case REQUEST_IMAGE_ATTACHMENT:
                     editImageTitle(requestCode);
                     break;
 
-                case REQUEST_IMAGE2:
+                case REQUEST_IMAGE_DOCUMENT:
                     editImageTitle(requestCode);
+                    break;
+
+                case REQUEST_VIDEO_ATTACHMENT:
                     break;
             }
         }
@@ -228,13 +233,14 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if (requestCode == REQUEST_IMAGE1) {
+                if (requestCode == REQUEST_IMAGE_ATTACHMENT) {
 
+                    // TODO: 14/02/2016 image attachment title 
 //                    image1Title = input.getText().toString();
 //                    personalInfoImageTitle.setText(image1Title);
 //                    Log.d("debug", "working" + image1Title);
 
-//                } else if (requestCode == REQUEST_IMAGE2) {
+//                } else if (requestCode == REQUEST_IMAGE_DOCUMENT) {
 //
 //                    image2Title = input.getText().toString();
 //                    familyHistoryImageTitle.setText(image2Title);
@@ -244,9 +250,13 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 //
 //                    image3Title = input.getText().toString();
 //                    chiefComplaintImageTitle.setText(image3Title);
-                } else if (requestCode == REQUEST_IMAGE2) {
+                } else if (requestCode == REQUEST_IMAGE_DOCUMENT) {
 
+                    // TODO: 14/02/2016 image document attachment title
 
+                } else if (requestCode == REQUEST_VIDEO_ATTACHMENT) {
+
+                    // TODO: 14/02/2016 video attachment title
                 }
 
             }
@@ -302,4 +312,25 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
                     Toast.LENGTH_LONG).show();
         }
     }
+
+    // TODO: 14/02/2016 finish insert case record task
+    private class InsertCaseRecordTask extends AsyncTask<String, Void, Long> {
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Long doInBackground(String... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+
+
+        }
+    }
+
 }
