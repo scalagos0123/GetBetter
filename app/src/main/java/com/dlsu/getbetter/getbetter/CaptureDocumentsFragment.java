@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,12 +33,12 @@ import java.io.ByteArrayOutputStream;
  */
 public class CaptureDocumentsFragment extends Fragment implements View.OnClickListener {
 
-    private LinearLayout captureBasicInfoBtn;
-    private LinearLayout captureFamilyHistBtn;
-    private LinearLayout captureChiefComplaintBtn;
-    private TextView personalInfoImageTitle;
-    private TextView familyHistoryImageTitle;
-    private TextView chiefComplaintImageTitle;
+    private ImageView captureBasicInfoBtn;
+    private ImageView captureFamilyHistBtn;
+    private ImageView captureChiefComplaintBtn;
+    private TextView viewBasicInfoImage;
+    private TextView viewFamilySocialImage;
+    private TextView viewChiefCompImage;
 
     private static final int REQUEST_IMAGE1 = 100;
     private static final int REQUEST_IMAGE2 = 200;
@@ -72,16 +73,19 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_capture_documents, container, false);
 
-        captureBasicInfoBtn = (LinearLayout)rootView.findViewById(R.id.capture_patient_info);
-        captureFamilyHistBtn = (LinearLayout)rootView.findViewById(R.id.capture_family_history);
-        captureChiefComplaintBtn = (LinearLayout)rootView.findViewById(R.id.capture_chief_complaint);
-        personalInfoImageTitle = (TextView)rootView.findViewById(R.id.patient_info_image_title);
-        familyHistoryImageTitle = (TextView)rootView.findViewById(R.id.family_history_image_title);
-        chiefComplaintImageTitle = (TextView)rootView.findViewById(R.id.chief_complaint_image_title);
+        captureBasicInfoBtn = (ImageView)rootView.findViewById(R.id.capture_docu_patient_info_image);
+        captureFamilyHistBtn = (ImageView)rootView.findViewById(R.id.capture_docu_family_social_history_image);
+        captureChiefComplaintBtn = (ImageView)rootView.findViewById(R.id.capture_docu_chief_complaint_image);
+        viewBasicInfoImage = (TextView)rootView.findViewById(R.id.capture_docu_view_patient_info_image);
+        viewFamilySocialImage = (TextView)rootView.findViewById(R.id.capture_docu_view_family_social_image);
+        viewChiefCompImage = (TextView)rootView.findViewById(R.id.capture_docu_view_chief_complaint_image);
 
         captureBasicInfoBtn.setOnClickListener(this);
         captureFamilyHistBtn.setOnClickListener(this);
         captureChiefComplaintBtn.setOnClickListener(this);
+        viewBasicInfoImage.setOnClickListener(this);
+        viewFamilySocialImage.setOnClickListener(this);
+        viewChiefCompImage.setOnClickListener(this);
 
         Button nextBtn = (Button)rootView.findViewById(R.id.capture_docu_fragment_next_btn);
         Button backBtn = (Button)rootView.findViewById(R.id.capture_docu_fragment_back_btn);
@@ -100,6 +104,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
 
                 case REQUEST_IMAGE1:
                     Bitmap photo = (Bitmap)data.getExtras().get("data");
+                    captureBasicInfoBtn.setImageBitmap(photo);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     if (photo != null) {
                         photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -109,12 +114,13 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                     encodedImage1 = Base64.encodeToString(b, Base64.DEFAULT);
                     Log.d("image byte", encodedImage1 + "");
 
-                    editImageTitle(requestCode);
+                    image1Title = "Patient Information Form";
                     break;
 
                 case REQUEST_IMAGE2:
 
                     Bitmap photo2 = (Bitmap)data.getExtras().get("data");
+                    captureFamilyHistBtn.setImageBitmap(photo2);
                     ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
                     if (photo2 != null) {
                         photo2.compress(Bitmap.CompressFormat.JPEG, 100, baos2);
@@ -124,11 +130,12 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                     encodedImage2 = Base64.encodeToString(b2, Base64.DEFAULT);
                     Log.d("image byte", encodedImage2 + "");
 
-                    editImageTitle(requestCode);
+                    image2Title = "Family/Social History Form";
                     break;
 
                 case REQUEST_IMAGE3:
                     Bitmap photo3 = (Bitmap)data.getExtras().get("data");
+                    captureChiefComplaintBtn.setImageBitmap(photo3);
                     ByteArrayOutputStream baos3 = new ByteArrayOutputStream();
                     if (photo3 != null) {
                         photo3.compress(Bitmap.CompressFormat.JPEG, 100, baos3);
@@ -138,7 +145,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                     encodedImage3 = Base64.encodeToString(b3, Base64.DEFAULT);
                     Log.d("image byte", encodedImage3 + "");
 
-                    editImageTitle(requestCode);
+                    image3Title = "Chief Complaint Form";
                     break;
             }
         }
@@ -159,7 +166,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                         replace(R.id.fragment_container, recordHpiFragment).commit();
                 break;
 
-            case R.id.capture_patient_info: try {
+            case R.id.capture_docu_patient_info_image: try {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, REQUEST_IMAGE1);
             } catch (ActivityNotFoundException e) {
@@ -167,7 +174,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
             }
                 break;
 
-            case R.id.capture_family_history:
+            case R.id.capture_docu_family_social_history_image:
                 try {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_IMAGE2);
@@ -176,7 +183,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                 }
                 break;
 
-            case R.id.capture_chief_complaint:
+            case R.id.capture_docu_chief_complaint_image:
                 try {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_IMAGE3);
@@ -190,50 +197,50 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
 
     }
 
-    private void editImageTitle (final int requestCode) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Image Filename");
-
-        // Set up the input
-        final EditText input = new EditText(this.getContext());
-
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                if (requestCode == REQUEST_IMAGE1) {
-
-                    image1Title = input.getText().toString();
-                    personalInfoImageTitle.setText(image1Title);
-                    Log.d("debug", "working" + image1Title);
-
-                } else if (requestCode == REQUEST_IMAGE2) {
-
-                    image2Title = input.getText().toString();
-                    familyHistoryImageTitle.setText(image2Title);
-                    Log.d("debug", "working" + image2Title);
-
-                } else if (requestCode == REQUEST_IMAGE3) {
-
-                    image3Title = input.getText().toString();
-                    chiefComplaintImageTitle.setText(image3Title);
-                }
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
+//    private void editImageTitle (final int requestCode) {
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+//        builder.setTitle("Image Filename");
+//
+//        // Set up the input
+//        final EditText input = new EditText(this.getContext());
+//
+//        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+//        input.setInputType(InputType.TYPE_CLASS_TEXT);
+//        builder.setView(input);
+//
+//        // Set up the buttons
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                if (requestCode == REQUEST_IMAGE1) {
+//
+//                    image1Title = input.getText().toString();
+//                    personalInfoImageTitle.setText(image1Title);
+//                    Log.d("debug", "working" + image1Title);
+//
+//                } else if (requestCode == REQUEST_IMAGE2) {
+//
+//                    image2Title = input.getText().toString();
+//                    familyHistoryImageTitle.setText(image2Title);
+//                    Log.d("debug", "working" + image2Title);
+//
+//                } else if (requestCode == REQUEST_IMAGE3) {
+//
+//                    image3Title = input.getText().toString();
+//                    chiefComplaintImageTitle.setText(image3Title);
+//                }
+//
+//            }
+//        });
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//
+//        builder.show();
+//    }
 }

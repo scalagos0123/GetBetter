@@ -9,6 +9,7 @@
         instrumental in providing quality healthcare to people from rural, poor and geographically
         isolated areas. We believe that the poor and the marginalized should be able to benefit from
         the major strides of progress in Internet and database technology, and ICT in general.</string>
+
     <string name="existing_patient">EXISTING PATIENT</string>
 
     <string-array name="civil_statuses">
@@ -22,6 +23,7 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
     <string name="title_activity_existing_patient">ExistingPatientActivity</string>
     <string name="action_settings">Settings</string>
 </resources>

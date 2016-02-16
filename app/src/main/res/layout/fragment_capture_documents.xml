@@ -81,136 +81,132 @@
                     android:layout_marginBottom="10dp"
                     />
 
-                <TableLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    >
 
-                    <TableRow android:layout_width="match_parent"
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:padding="8dp"
+                        android:layout_alignParentLeft="true">
 
-                        <LinearLayout
-                            android:id="@+id/capture_patient_info"
-                            android:orientation="horizontal"
-                            android:padding="10dp"
-                            android:background="@drawable/button_ellipse"
-                            android:layout_marginBottom="10dp"
-                            >
+                        <ImageView
+                            android:id="@+id/capture_docu_patient_info_image"
+                            android:layout_width="250dp"
+                            android:layout_height="250dp"
+                            android:src="@drawable/ic_add_image"
+                            />
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_add_image"/>
-
-                            <TextView android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Patient Information Form"
-                                android:textSize="24sp"
-                                 />
-
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="File: "
-                            android:textSize="24sp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginLeft="30dp"/>
-
-                        <TextView android:id="@+id/patient_info_image_title"
+                        <TextView
+                            android:id="@+id/patient_info_form"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No image uploaded yet"
-                            android:textSize="20sp"
-                            android:textColor="@color/colorPrimary"/>
+                            android:text="Patient Information Form"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_below="@id/capture_docu_patient_info_image"
+                            android:layout_alignLeft="@id/capture_docu_patient_info_image"
+                            android:layout_alignStart="@id/capture_docu_patient_info_image"
+                            />
 
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
-
-                        <LinearLayout
-                            android:id="@+id/capture_family_history"
-                            android:orientation="horizontal"
-                            android:padding="10dp"
-                            android:background="@drawable/button_ellipse"
-                            android:layout_marginBottom="10dp">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_add_image"/>
-
-                            <TextView android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Family/Social History Form"
-                                android:textSize="24sp"
-                                />
-
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="File: "
-                            android:textSize="24sp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginLeft="30dp"/>
-
-                        <TextView android:id="@+id/family_history_image_title"
+                        <TextView
+                            android:id="@+id/capture_docu_view_patient_info_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No Image uploaded yet"
-                            android:textSize="20sp"
-                            android:textColor="@color/colorPrimary"/>
+                            android:layout_below="@id/capture_docu_patient_info_image"
+                            android:layout_alignRight="@id/capture_docu_patient_info_image"
+                            android:layout_alignEnd="@id/capture_docu_patient_info_image"
+                            android:text="View"
+                            android:textColor="@color/blueButton"
+                            />
 
-                    </TableRow>
 
-                    <TableRow
-                        android:layout_width="match_parent"
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:padding="8dp"
+                        android:layout_centerHorizontal="true">
 
-                        <LinearLayout
-                            android:id="@+id/capture_chief_complaint"
-                            android:orientation="horizontal"
-                            android:padding="10dp"
-                            android:background="@drawable/button_ellipse"
-                            android:layout_marginBottom="10dp"
-                            >
+                        <ImageView
+                            android:id="@+id/capture_docu_family_social_history_image"
+                            android:layout_width="250dp"
+                            android:layout_height="250dp"
+                            android:src="@drawable/ic_add_image"
+                            />
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_add_image"/>
-
-                            <TextView android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Chief Complaint Form"
-                                android:textSize="24sp"
-                                />
-
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="File: "
-                            android:textSize="24sp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginLeft="30dp"/>
-
-                        <TextView android:id="@+id/chief_complaint_image_title"
+                        <TextView
+                            android:id="@+id/family_social_form"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No Image uploaded yet"
-                            android:textSize="20sp"
-                            android:textColor="@color/colorPrimary"/>
+                            android:text="Family/Social History Form"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_below="@id/capture_docu_family_social_history_image"
+                            android:layout_alignLeft="@id/capture_docu_family_social_history_image"
+                            android:layout_alignStart="@id/capture_docu_family_social_history_image"
+                            />
 
-                    </TableRow>
+                        <TextView
+                            android:id="@+id/capture_docu_view_family_social_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/capture_docu_family_social_history_image"
+                            android:layout_alignEnd="@id/capture_docu_family_social_history_image"
+                            android:layout_alignRight="@id/capture_docu_family_social_history_image"
+                            android:text="View"
+                            android:textColor="@color/blueButton"
+                            />
 
-                </TableLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:layout_alignParentRight="true">
+
+                        <ImageView
+                            android:id="@+id/capture_docu_chief_complaint_image"
+                            android:layout_width="250dp"
+                            android:layout_height="250dp"
+                            android:src="@drawable/ic_add_image"
+                            />
+
+                        <TextView
+                            android:id="@+id/chief_complaint_form"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chief Complaint Form"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_below="@id/capture_docu_chief_complaint_image"
+                            android:layout_alignLeft="@id/capture_docu_chief_complaint_image"
+                            android:layout_alignStart="@id/capture_docu_chief_complaint_image"
+                            />
+
+                        <TextView
+                            android:id="@+id/capture_docu_view_chief_complaint_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/capture_docu_chief_complaint_image"
+                            android:layout_alignRight="@id/capture_docu_chief_complaint_image"
+                            android:layout_alignEnd="@id/capture_docu_chief_complaint_image"
+                            android:text="View"
+                            android:textColor="@color/blueButton"
+                            />
+
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
