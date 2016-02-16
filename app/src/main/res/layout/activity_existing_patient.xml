@@ -107,6 +107,7 @@
                     android:hint="Search Patient" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/existing_patient_list"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
                     android:padding="10dp">
@@ -148,6 +149,7 @@
                         android:layout_toLeftOf="@id/create_update_patient_record_btn"
                         android:layout_marginRight="18dp"
                         android:text="Update Patient Record"
+                        android:background="@color/neutralButton"
                         android:paddingLeft="32dp"
                         android:paddingRight="32dp"/>
 
