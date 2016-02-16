@@ -1,10 +1,12 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.dlsu.getbetter.getbetter.R;
 
 /**
  * Created by mikedayupay on 13/02/2016.
