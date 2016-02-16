@@ -13,6 +13,7 @@ public class Patient {
     private String age;
     private String gender;
     private String civilStatus;
+    private String profileImageBytes;
 
 
     public Patient(long id, String firstName, String middleName, String lastName,
@@ -27,13 +28,15 @@ public class Patient {
         this.civilStatus = civilStatus;
     }
 
-    public Patient(String firstName, String middleName, String lastName, String birthdate, String gender, String civilStatus) {
+    public Patient(String firstName, String middleName, String lastName, String birthdate,
+                   String gender, String civilStatus, String profileImageBytes) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.birthdate = birthdate;
         this.gender = gender;
         this.civilStatus = civilStatus;
+        this.profileImageBytes = profileImageBytes;
     }
 
     public long getId() {
@@ -66,5 +69,9 @@ public class Patient {
 
     public String getCivilStatus() {
         return civilStatus;
+    }
+
+    public String getProfileImageBytes() {
+        return profileImageBytes;
     }
 }
