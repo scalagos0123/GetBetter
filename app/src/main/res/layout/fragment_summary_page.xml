@@ -27,14 +27,14 @@
             android:layout_width="1200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/home_title"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -102,7 +102,7 @@
                             <ImageView
                                 android:id="@+id/profile_picture_display"
                                 android:layout_width="255dp"
-                                android:layout_height="138dp"
+                                android:layout_height="200dp"
                                 android:src="@drawable/profile_picture_placeholder"
                                 android:padding="6dp"
                                 android:layout_alignParentTop="true"
@@ -113,6 +113,7 @@
                             <TableLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
                                 android:layout_toRightOf="@id/profile_picture_display"
                                 android:layout_toEndOf="@id/profile_picture_display"
                                 android:layout_alignTop="@id/profile_picture_display">
@@ -155,7 +156,7 @@
 
                                 </TableRow>
 
-                                <TableRow android:layout_marginTop="10dp">
+                                <TableRow android:layout_marginTop="5dp">
 
                                     <TextView
                                         android:id="@+id/summary_page_height"
@@ -170,7 +171,7 @@
 
                                 </TableRow>
 
-                                <TableRow android:layout_marginTop="10dp">
+                                <TableRow android:layout_marginTop="5dp">
 
                                     <TextView
                                         android:text="Temperature (C)"
@@ -182,7 +183,7 @@
 
                                 </TableRow>
 
-                                <TableRow android:layout_marginTop="10dp">
+                                <TableRow android:layout_marginTop="5dp">
 
                                     <TextView
                                         android:id="@+id/summary_page_temp"
@@ -197,7 +198,7 @@
 
                                 </TableRow>
 
-                                <TableRow android:layout_marginTop="10dp">
+                                <TableRow android:layout_marginTop="5dp">
 
                                     <TextView
                                         android:text="Respiratory Rate"
@@ -209,7 +210,7 @@
 
                                 </TableRow>
 
-                                <TableRow android:layout_marginTop="10dp">
+                                <TableRow android:layout_marginTop="5dp">
 
                                     <TextView
                                         android:id="@+id/summary_page_resp_rate"
@@ -227,20 +228,12 @@
 
                         </RelativeLayout>
 
-                        <Button
-                            android:id="@+id/summary_update_patient_rec_btn"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp"
-                            android:background="@color/blueButton"
-                            android:layout_marginTop="8dp"
-                            android:text="Update Patient Record"
-                            android:textColor="@color/cardBackground"
-                            />
+
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
+                            android:layout_marginTop="4dp"
                             android:text="Chief Complaint"
                             android:textStyle="bold"/>
 
@@ -273,7 +266,7 @@
                                 <android.support.v7.widget.RecyclerView
                                     android:id="@+id/summary_page_files_list"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="40dp"
+                                    android:layout_height="100dp"
                                     android:scrollbars="vertical">
 
 
@@ -291,7 +284,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.8"
                         android:orientation="vertical"
-                        android:padding="10dp">
+                        android:padding="8dp">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -299,11 +292,38 @@
                             android:text="History of Present Illness"
                             android:textStyle="bold"/>
 
-                        <MediaController
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <View
                             android:id="@+id/hpi_media_player"
-                        />
+                            android:layout_width="520dp"
+                            android:layout_height="80dp"
+                            android:background="@color/cardBackground"
+                            android:layout_marginBottom="12dp"/>
+
+
+                        <!--<LinearLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:orientation="horizontal">-->
+
+                            <!-- -->
+
+                            <!--<Button-->
+                            <!--android:id="@+id/summary_page_hpi_play"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text=">"-->
+                            <!--android:background="#FFF"/>-->
+
+                            <!--<Button-->
+                            <!--android:id="@+id/summary_page_hpi_pause"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="||"-->
+                            <!--android:background="#555"-->
+                            <!--/>-->
+
+                        <!--</LinearLayout>-->
+
 
                         <TextView
                             android:layout_width="match_parent"
@@ -365,6 +385,7 @@
                     android:padding="10dp">
 
                     <Button
+                        android:id="@+id/summary_page_back_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="60dp"
@@ -372,6 +393,19 @@
                         android:background="@color/redButton"
                         android:text="Back"
                         android:textColor="@color/cardBackground"/>
+
+                    <Button
+                        android:id="@+id/summary_update_patient_rec_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/greenButton"
+                        android:text="Update Patient Record"
+                        android:textColor="@color/cardBackground"
+                        android:layout_marginLeft="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:layout_toRightOf="@id/summary_page_back_btn"
+                        />
 
                     <Button
                         android:id="@+id/summary_page_submit_btn"

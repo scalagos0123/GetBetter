@@ -7,15 +7,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.R;
+import com.dlsu.getbetter.getbetter.objects.Attachment;
+
+import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 13/02/2016.
  */
 public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageDataAdapter.ViewHolder> {
 
-    private String[] filesDataset;
+    private ArrayList<Attachment> filesDataset;
 
-    public SummaryPageDataAdapter (String[] dataset) {
+    public SummaryPageDataAdapter (ArrayList<Attachment> dataset) {
 
         filesDataset = dataset;
     }
@@ -45,13 +48,18 @@ public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageData
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.fileTitle.setText(filesDataset[position]);
+        holder.fileTitle.setText(filesDataset.get(position).getAttachmentDescription());
 
+    }
+
+    public void addAttachmentList(Attachment attachment) {
+
+        filesDataset.add(attachment);
     }
 
     @Override
     public int getItemCount() {
-        return filesDataset.length;
+        return filesDataset.size();
     }
 
 
