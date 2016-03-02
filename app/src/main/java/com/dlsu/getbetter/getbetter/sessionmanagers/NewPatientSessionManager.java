@@ -32,6 +32,9 @@ public class NewPatientSessionManager {
     public static final String NEW_PATIENT_DOC_IMAGE1_TITLE = "newPatientDocImage1Title";
     public static final String NEW_PATIENT_DOC_IMAGE2_TITLE = "newPatientDocImage2Title";
     public static final String NEW_PATIENT_DOC_IMAGE3_TITLE = "newPatientDocImage3Title";
+    public static final String NEW_PATIENT_DOC_HPI_RECORD = "newPatientHpiRecord";
+    public static final String NEW_PATIENT_CHIEF_COMPLAINT = "newPatientChiefComplaint";
+    public static final String NEW_PATIENT_IMAGE_NAME = "newPatientImageName";
 
 
     public NewPatientSessionManager (Context context) {
@@ -44,7 +47,7 @@ public class NewPatientSessionManager {
 
     public void createNewPatientSession (String firstName, String middleName, String lastName,
                                          String birthdate, String gender, String civilStatus,
-                                         String profileImage) {
+                                         String profileImage, String imageName) {
 
         editor.putString(NEW_PATIENT_FIRST_NAME, firstName);
         editor.putString(NEW_PATIENT_MIDDLE_NAME, middleName);
@@ -53,6 +56,7 @@ public class NewPatientSessionManager {
         editor.putString(NEW_PATIENT_GENDER, gender);
         editor.putString(NEW_PATIENT_CIVIL_STATUS, civilStatus);
         editor.putString(NEW_PATIENT_PROFILE_IMAGE, profileImage);
+        editor.putString(NEW_PATIENT_IMAGE_NAME, imageName);
         editor.commit();
     }
 
@@ -73,6 +77,9 @@ public class NewPatientSessionManager {
         newPatient.put(NEW_PATIENT_DOC_IMAGE1_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE1_TITLE, null));
         newPatient.put(NEW_PATIENT_DOC_IMAGE2_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE2_TITLE, null));
         newPatient.put(NEW_PATIENT_DOC_IMAGE3_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE3_TITLE, null));
+        newPatient.put(NEW_PATIENT_DOC_HPI_RECORD, pref.getString(NEW_PATIENT_DOC_HPI_RECORD, null));
+        newPatient.put(NEW_PATIENT_CHIEF_COMPLAINT, pref.getString(NEW_PATIENT_CHIEF_COMPLAINT, null));
+        newPatient.put(NEW_PATIENT_IMAGE_NAME, pref.getString(NEW_PATIENT_IMAGE_NAME, null));
 
         return newPatient;
 
@@ -90,9 +97,12 @@ public class NewPatientSessionManager {
         editor.commit();
     }
 
+    public void setHPIRecord(String hpiRecord, String chiefComplaint) {
 
-
-
+        editor.putString(NEW_PATIENT_DOC_HPI_RECORD, hpiRecord);
+        editor.putString(NEW_PATIENT_CHIEF_COMPLAINT, chiefComplaint);
+        editor.commit();
+    }
 
 
 }
