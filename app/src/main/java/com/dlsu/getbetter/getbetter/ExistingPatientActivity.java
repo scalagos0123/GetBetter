@@ -22,6 +22,7 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
     private DataAdapter getBetterDb;
     Button newPatientRecBtn;
+    Button uploadPatientRecBtn;
 
     private ArrayList<Patient> existingPatients;
 
@@ -31,6 +32,8 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_existing_patient);
 
         newPatientRecBtn = (Button)findViewById(R.id.create_new_patient_btn);
+        uploadPatientRecBtn = (Button)findViewById(R.id.upload_patient_record);
+
         RecyclerView existingPatientListView = (RecyclerView) findViewById(R.id.existing_patient_list);
         RecyclerView.LayoutManager existingPatientLayoutManager = new LinearLayoutManager(this);
 
@@ -47,6 +50,7 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
 
         newPatientRecBtn.setOnClickListener(this);
+        uploadPatientRecBtn.setOnClickListener(this);
     }
 
     private void initializeDatabase () {
@@ -83,6 +87,11 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         if (id == R.id.create_new_patient_btn) {
 
             Intent intent = new Intent(this, NewPatientRecordActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.upload_patient_record) {
+
+            Intent intent = new Intent(this, UploadToServerActivity.class);
             startActivity(intent);
         }
     }

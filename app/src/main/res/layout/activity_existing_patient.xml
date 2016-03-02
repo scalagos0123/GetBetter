@@ -133,7 +133,7 @@
                         android:paddingRight="100dp"/>
 
                     <Button
-                        android:id="@+id/create_update_patient_record_btn"
+                        android:id="@+id/create_update_case_record_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -144,11 +144,23 @@
                         android:paddingLeft="18dp"/>
 
                     <Button
+                        android:id="@+id/update_patient_record_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/create_update_patient_record_btn"
+                        android:layout_toLeftOf="@id/create_update_case_record_btn"
                         android:layout_marginRight="18dp"
                         android:text="Update Patient Record"
+                        android:background="@color/neutralButton"
+                        android:paddingLeft="32dp"
+                        android:paddingRight="32dp"/>
+
+                    <Button
+                        android:id="@+id/upload_patient_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/update_patient_record_btn"
+                        android:layout_marginRight="18dp"
+                        android:text="Upload Patient Record"
                         android:background="@color/neutralButton"
                         android:paddingLeft="32dp"
                         android:paddingRight="32dp"/>
