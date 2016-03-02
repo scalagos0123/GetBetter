@@ -1,5 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
+import android.content.DialogInterface;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -9,14 +10,22 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -27,11 +36,9 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     private Button nextBtn, recordBtn, stopRecBtn, playRecBtn;
     private MediaRecorder hpiRecorder;
     private String outputFile;
-    private AudioRecord audioRecord;
-    private AudioTrack audioTrack;
-    private short[] lin;
-    private int num;
+    private String chiefComplaintName;
 
+    NewPatientSessionManager newPatientSessionManager;
 
 
     public RecordHpiFragment() {
@@ -42,25 +49,19 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
+        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
 
-        int audioBufferSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT) * 2;
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 
-        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100,
-                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, audioBufferSize);
-
-        audioTrack = new AudioTrack(AudioManager.MODE_IN_COMMUNICATION, 44100,
-                AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, audioBufferSize, AudioTrack.MODE_STREAM);
-
-        lin = new short[1024];
-        num = 0;
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                "hpi_recording_" + timeStamp + ".3gp";
 
         hpiRecorder = new MediaRecorder();
         hpiRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         hpiRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         hpiRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         hpiRecorder.setOutputFile(outputFile);
+
 
     }
 
@@ -93,6 +94,8 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
         int id = v.getId();
 
         if(id == R.id.hpi_next_btn) {
+
+            newPatientSessionManager.setHPIRecord(outputFile, chiefComplaintName);
             SummaryPageFragment summaryPageFragment = new SummaryPageFragment();
             getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
             getActivity().getSupportFragmentManager().beginTransaction().
@@ -101,43 +104,35 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
         } else if(id == R.id.hpi_record_btn) {
 
             try {
-
-                audioRecord.startRecording();
-                num = audioRecord.read(lin, 0, 1024);
-//                hpiRecorder.prepare();
-//                hpiRecorder.start();
+                hpiRecorder.prepare();
+                hpiRecorder.start();
             } catch (IllegalStateException e) {
 
                 e.printStackTrace();
 
             }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
 
             stopRecBtn.setEnabled(true);
             Toast.makeText(this.getContext(), "Now Recording....", Toast.LENGTH_LONG).show();
 
         } else if (id == R.id.hpi_stop_record_btn) {
 
-            audioRecord.stop();
-            audioRecord.release();
 
-            Log.e("audio", String.valueOf(lin));
-//            hpiRecorder.stop();
-//            hpiRecorder.release();
-//            hpiRecorder = null;
+            hpiRecorder.stop();
+            hpiRecorder.release();
+            hpiRecorder = null;
 
             stopRecBtn.setEnabled(false);
             playRecBtn.setEnabled(true);
 
+            editImageTitle();
 
         } else if (id == R.id.hpi_play_recorded_btn) {
 
             MediaPlayer mp = new MediaPlayer();
-
-            audioTrack.play();
-            audioTrack.write(lin, 0, num);
 
             try {
 
@@ -157,6 +152,36 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
             mp.start();
 
         }
+    }
+
+    private void editImageTitle () {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Chief Complaint");
+
+        // Set up the input
+        final EditText input = new EditText(this.getContext());
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                chiefComplaintName = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
 }

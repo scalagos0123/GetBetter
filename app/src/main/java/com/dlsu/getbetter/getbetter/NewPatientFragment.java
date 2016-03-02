@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -27,7 +30,11 @@ import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -46,14 +53,15 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private String birthDate;
     private String genderSelected;
     private String civilStatusSelected;
-    private String encoded;
+    private String profilePicTitle;
+    private String profilePicPath;
+    private String profileImageName;
 
     private ArrayAdapter<CharSequence> genderAdapter;
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
     NewPatientSessionManager newPatientSessionManager;
-
 
 
     public NewPatientFragment() {
@@ -129,6 +137,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
 
         int id = v.getId();
+        File imageFile = null;
 
         if(id == R.id.new_patient_next_btn) {
 
@@ -145,8 +154,18 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         } else if (id == R.id.profile_picture_select) {
 
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_IMAGE1);
+            profilePicTitle = "patientprofileimage";
+            try {
+                imageFile = createImageFile(profilePicTitle);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(imageFile != null) {
+                profilePicPath = imageFile.getAbsolutePath();
+            }
+
+            takePicture(REQUEST_IMAGE1, imageFile);
 
         }
     }
@@ -174,10 +193,10 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         String lastName = this.lastNameInput.getText().toString();
 
         Patient newPatient = new Patient(firstName, middleName, lastName,
-                birthDate, genderSelected, civilStatusSelected, encoded);
+                birthDate, genderSelected, civilStatusSelected, profilePicPath);
 
         newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
-                birthDate, genderSelected, civilStatusSelected, encoded);
+                birthDate, genderSelected, civilStatusSelected, profilePicPath, profileImageName);
 
         Log.d("First Name", newPatient.getFirstName());
         Log.d("Middle Name", newPatient.getMiddleName());
@@ -265,20 +284,71 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         if(requestCode == REQUEST_IMAGE1 && resultCode == Activity.RESULT_OK) {
 
-            Bitmap photo = (Bitmap)data.getExtras().get("data");
-            setProfilePicBtn.setImageBitmap(photo);
+            setPic(setProfilePicBtn, profilePicPath);
+
+//            Bitmap photo = (Bitmap)data.getExtras().get("data");
+//            setProfilePicBtn.setImageBitmap(photo);
             profilePicPlaceholder.setText("");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            if (photo != null) {
-                photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            }
-            byte[] b = baos.toByteArray();
-
-            encoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-
-            Log.d("image byte", encoded + "");
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            if (photo != null) {
+//                photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//            }
+//            byte[] b = baos.toByteArray();
+//
+//            encoded = Base64.encodeToString(b, Base64.DEFAULT);
+//
+//
+//            Log.d("image byte", encoded + "");
 
         }
+    }
+
+    private File createImageFile(String imageTitle) throws IOException {
+
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = imageTitle + "_" + timeStamp;
+        profileImageName = imageFileName;
+
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    private void takePicture(int requestImage, File imageFile) {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (imageFile != null) {
+
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+            startActivityForResult(intent, requestImage);
+            Log.e("image path", imageFile.getAbsolutePath());
+        }
+    }
+
+    private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
+        // Get the dimensions of the View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        mImageView.setImageBitmap(bitmap);
     }
 }
