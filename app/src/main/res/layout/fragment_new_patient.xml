@@ -103,25 +103,23 @@
                         android:layout_height="wrap_content"
                         android:text="Click to change Profile Picture"
                         android:textSize="12sp"
-                        android:layout_marginLeft="46dp"
-                        android:layout_marginStart="46dp"
-                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="42dp"
+                        android:layout_marginStart="42dp"
+                        android:layout_alignBottom="@+id/profile_picture_select"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="57dp" />
 
-                    <TableLayout
+                    <LinearLayout
                         android:id="@+id/table_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/profile_picture_select"
-                        android:layout_alignTop="@id/profile_picture_select">
-
-                        <TableRow android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            >
+                        android:layout_alignTop="@id/profile_picture_select"
+                        android:orientation="vertical">
 
                             <android.support.design.widget.TextInputLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_column="1"
                                 android:layout_weight="1">
@@ -136,13 +134,8 @@
 
                             </android.support.design.widget.TextInputLayout>
 
-                        </TableRow>
-
-                        <TableRow android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
                             <android.support.design.widget.TextInputLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_column="1"
                                 android:layout_weight="1">
@@ -158,13 +151,8 @@
                             </android.support.design.widget.TextInputLayout>
 
 
-                        </TableRow>
-
-                        <TableRow android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
                             <android.support.design.widget.TextInputLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_column="1"
                                 android:layout_weight="1">
@@ -179,108 +167,113 @@
 
                             </android.support.design.widget.TextInputLayout>
 
-                        </TableRow>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp"
+                            android:padding="8dp">
 
-                    </TableLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Birthday"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="5dp"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/display_birthday"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Birthday"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/new_patient_set_birthday_btn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Set Birthday"
+                                android:textColor="@color/cardBackground"
+                                android:background="@color/blueButton"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="500dp"
+                                />
+
+
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="0.5">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Gender"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    />
+
+                                <Spinner
+                                    android:id="@+id/gender_spinner"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="0.5">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Civil Status"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    />
+
+                                <Spinner
+                                    android:id="@+id/civil_status_spinner"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-
-                    <TableRow android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_weight="0.1">
-
-                            <TextView android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Birthday"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="5dp"
-                                />
-
-                            <TextView
-                                android:id="@+id/display_birthday"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Birthday"
-                                android:textSize="18sp" />
-
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/new_patient_set_birthday_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Set Birthday"
-                            android:textColor="@color/cardBackground"
-                            android:background="@color/blueButton"
-                            android:paddingRight="10dp"
-                            android:paddingLeft="10dp"
-                            />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            />
-
-                    </TableRow>
-
-                    <TableRow android:padding="8dp">
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_weight="0.5">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Gender"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                />
-
-                            <Spinner
-                                android:id="@+id/gender_spinner"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
 
 
-                        </LinearLayout>
 
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_weight="0.5">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Civil Status"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                />
-
-                            <Spinner
-                                android:id="@+id/civil_status_spinner"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-
-                    </TableRow>
-
-
-                </TableLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
