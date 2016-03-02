@@ -14,18 +14,19 @@ public class Patient {
     private String gender;
     private String civilStatus;
     private String profileImageBytes;
+    private boolean checked = false;
 
 
     public Patient(long id, String firstName, String middleName, String lastName,
-                   String birthdate, String age, String gender, String civilStatus) {
+                   String birthdate, String gender, String civilStatus, String profileImageBytes) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.birthdate = birthdate;
-        this.age = age;
         this.gender = gender;
         this.civilStatus = civilStatus;
+        this.profileImageBytes = profileImageBytes;
     }
 
     public Patient(String firstName, String middleName, String lastName, String birthdate,
@@ -73,5 +74,17 @@ public class Patient {
 
     public String getProfileImageBytes() {
         return profileImageBytes;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public void toggleChecked() {
+        checked = !checked;
     }
 }
