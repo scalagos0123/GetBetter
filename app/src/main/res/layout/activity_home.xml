@@ -83,28 +83,34 @@
                         android:text="Current Health Center: "
                         android:textSize="24sp" />
 
-                    <TextView
-                        android:id="@+id/current_health_center"
+                    <Spinner
+                        android:id="@+id/health_center_spinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Children's Medical Clinic"
-                        android:textSize="24sp"
-                        android:textStyle="bold"/>
+                        android:layout_height="wrap_content"/>
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/current_health_center"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Children's Medical Clinic"-->
+                        <!--android:textSize="24sp"-->
+                        <!--android:textStyle="bold"/>-->
 
                 </LinearLayout>
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Change Health Center"
-                    android:textColor="@color/cardBackground"
-                    android:textSize="14sp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:background="@color/greenButton"
-                    android:paddingRight="30dp"
-                    android:paddingLeft="30dp"
-                    android:layout_alignBottom="@+id/current_health_center_container" />
+                <!--<Button-->
+                    <!--android:id="@+id/change_health_center_btn"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Change Health Center"-->
+                    <!--android:textColor="@color/cardBackground"-->
+                    <!--android:textSize="14sp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:background="@color/greenButton"-->
+                    <!--android:paddingRight="30dp"-->
+                    <!--android:paddingLeft="30dp"-->
+                    <!--android:layout_alignBottom="@+id/current_health_center_container" />-->
 
             </RelativeLayout>
 
@@ -121,7 +127,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="?android:attr/dividerHorizontal"
                 android:orientation="horizontal"
                 android:showDividers="middle"
                 android:layout_marginTop="15dp">
