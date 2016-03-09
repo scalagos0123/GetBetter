@@ -1,22 +1,19 @@
 package com.dlsu.getbetter.getbetter;
 
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,114 +23,109 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
-import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.StringTokenizer;
 
+public class UpdatePatientRecordActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class NewPatientFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-
+    DataAdapter getBetterDb;
     private EditText firstNameInput;
     private EditText middleNameInput;
     private EditText lastNameInput;
     private TextView displayBirthday;
     private ImageView setProfilePicBtn;
-    private TextView profilePicPlaceholder;
-
     private int year, month, day;
+    private long patientId;
     private String birthDate;
     private String genderSelected;
     private String civilStatusSelected;
     private String profilePicTitle;
     private String profilePicPath;
     private String profileImageName;
-
     private ArrayAdapter<CharSequence> genderAdapter;
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
-    NewPatientSessionManager newPatientSessionManager;
-
-
-    public NewPatientFragment() {
-        // Required empty public constructor
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_new_patient);
 
-        Calendar calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
+        Bundle extras = getIntent().getExtras();
+        patientId = 0;
 
-        birthDate = year + "-" + month + "-" + day;
+        if(extras != null) {
+            patientId = extras.getLong("selectedPatient");
+        }
 
-        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
+        Log.e("patient id", patientId + "");
 
-        genderAdapter = ArrayAdapter.createFromResource(this.getContext(),
+        initializeDatabase();
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Patient patient = getBetterDb.getPatient(patientId);
+
+        getBetterDb.closeDatabase();
+
+        Button submitBtn = (Button)findViewById(R.id.new_patient_next_btn);
+        Button setBirthday = (Button)findViewById(R.id.new_patient_set_birthday_btn);
+        Spinner genderSpinner = (Spinner)findViewById(R.id.gender_spinner);
+        Spinner civilStatusSpinner = (Spinner)findViewById(R.id.civil_status_spinner);
+        firstNameInput = (EditText)findViewById(R.id.first_name_input);
+        middleNameInput = (EditText)findViewById(R.id.middle_name_input);
+        lastNameInput = (EditText)findViewById(R.id.last_name_input);
+        setProfilePicBtn = (ImageView)findViewById(R.id.profile_picture_select);
+        displayBirthday = (TextView)findViewById(R.id.display_birthday);
+        TextView profilePicPlaceHolder = (TextView) findViewById(R.id.profile_picture_select_placeholder);
+
+        firstNameInput.setText(patient.getFirstName());
+        middleNameInput.setText(patient.getMiddleName());
+        lastNameInput.setText(patient.getLastName());
+        profilePicPlaceHolder.setText("");
+        profilePicPath = patient.getProfileImageBytes();
+        setPic(setProfilePicBtn, patient.getProfileImageBytes());
+
+        genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.genders, android.R.layout.simple_spinner_item);
 
-        civilStatusAdapter = ArrayAdapter.createFromResource(this.getContext(),
+        civilStatusAdapter = ArrayAdapter.createFromResource(this,
                 R.array.civil_statuses, android.R.layout.simple_spinner_item);
 
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         civilStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        View rootView =  inflater.inflate(R.layout.fragment_new_patient, container, false);
-
-        Button setBirthday = (Button)rootView.findViewById(R.id.new_patient_set_birthday_btn);
-        Button nextButton = (Button)rootView.findViewById(R.id.new_patient_next_btn);
-
-        setProfilePicBtn = (ImageView)rootView.findViewById(R.id.profile_picture_select);
-
-        firstNameInput = (EditText)rootView.findViewById(R.id.first_name_input);
-        middleNameInput = (EditText)rootView.findViewById(R.id.middle_name_input);
-        lastNameInput = (EditText)rootView.findViewById(R.id.last_name_input);
-        profilePicPlaceholder = (TextView)rootView.findViewById(R.id.profile_picture_select_placeholder);
-
-
-        Spinner genderSpinner = (Spinner) rootView.findViewById(R.id.gender_spinner);
-        Spinner civilStatusSpinner = (Spinner) rootView.findViewById(R.id.civil_status_spinner);
-
-        displayBirthday = (TextView)rootView.findViewById(R.id.display_birthday);
-
         genderSpinner.setAdapter(genderAdapter);
         civilStatusSpinner.setAdapter(civilStatusAdapter);
 
-        nextButton.setOnClickListener(this);
+        submitBtn.setText("Submit");
+        submitBtn.setOnClickListener(this);
+        setProfilePicBtn.setOnClickListener(this);
+        setBirthday.setOnClickListener(this);
         genderSpinner.setOnItemSelectedListener(this);
         civilStatusSpinner.setOnItemSelectedListener(this);
-        setBirthday.setOnClickListener(this);
-        setProfilePicBtn.setOnClickListener(this);
+        StringTokenizer token = new StringTokenizer(patient.getBirthdate(), "-");
 
+        year = Integer.parseInt(token.nextElement().toString());
+        month = Integer.parseInt(token.nextElement().toString());
+        day = Integer.parseInt(token.nextElement().toString());
         showDate(year, month, day);
 
 
-
-        return rootView;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -144,14 +136,9 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         if(id == R.id.new_patient_next_btn) {
 
             savePatientInfo();
-
-            CaptureDocumentsFragment captureDocumentsFragment = new CaptureDocumentsFragment();
-            getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
-            getActivity().getSupportFragmentManager().beginTransaction().
-                    replace(R.id.fragment_container, captureDocumentsFragment).commit();
-
-        } else if(id == R.id.new_patient_set_birthday_btn) {
-            showPicker();
+            Intent intent = new Intent(this, ExistingPatientActivity.class);
+            startActivity(intent);
+            finish();
 
         } else if (id == R.id.profile_picture_select) {
 
@@ -168,7 +155,22 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
             takePicture(REQUEST_IMAGE1, imageFile);
 
+        } else if (id == R.id.new_patient_set_birthday_btn) {
+
+            showDialog(999);
         }
+    }
+
+    private void initializeDatabase () {
+
+        getBetterDb = new DataAdapter(this);
+
+        try {
+            getBetterDb.createDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void showDate (int year, int month, int day) {
@@ -183,19 +185,33 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
             sDay = "0" + sDay;
         }
 
-        this.displayBirthday.setText(new StringBuilder().append(year).append("-")
+        displayBirthday.setText(new StringBuilder().append(year).append("-")
                 .append(sMonth).append("-").append(sDay));
     }
 
     public void savePatientInfo() {
 
-        String firstName = this.firstNameInput.getText().toString();
-        String middleName = this.middleNameInput.getText().toString();
-        String lastName = this.lastNameInput.getText().toString();
+        String firstName = firstNameInput.getText().toString();
+        String middleName = middleNameInput.getText().toString();
+        String lastName = lastNameInput.getText().toString();
 
-        newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
-                birthDate, genderSelected, civilStatusSelected, profilePicPath, profileImageName);
+        Patient newPatient = new Patient(firstName, middleName, lastName,
+                birthDate, genderSelected, civilStatusSelected, profilePicPath);
 
+        Log.d("First Name", newPatient.getFirstName());
+        Log.d("Middle Name", newPatient.getMiddleName());
+        Log.d("Last Name", newPatient.getLastName());
+        Log.d("Gender", newPatient.getGender());
+        Log.d("Civil Status", newPatient.getCivilStatus());
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        getBetterDb.updatePatientInfo(newPatient, patientId);
+        getBetterDb.closeDatabase();
 
     }
 
@@ -229,30 +245,22 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void showPicker () {
-
-        DatePickerFragment date = new DatePickerFragment();
-        /**
-         * Set Up Current Date Into dialog
-         */
-        Calendar calender = Calendar.getInstance();
-        Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
-        date.setArguments(args);
-        /**
-         * Set Call back to capture selected date
-         */
-        date.setCallBack(ondate);
-        date.show(getFragmentManager(), "Date Picker");
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        // TODO Auto-generated method stub
+        if (id == 999) {
+            return new DatePickerDialog(this, myDateListener, year, month, day);
+        }
+        return null;
     }
 
-    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
-
-        public void onDateSet(DatePicker view, int arg1, int arg2,
-                              int arg3) {
-
+    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+            // TODO Auto-generated method stub
+            // arg1 = year
+            // arg2 = month
+            // arg3 = day
             showDate(arg1, arg2+1, arg3);
             arg2 += 1;
             String month = arg2 + "";
@@ -267,9 +275,9 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
             }
 
             birthDate = arg1 + "-" + month + "-" + day;
-            Log.d("date", birthDate + "");
         }
     };
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -280,7 +288,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
 //            Bitmap photo = (Bitmap)data.getExtras().get("data");
 //            setProfilePicBtn.setImageBitmap(photo);
-            profilePicPlaceholder.setText("");
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //            if (photo != null) {
 //                photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -322,8 +329,8 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
         // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+        int targetW = 255; //mImageView.getWidth();
+        int targetH = 138; //mImageView.getHeight();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
