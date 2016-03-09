@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.PatientUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 
 public class UploadToServerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String UPLOAD_URL = "localhost/get_better/upload_patient.php";
+    private static final String UPLOAD_URL = "http://128.199.205.226/get_better/upload_patient.php";
     private static final String ID_KEY = "id";
     private static final String FIRST_NAME_KEY = "firstName";
     private static final String MIDDLE_NAME_KEY = "middleName";
@@ -122,10 +123,9 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
 
             UploadPatientToServer uploadPatientToServer = new UploadPatientToServer();
             uploadPatientToServer.execute(selectedPatientsList);
-
-
             Intent intent = new Intent(this, ExistingPatientActivity.class);
             startActivity(intent);
+            finish();
 
 
 
@@ -181,9 +181,7 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
             String result = "";
             for(int i = 0; i < uploadPatientList.size(); i++) {
                 String uploadImage = getStringImage(uploadPatientList.get(i).getProfileImageBytes());
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String imageFileName = "profile_pic_" + timeStamp;
-
+                String imageFileName = uploadPatientList.get(i).getProfileImageBytes().substring(29);
 
                 HashMap<String, String> data = new HashMap<>();
                 data.put(ID_KEY, String.valueOf(uploadPatientList.get(i).getId()));
@@ -199,8 +197,6 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
 
             }
 
-
-
             return result;
         }
 
@@ -208,9 +204,10 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if(progressDialog.isShowing()) {
-                progressDialog.hide();
                 progressDialog.dismiss();
             }
+
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -222,7 +219,4 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
-
-
-
 }

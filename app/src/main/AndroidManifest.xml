@@ -28,7 +28,9 @@
         <activity android:name=".HomeActivity" />
         <activity android:name=".NewPatientRecordActivity" />
         <activity android:name=".ExistingPatientActivity" />
-        <activity android:name=".UploadToServerActivity"></activity>
+        <activity android:name=".UploadToServerActivity" />
+        <activity android:name=".UpdatePatientRecordActivity" />
+        <activity android:name=".CreateUpdateCaseRecordActivity"></activity>
     </application>
 
 </manifest>

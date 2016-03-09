@@ -18,8 +18,6 @@ import java.util.Map;
 public class RequestHandler {
 
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
-
-
         URL url;
 
         StringBuilder sb = new StringBuilder();
@@ -28,8 +26,8 @@ public class RequestHandler {
             url = new URL(requestURL);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(30000);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -51,6 +49,7 @@ public class RequestHandler {
                     sb.append(response);
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,5 +74,6 @@ public class RequestHandler {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
         return result.toString();
+
     }
 }
