@@ -127,8 +127,11 @@ public class DataAdapter {
         cv.put("profile_url", profileImage);
         cv.put("role_id", 6);
 
-        getBetterDb.insert(USER_TABLE, null, cv);
-        rowId = getBetterDb.insert(USER_TABLE_UPLOAD, null, cv);
+        rowId = getBetterDb.insert(USER_TABLE, null, cv);
+
+        cv.put("_id", rowId);
+
+        getBetterDb.insert(USER_TABLE_UPLOAD, null, cv);
 
         return rowId;
     }
@@ -199,7 +202,8 @@ public class DataAdapter {
 
         Log.e("cursor", c.getCount() + "");
         while (c.moveToNext()) {
-            Patient patient = new Patient(c.getString(c.getColumnIndexOrThrow("first_name")),
+            Patient patient = new Patient(c.getLong(c.getColumnIndexOrThrow("id")),
+                    c.getString(c.getColumnIndexOrThrow("first_name")),
                     c.getString(c.getColumnIndexOrThrow("middle_name")),
                     c.getString(c.getColumnIndexOrThrow("last_name")),
                     c.getString(c.getColumnIndexOrThrow("birthdate")),
@@ -243,6 +247,33 @@ public class DataAdapter {
 
         c.close();
         return results;
+    }
+
+    public Patient getPatient (long patientId) {
+
+        String sql = "SELECT u._id AS id, u.first_name AS first_name, u.middle_name AS middle_name, " +
+                "u.last_name AS last_name, u.birthdate AS birthdate, g.gender_name AS gender, " +
+                "c.civil_status_name AS civil_status, u.profile_url AS image " +
+                "FROM tbl_users AS u, tbl_genders AS g, tbl_civil_statuses AS c " +
+                "WHERE u.gender_id = g._id AND u.civil_status_id = c._id AND u._id = " + patientId;
+
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        Log.e("cursor", c.getCount() + "");
+
+        c.moveToFirst();
+        Patient patient = new Patient(c.getLong(c.getColumnIndexOrThrow("id")),
+                c.getString(c.getColumnIndexOrThrow("first_name")),
+                c.getString(c.getColumnIndexOrThrow("middle_name")),
+                c.getString(c.getColumnIndexOrThrow("last_name")),
+                c.getString(c.getColumnIndexOrThrow("birthdate")),
+                c.getString(c.getColumnIndexOrThrow("gender")),
+                c.getString(c.getColumnIndexOrThrow("civil_status")),
+                c.getString(c.getColumnIndexOrThrow("image")));
+
+        c.close();
+        return patient;
+
     }
 
     public void removePatientUpload (int userId) {
@@ -347,6 +378,38 @@ public class DataAdapter {
         }
 
         return attachments;
+    }
+
+    public void updatePatientInfo (Patient patient, long patientId) {
+
+        int genderId;
+        int civilId;
+
+        Log.e("gender", patient.getGender());
+
+        String genderSql = "SELECT _id FROM tbl_genders WHERE gender_name = '" + patient.getGender() + "'";
+        Cursor cGender = getBetterDb.rawQuery(genderSql, null);
+        cGender.moveToFirst();
+        genderId = cGender.getInt(cGender.getColumnIndex("_id"));
+        cGender.close();
+
+        String civilSql = "SELECT _id FROM tbl_civil_statuses WHERE civil_status_name = '" + patient.getCivilStatus() + "'";
+        Cursor cCivil = getBetterDb.rawQuery(civilSql, null);
+        cCivil.moveToFirst();
+        civilId = cCivil.getInt(cCivil.getColumnIndex("_id"));
+        cCivil.close();
+
+        ContentValues cv = new ContentValues();
+        cv.put("first_name", patient.getFirstName());
+        cv.put("middle_name", patient.getMiddleName());
+        cv.put("last_name", patient.getLastName());
+        cv.put("birthdate", patient.getBirthdate());
+        cv.put("gender_id", genderId);
+        cv.put("civil_status_id", civilId);
+        cv.put("profile_url", patient.getProfileImageBytes());
+
+        getBetterDb.update(USER_TABLE, cv, "_id = " + patientId, null);
+
     }
 
 }
