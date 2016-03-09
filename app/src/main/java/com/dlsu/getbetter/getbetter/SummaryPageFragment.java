@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -81,6 +82,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private static final int REQUEST_IMAGE_ATTACHMENT = 100;
     private static final int REQUEST_IMAGE_DOCUMENT = 200;
     private static final int REQUEST_VIDEO_ATTACHMENT = 300;
+    private static final int REQUEST_AUDIO_ATTACHMENT = 400;
+
     private Bundle[] imageDataTransfer = {null};
 
     private long patientId;
@@ -205,13 +208,16 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private void addPhotoAttachment (String path, String title, String uploadedOn) {
 
         Attachment attachment = new Attachment(path, title, "image", uploadedOn);
-        attachments.add(attachment);
+        attachments.add(fileAdapter.getItemCount() - 1, attachment);
+        fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
+
     }
 
     private void addVideoAttachment (String path, String title, String uploadedOn) {
 
         Attachment attachment = new Attachment(path, title, "video", uploadedOn);
-        attachments.add(attachment);
+        attachments.add(fileAdapter.getItemCount() - 1, attachment);
+        fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
     }
 
     private void addAudioAttachment (String path, String title, String uploadedOn) {
@@ -236,8 +242,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         Button summaryRecordVideo = (Button)rootView.findViewById(R.id.summary_page_rec_video_btn);
         Button summaryTakePicDocBtn = (Button)rootView.findViewById(R.id.summary_page_take_pic_doc_btn);
         Button summaryUpdatePatientRecBtn = (Button)rootView.findViewById(R.id.summary_update_patient_rec_btn);
-//        hpiPlayBtn = (Button)rootView.findViewById(R.id.summary_page_hpi_play);
-//        hpiPauseBtn = (Button)rootView.findViewById(R.id.summary_page_hpi_pause);
         RecyclerView attachmentFileList = (RecyclerView) rootView.findViewById(R.id.summary_page_files_list);
 
         summaryProfileImage = (ImageView) rootView.findViewById(R.id.profile_picture_display);
@@ -255,9 +259,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         summaryTakePicDocBtn.setOnClickListener(this);
         summaryRecordVideo.setOnClickListener(this);
         summaryUpdatePatientRecBtn.setOnClickListener(this);
-//        hpiPlayBtn.setOnClickListener(this);
-//        hpiPauseBtn.setOnClickListener(this);
-//        hpiPauseBtn.setEnabled(false);
 
         attachmentFileList.setHasFixedSize(true);
         attachmentFileList.setLayoutManager(fileListLayoutManager);
@@ -294,14 +295,11 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             new InsertPatientTask().execute(patientFirstName, patientMiddleName, patientLastName,
                     patientBirthdate, patientGender, patientCivilStatus, image);
 
-            caseRecordId = generateCaseRecordId((int)patientId);
-            controlNumber = generateControlNumber();
-
             new InsertCaseRecordTask().execute();
-
 
             Intent intent = new Intent (this.getContext(), HomeActivity.class);
             startActivity(intent);
+            getActivity().finish();
 
 
 
@@ -323,8 +321,19 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         } else if (id == R.id.summary_page_take_pic_doc_btn) {
 
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_IMAGE_DOCUMENT);
+            String imageName = "imageDocument" + getTimeStamp();
+
+            try {
+                imageFile = createImageFile(imageName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(imageFile != null) {
+                imageAttachmentPath = imageFile.getAbsolutePath();
+            }
+
+            takePicture(REQUEST_IMAGE_DOCUMENT, imageFile);
 
         } else if (id == R.id.summary_page_rec_video_btn) {
 
@@ -411,37 +420,26 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        String attachmentName = "";
-
         if(resultCode == Activity.RESULT_OK) {
 
             switch (requestCode) {
 
                 case REQUEST_IMAGE_ATTACHMENT:
 
-                    editAttachmentName();
-
-                    addPhotoAttachment(imageAttachmentPath, attachmentName, uploadedDate);
-                    Log.e("image attachment path", imageAttachmentPath);
-                    Log.e("attachment name", attachmentName);
-                    Log.e("attachments size", attachments.size() + "");
-                    fileAdapter.addAttachmentList(attachments.get(attachments.size() - 1));
-                    fileAdapter.notifyDataSetChanged();
+                    new InsertNewAttachment().execute();
 
                     break;
 
                 case REQUEST_IMAGE_DOCUMENT:
 
-                    //attachmentPath = extras.getString("IMAGE_PATH");
-                    editAttachmentName();
+                    new InsertNewAttachment().execute();
 
-                    addPhotoAttachment(imageAttachmentPath, attachmentName, uploadedDate);
                     break;
 
                 case REQUEST_VIDEO_ATTACHMENT:
 
                     editAttachmentName();
-                    addAudioAttachment(videoAttachmentPath, attachmentName, uploadedDate);
+                    addVideoAttachment(videoAttachmentPath, "video", uploadedDate);
                     break;
             }
         }
@@ -449,33 +447,37 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     private void editAttachmentName () {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Image Filename");
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Image Filename");
 
-        // Set up the input
-        final EditText input = new EditText(this.getContext());
+                // Set up the input
+                final EditText input = new EditText(getContext());
 
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
 
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                attachmentName = input.getText().toString();
+                        attachmentName = input.getText().toString();
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
 
         builder.show();
+
+
     }
 
     private class InsertPatientTask extends AsyncTask<String, Void, Long> {
@@ -518,7 +520,33 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
             Toast.makeText(SummaryPageFragment.this.getContext(), "Patient ID: " + result + " inserted.",
                     Toast.LENGTH_LONG).show();
-            patientId = result;
+
+            caseRecordId = generateCaseRecordId((int)(long)result);
+            controlNumber = generateControlNumber(result);
+        }
+    }
+
+    private class InsertNewAttachment extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            editAttachmentName();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            String result = attachmentName;
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            addPhotoAttachment(imageAttachmentPath, result, uploadedDate);
+
         }
     }
 
@@ -530,13 +558,19 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
-
         getBetterDb.insertCaseRecord(caseRecordId, patientId, healthCenterId, chiefComplaint,
                 controlNumber);
 
+        getBetterDb.closeDatabase();
     }
 
     public void insertCaseRecordHistory () {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         getBetterDb.insertCaseRecordHistory(caseRecordId, 1, "midwife", uploadedDate);
 
@@ -544,6 +578,12 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     }
 
     public void insertCaseRecordAttachments() {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         int attachmentTypeId = 1;
 
@@ -556,18 +596,23 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             } else if (Objects.equals(attachments.get(i).getAttachmentType(), "audio")) {
                 attachmentTypeId = 3;
             }
+
             getBetterDb.insertCaseRecordAttachments(caseRecordId, attachments.get(i).getAttachmentDescription(),
                     attachments.get(i).getAttachmentPath(), attachmentTypeId,
                     attachments.get(i).getUploadedDate());
         }
 
+        getBetterDb.closeDatabase();
     }
 
-    public String generateControlNumber() {
+    public String generateControlNumber(long pId) {
 
         String result;
+        String firstChar = patientFirstName.substring(0, 1).toUpperCase();
+        String secondChar = patientLastName.substring(0, 1).toUpperCase();
+        String patientIdChar = String.valueOf(pId);
 
-        result = patientFirstName.toUpperCase().charAt(0) + patientLastName.toUpperCase().charAt(0) + patientId + "-" + caseRecordId;
+        result = firstChar + secondChar + patientIdChar + "-" + caseRecordId;
         Log.e("control number", result);
 
         return result;
@@ -607,7 +652,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    // TODO: 14/02/2016 finish insert case record task
     private class InsertCaseRecordTask extends AsyncTask<Void, Void, Void> {
 
         private ProgressDialog progressDialog = new ProgressDialog(SummaryPageFragment.this.getContext());
