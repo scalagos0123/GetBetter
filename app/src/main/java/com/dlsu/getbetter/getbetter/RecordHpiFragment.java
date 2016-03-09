@@ -36,7 +36,7 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     private Button nextBtn, recordBtn, stopRecBtn, playRecBtn;
     private MediaRecorder hpiRecorder;
     private String outputFile;
-    private String chiefComplaintName;
+    private String chiefComplaintName = "";
 
     NewPatientSessionManager newPatientSessionManager;
 
@@ -95,11 +95,17 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
         if(id == R.id.hpi_next_btn) {
 
-            newPatientSessionManager.setHPIRecord(outputFile, chiefComplaintName);
-            SummaryPageFragment summaryPageFragment = new SummaryPageFragment();
-            getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
-            getActivity().getSupportFragmentManager().beginTransaction().
-                    replace(R.id.fragment_container, summaryPageFragment).commit();
+            if(chiefComplaintName.isEmpty()) {
+                Toast.makeText(this.getContext(), "Please record the HPI", Toast.LENGTH_LONG).show();
+            } else {
+
+                newPatientSessionManager.setHPIRecord(outputFile, chiefComplaintName);
+                SummaryPageFragment summaryPageFragment = new SummaryPageFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fragment_container, summaryPageFragment).commit();
+
+            }
 
         } else if(id == R.id.hpi_record_btn) {
 

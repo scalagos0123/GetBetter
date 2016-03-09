@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
@@ -47,9 +48,9 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
     private static final String FAMILY_SOCIAL_HISTORY_FORM_TITLE = "familysocialhistoryform";
     private static final String CHIEF_COMPLAINT_FORM_TITLE = "chiefcomplaintform";
 
-    private String patientInfoImagePath;
-    private String familySocialHistoryImagePath;
-    private String chiefComplaintImagePath;
+    private String patientInfoImagePath = "";
+    private String familySocialHistoryImagePath = "";
+    private String chiefComplaintImagePath = "";
 
     NewPatientSessionManager newPatientSessionManager;
 
@@ -164,12 +165,22 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
 
         switch(id) {
             case R.id.capture_docu_fragment_next_btn:
-                newPatientSessionManager.setDocImages(patientInfoImagePath, familySocialHistoryImagePath, chiefComplaintImagePath,
-                        PATIENT_INFO_FORM_TITLE, FAMILY_SOCIAL_HISTORY_FORM_TITLE, CHIEF_COMPLAINT_FORM_TITLE);
-                RecordHpiFragment recordHpiFragment = new RecordHpiFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
-                getActivity().getSupportFragmentManager().beginTransaction().
-                        replace(R.id.fragment_container, recordHpiFragment).commit();
+
+                if(patientInfoImagePath.isEmpty() || familySocialHistoryImagePath.isEmpty() ||
+                        chiefComplaintImagePath.isEmpty()) {
+
+                    Toast.makeText(this.getContext(), "Please Take a Photo of the three forms", Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    newPatientSessionManager.setDocImages(patientInfoImagePath, familySocialHistoryImagePath, chiefComplaintImagePath,
+                            PATIENT_INFO_FORM_TITLE, FAMILY_SOCIAL_HISTORY_FORM_TITLE, CHIEF_COMPLAINT_FORM_TITLE);
+                    RecordHpiFragment recordHpiFragment = new RecordHpiFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().
+                            replace(R.id.fragment_container, recordHpiFragment).commit();
+                }
+
                 break;
 
             case R.id.capture_docu_patient_info_image:
