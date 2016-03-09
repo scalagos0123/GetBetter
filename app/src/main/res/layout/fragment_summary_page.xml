@@ -266,7 +266,7 @@
                                 <android.support.v7.widget.RecyclerView
                                     android:id="@+id/summary_page_files_list"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="100dp"
+                                    android:layout_height="145dp"
                                     android:scrollbars="vertical">
 
 

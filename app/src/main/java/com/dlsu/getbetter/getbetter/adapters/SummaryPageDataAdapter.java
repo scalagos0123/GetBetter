@@ -17,22 +17,46 @@ import java.util.ArrayList;
 public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageDataAdapter.ViewHolder> {
 
     private ArrayList<Attachment> filesDataset;
+    private OnItemClickListener mItemClickListener;
+    private int selectedItem = 0;
 
     public SummaryPageDataAdapter (ArrayList<Attachment> dataset) {
 
         filesDataset = dataset;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView fileTitle;
 
 
         public ViewHolder(View v) {
             super(v);
+            itemView.setOnClickListener(this);
             fileTitle = (TextView)v.findViewById(R.id.summary_page_file_list_item);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+                notifyItemChanged(selectedItem);
+                selectedItem = getAdapterPosition();
+                notifyItemChanged(selectedItem);
+            }
+
         }
     }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener =  mItemClickListener;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,11 +74,6 @@ public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageData
 
         holder.fileTitle.setText(filesDataset.get(position).getAttachmentDescription());
 
-    }
-
-    public void addAttachmentList(Attachment attachment) {
-
-        filesDataset.add(attachment);
     }
 
     @Override
