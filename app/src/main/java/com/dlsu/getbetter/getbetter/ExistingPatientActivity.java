@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.ExistingPatientAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -18,11 +19,16 @@ import com.dlsu.getbetter.getbetter.objects.Patient;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 public class ExistingPatientActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DataAdapter getBetterDb;
     Button newPatientRecBtn;
     Button uploadPatientRecBtn;
+    Button updatePatientRecBtn;
+    Button createUpdateCaseRecBtn;
+
+    private long selectedPatientId;
 
     private ArrayList<Patient> existingPatients;
 
@@ -33,6 +39,8 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
         newPatientRecBtn = (Button)findViewById(R.id.create_new_patient_btn);
         uploadPatientRecBtn = (Button)findViewById(R.id.upload_patient_record);
+        updatePatientRecBtn  = (Button)findViewById(R.id.update_patient_record_btn);
+        createUpdateCaseRecBtn = (Button)findViewById(R.id.create_update_case_record_btn);
 
         RecyclerView existingPatientListView = (RecyclerView) findViewById(R.id.existing_patient_list);
         RecyclerView.LayoutManager existingPatientLayoutManager = new LinearLayoutManager(this);
@@ -42,15 +50,25 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         initializeDatabase();
         new GetPatientListTask().execute(51);
         Log.e("patient size", existingPatients.size() + "");
-        RecyclerView.Adapter existingPatientsAdapter = new ExistingPatientAdapter(existingPatients);
+        ExistingPatientAdapter existingPatientsAdapter = new ExistingPatientAdapter(existingPatients);
 
         existingPatientListView.setHasFixedSize(true);
         existingPatientListView.setLayoutManager(existingPatientLayoutManager);
         existingPatientListView.setAdapter(existingPatientsAdapter);
+        existingPatientsAdapter.SetOnItemClickListener(new ExistingPatientAdapter.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.e("Patient Click", existingPatients.get(position).getId() + "");
+                selectedPatientId = existingPatients.get(position).getId();
+            }
+        });
 
 
         newPatientRecBtn.setOnClickListener(this);
         uploadPatientRecBtn.setOnClickListener(this);
+        updatePatientRecBtn.setOnClickListener(this);
+        createUpdateCaseRecBtn.setOnClickListener(this);
     }
 
     private void initializeDatabase () {
@@ -92,6 +110,18 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         } else if (id == R.id.upload_patient_record) {
 
             Intent intent = new Intent(this, UploadToServerActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.update_patient_record_btn) {
+
+            Intent intent = new Intent(this, UpdatePatientRecordActivity.class);
+            intent.putExtra("selectedPatient", selectedPatientId);
+            startActivity(intent);
+
+        } else if (id == R.id.create_update_case_record_btn) {
+
+            Intent intent = new Intent(this, CreateUpdateCaseRecordActivity.class);
+            intent.putExtra("selectedPatient", selectedPatientId);
             startActivity(intent);
         }
     }

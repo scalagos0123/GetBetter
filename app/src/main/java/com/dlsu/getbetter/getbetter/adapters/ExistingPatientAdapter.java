@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +22,11 @@ import java.util.ArrayList;
 public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatientAdapter.ExistingPatientViewHolder> {
 
     private ArrayList<Patient> existingPatients;
+    private OnItemClickListener mItemClickListener;
     private int selectedItem = 0;
 
 
-    public class ExistingPatientViewHolder extends RecyclerView.ViewHolder {
+    public class ExistingPatientViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         CardView cardView;
         TextView patientName;
@@ -41,17 +41,27 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
             patientBirthdate = (TextView)itemView.findViewById(R.id.existing_patient_item_birthdate);
             patientGender = (TextView)itemView.findViewById(R.id.existing_patient_item_gender);
             patientImage = (ImageView)itemView.findViewById(R.id.upload_patient_item_profile_image);
+            itemView.setOnClickListener(this);
+        }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    notifyItemChanged(selectedItem);
-                    selectedItem = getLayoutPosition();
-                    notifyItemChanged(selectedItem);
-                }
-            });
+        @Override
+        public void onClick(View v) {
+            if(mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+                notifyItemChanged(selectedItem);
+                selectedItem = getAdapterPosition();
+                notifyItemChanged(selectedItem);
+            }
 
         }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener =  mItemClickListener;
     }
 
     public ExistingPatientAdapter(ArrayList<Patient> existingPatients) {
@@ -85,11 +95,14 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
             }
         });
 
+        holder.itemView.setSelected(selectedItem == position);
+
+
+
 
 //        Bitmap imageBm = BitmapFactory.decodeFile(existingPatients.get(position).getProfileImageBytes());
 //        holder.patientImage.setImageBitmap(imageBm);
 
-        holder.itemView.setSelected(selectedItem == position);
 
     }
 
@@ -99,43 +112,6 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
         return existingPatients.size();
     }
 
-    @Override
-    public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-
-        recyclerView.setOnKeyListener(new View.OnKeyListener() {
-
-            @Override
-            public boolean onKey (View v, int keyCode, KeyEvent event) {
-                RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
-
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                        return tryMoveSelection(lm, 1);
-                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                        return tryMoveSelection(lm, -1);
-                    }
-                }
-                return false;
-            }
-
-        });
-    }
-
-    private boolean tryMoveSelection(RecyclerView.LayoutManager lm, int direction) {
-        int nextSelectItem = selectedItem + direction;
-
-        // If still within valid bounds, move the selection, notify to redraw, and scroll
-        if (nextSelectItem >= 0 && nextSelectItem < getItemCount()) {
-            notifyItemChanged(selectedItem);
-            selectedItem = nextSelectItem;
-            notifyItemChanged(selectedItem);
-            lm.scrollToPosition(selectedItem);
-            return true;
-        }
-
-        return false;
-    }
 
     public Bitmap decodeEncodedImage(String encodedImage) {
 
