@@ -1,6 +1,7 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -46,8 +47,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         Button viewCreatePatientBtn = (Button)findViewById(R.id.view_create_patient_records_btn);
+        Button downloadAdditionalContentBtn = (Button)findViewById(R.id.download_content_btn);
 
         viewCreatePatientBtn.setOnClickListener(this);
+        downloadAdditionalContentBtn.setOnClickListener(this);
         //changeHealthCenterBtn.setOnClickListener(this);
         healthCenterSpinner.setOnItemSelectedListener(this);
 
@@ -119,7 +122,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             Intent intent = new Intent(this, ExistingPatientActivity.class);
             startActivity(intent);
+        } else if (id == R.id.download_content_btn) {
+
+
         }
+    }
+
+    public void downloadContent () {
+
+        class DownloadContentTask extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected void onPreExecute() {
+
+
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                return null;
+            }
+        }
+
+         new DownloadContentTask().execute();
     }
 
 
