@@ -130,7 +130,7 @@
                                     android:layout_height="wrap_content"
                                     android:hint="First Name"
                                     android:padding="8dp"
-                                    android:inputType="textPersonName" />
+                                    android:inputType="textCapSentences" />
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -146,7 +146,7 @@
                                     android:layout_height="wrap_content"
                                     android:hint="Middle Name"
                                     android:padding="8dp"
-                                    android:inputType="textPersonName" />
+                                    android:inputType="textCapSentences" />
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -163,7 +163,7 @@
                                     android:layout_height="wrap_content"
                                     android:hint="Last Name"
                                     android:padding="8dp"
-                                    android:inputType="textPersonName" />
+                                    android:inputType="textCapSentences" />
 
                             </android.support.design.widget.TextInputLayout>
 
