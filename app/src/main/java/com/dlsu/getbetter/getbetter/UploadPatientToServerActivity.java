@@ -19,14 +19,11 @@ import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
-public class UploadToServerActivity extends AppCompatActivity implements View.OnClickListener {
+public class UploadPatientToServerActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String UPLOAD_URL = "http://128.199.205.226/get_better/upload_patient.php";
     private static final String ID_KEY = "id";
@@ -53,6 +50,7 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
         patientsUpload = new ArrayList<>();
         ListView patientList = (ListView)findViewById(R.id.upload_page_patient_list);
         Button uploadBtn = (Button)findViewById(R.id.upload_patient_upload_btn);
+        Button backBtn = (Button)findViewById(R.id.upload_patient_back_btn);
 
 
         initializeDatabase();
@@ -62,6 +60,7 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
         patientList.setAdapter(patientUploadAdapter);
 
         uploadBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
 
     }
 
@@ -127,14 +126,15 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
             startActivity(intent);
             finish();
 
+        } else if (id == R.id.upload_patient_back_btn) {
 
-
+            finish();
         }
     }
 
     private class GetPatientListTask extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog = new ProgressDialog(UploadToServerActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(UploadPatientToServerActivity.this);
 
         @Override
         protected void onPreExecute() {
@@ -163,7 +163,7 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
 
     private class UploadPatientToServer extends AsyncTask<ArrayList<Patient>, Void, String> {
 
-        ProgressDialog progressDialog = new ProgressDialog(UploadToServerActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(UploadPatientToServerActivity.this);
         RequestHandler rh = new RequestHandler();
 
         @Override
@@ -216,7 +216,6 @@ public class UploadToServerActivity extends AppCompatActivity implements View.On
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 }
