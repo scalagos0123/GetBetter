@@ -148,7 +148,7 @@
                         android:id="@+id/upload_case_record"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/create_update_case_record_btn"
+                        android:layout_toLeftOf="@id/update_case_record_btn"
                         android:layout_marginRight="12dp"
                         android:text="Upload Case Record"
                         android:background="@color/neutralButton"
