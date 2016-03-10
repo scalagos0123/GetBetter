@@ -26,11 +26,17 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".NewPatientRecordActivity" />
-        <activity android:name=".ExistingPatientActivity" />
-        <activity android:name=".UploadToServerActivity" />
+        <activity android:name=".NewPatientRecordActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".ExistingPatientActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".UploadPatientToServerActivity" />
         <activity android:name=".UpdatePatientRecordActivity" />
-        <activity android:name=".CreateUpdateCaseRecordActivity"></activity>
+        <activity android:name=".CreateUpdateCaseRecordActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".NewCaseRecordActivity" />
+        <activity android:name=".UploadCaseRecordToServerActivity" />
+        <activity android:name=".DownloadContentActivity"></activity>
     </application>
 
 </manifest>
