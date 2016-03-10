@@ -62,9 +62,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
-
-
+        newPatientSessionManager = new NewPatientSessionManager(getActivity());
     }
 
 
@@ -89,7 +87,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
         viewChiefCompImage.setOnClickListener(this);
 
         Button nextBtn = (Button)rootView.findViewById(R.id.capture_docu_fragment_next_btn);
-        Button backBtn = (Button)rootView.findViewById(R.id.capture_docu_fragment_back_btn);
+        Button backBtn = (Button)rootView.findViewById(R.id.capture_document_fragment_back_btn);
 
         nextBtn.setOnClickListener(this);
 
@@ -166,8 +164,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
         switch(id) {
             case R.id.capture_docu_fragment_next_btn:
 
-                if(patientInfoImagePath.isEmpty() || familySocialHistoryImagePath.isEmpty() ||
-                        chiefComplaintImagePath.isEmpty()) {
+                if(chiefComplaintImagePath.isEmpty()) {
 
                     Toast.makeText(this.getContext(), "Please Take a Photo of the three forms", Toast.LENGTH_LONG).show();
 

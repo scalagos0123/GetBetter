@@ -80,7 +80,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         birthDate = year + "-" + month + "-" + day;
 
-        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
+        newPatientSessionManager = new NewPatientSessionManager(getActivity());
 
         genderAdapter = ArrayAdapter.createFromResource(this.getContext(),
                 R.array.genders, android.R.layout.simple_spinner_item);
@@ -104,6 +104,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         Button setBirthday = (Button)rootView.findViewById(R.id.new_patient_set_birthday_btn);
         Button nextButton = (Button)rootView.findViewById(R.id.new_patient_next_btn);
+        Button backBtn = (Button)rootView.findViewById(R.id.newpatient_fragment_back_btn);
 
         setProfilePicBtn = (ImageView)rootView.findViewById(R.id.profile_picture_select);
 
@@ -126,6 +127,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         civilStatusSpinner.setOnItemSelectedListener(this);
         setBirthday.setOnClickListener(this);
         setProfilePicBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
 
         showDate(year, month, day);
 
@@ -168,6 +170,8 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
             takePicture(REQUEST_IMAGE1, imageFile);
 
+        } else if (id == R.id.newpatient_fragment_back_btn) {
+            getActivity().finish();
         }
     }
 
@@ -195,8 +199,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
                 birthDate, genderSelected, civilStatusSelected, profilePicPath, profileImageName);
-
-
     }
 
     @Override
