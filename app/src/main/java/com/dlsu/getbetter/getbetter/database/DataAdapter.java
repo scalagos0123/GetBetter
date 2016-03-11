@@ -154,14 +154,14 @@ public class DataAdapter {
         return rowId;
     }
 
-    public long insertCaseRecordHistory(int caseRecordId, int recordStatusId, String midwifeName,
+    public long insertCaseRecordHistory(int caseRecordId, String midwifeName,
                                         String dateUpdated) {
 
         long rowId;
 
         ContentValues cv = new ContentValues();
         cv.put("_id", caseRecordId);
-        cv.put("record_status_id", recordStatusId);
+        cv.put("record_status_id", 1);
         cv.put("updated_by", midwifeName);
         cv.put("updated_on", dateUpdated);
 
@@ -343,12 +343,13 @@ public class DataAdapter {
         return result;
     }
 
-    public ArrayList<CaseRecord> getCaseRecords (int patientId) {
+    public ArrayList<CaseRecord> getCaseRecords (long patientId) {
 
         ArrayList<CaseRecord> results = new ArrayList<>();
 
         String sql = "SELECT * FROM tbl_case_records WHERE user_id = " + patientId;
         Cursor c = getBetterDb.rawQuery(sql, null);
+        Log.e("case", c.getCount() + "");
 
         while(c.moveToNext()) {
             CaseRecord caseRecord = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("_id")),
@@ -359,6 +360,23 @@ public class DataAdapter {
         }
         c.close();
         return results;
+    }
+
+    public ArrayList<String> getCaseRecordHistory (int caseRecordId) {
+        ArrayList<String> result = new ArrayList<>();
+
+        String sql = "SELECT h.updated_by AS updated_by, h.updated_on AS updated_on, " +
+                "s.case_record_status_name AS status FROM tbl_case_record_history AS h, " +
+                "tbl_case_record_statuses AS s WHERE h.record_status_id = s._id AND h._id = " + caseRecordId;
+
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        c.moveToFirst();
+        result.add(c.getString(c.getColumnIndexOrThrow("updated_by")));
+        result.add(c.getString(c.getColumnIndexOrThrow("updated_on")));
+        result.add(c.getString(c.getColumnIndexOrThrow("status")));
+
+        return result;
     }
 
     public ArrayList<Attachment> getCaseRecordAttachments (int caseRecordId) {
