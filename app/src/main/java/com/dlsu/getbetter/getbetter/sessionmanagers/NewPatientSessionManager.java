@@ -1,8 +1,11 @@
 package com.dlsu.getbetter.getbetter.sessionmanagers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.dlsu.getbetter.getbetter.ExistingPatientActivity;
 
 import java.util.HashMap;
 
@@ -19,6 +22,7 @@ public class NewPatientSessionManager {
 
     private static final String PREFER_NAME = "NewPatientPref";
 
+    public static final String PATIENT_ID = "patientId";
     public static final String NEW_PATIENT_FIRST_NAME = "newPatientFirstName";
     public static final String NEW_PATIENT_MIDDLE_NAME = "newPatientMiddleName";
     public static final String NEW_PATIENT_LAST_NAME = "newPatientLastName";
@@ -35,6 +39,7 @@ public class NewPatientSessionManager {
     public static final String NEW_PATIENT_DOC_HPI_RECORD = "newPatientHpiRecord";
     public static final String NEW_PATIENT_CHIEF_COMPLAINT = "newPatientChiefComplaint";
     public static final String NEW_PATIENT_IMAGE_NAME = "newPatientImageName";
+    public static final String IS_ACTIVITY_NEW_PATIENT = "isActivityNewPatient";
 
 
     public NewPatientSessionManager (Context context) {
@@ -57,6 +62,7 @@ public class NewPatientSessionManager {
         editor.putString(NEW_PATIENT_CIVIL_STATUS, civilStatus);
         editor.putString(NEW_PATIENT_PROFILE_IMAGE, profileImage);
         editor.putString(NEW_PATIENT_IMAGE_NAME, imageName);
+        editor.putBoolean(IS_ACTIVITY_NEW_PATIENT, true);
         editor.commit();
     }
 
@@ -82,7 +88,16 @@ public class NewPatientSessionManager {
         newPatient.put(NEW_PATIENT_IMAGE_NAME, pref.getString(NEW_PATIENT_IMAGE_NAME, null));
 
         return newPatient;
+    }
 
+    public HashMap<String, String> getPatientInfo () {
+        HashMap<String, String> patientId = new HashMap<>();
+
+        patientId.put(PATIENT_ID, pref.getString(PATIENT_ID, null));
+        patientId.put(NEW_PATIENT_FIRST_NAME, pref.getString(NEW_PATIENT_FIRST_NAME, null));
+        patientId.put(NEW_PATIENT_LAST_NAME, pref.getString(NEW_PATIENT_LAST_NAME, null));
+
+        return patientId;
     }
 
     public void setDocImages(String docImage1, String docImage2, String docImage3,
@@ -102,6 +117,30 @@ public class NewPatientSessionManager {
         editor.putString(NEW_PATIENT_DOC_HPI_RECORD, hpiRecord);
         editor.putString(NEW_PATIENT_CHIEF_COMPLAINT, chiefComplaint);
         editor.commit();
+    }
+
+    public void setPatientInfo(String patientId, String firstName, String lastName) {
+        editor.putString(PATIENT_ID, patientId);
+        editor.putString(NEW_PATIENT_FIRST_NAME, firstName);
+        editor.putString(NEW_PATIENT_LAST_NAME, lastName);
+        editor.putBoolean(IS_ACTIVITY_NEW_PATIENT, false);
+        editor.commit();
+    }
+
+    public void endSession () {
+
+        this.editor.clear();
+        this.editor.commit();
+
+        Intent intent = new Intent(_context, ExistingPatientActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        _context.startActivity(intent);
+    }
+
+    public boolean isActivityNewPatient () {
+        return pref.getBoolean(IS_ACTIVITY_NEW_PATIENT, false);
     }
 
 
