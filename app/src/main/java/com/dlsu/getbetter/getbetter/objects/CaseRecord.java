@@ -10,7 +10,18 @@ public class CaseRecord {
     private int caseRecordId;
     private String caseRecordComplaint;
     private String caseRecordControlNumber;
+    private String caseRecordStatus;
+    private String caseRecordUpdatedOn;
+    private String caseRecordUpdatedBy;
+
     private ArrayList<Attachment> caseRecordAttachments;
+
+    public CaseRecord(int caseRecordId, String caseRecordComplaint, String caseRecordControlNumber, String caseRecordStatus) {
+        this.caseRecordId = caseRecordId;
+        this.caseRecordComplaint = caseRecordComplaint;
+        this.caseRecordControlNumber = caseRecordControlNumber;
+        this.caseRecordStatus = caseRecordStatus;
+    }
 
     public CaseRecord(int caseRecordId, String caseRecordComplaint, String caseRecordControlNumber) {
         this.caseRecordId = caseRecordId;
@@ -18,8 +29,40 @@ public class CaseRecord {
         this.caseRecordControlNumber = caseRecordControlNumber;
     }
 
-    public CaseRecord(ArrayList<Attachment> caseRecordAttachments) {
+    public void setCaseRecordAttachments(ArrayList<Attachment> caseRecordAttachments) {
         this.caseRecordAttachments = caseRecordAttachments;
+    }
+
+    public void setCaseRecordStatus(String caseRecordStatus) {
+        this.caseRecordStatus = caseRecordStatus;
+    }
+
+    public void setCaseRecordId(int caseRecordId) {
+        this.caseRecordId = caseRecordId;
+    }
+
+    public void setCaseRecordComplaint(String caseRecordComplaint) {
+        this.caseRecordComplaint = caseRecordComplaint;
+    }
+
+    public void setCaseRecordControlNumber(String caseRecordControlNumber) {
+        this.caseRecordControlNumber = caseRecordControlNumber;
+    }
+
+    public String getCaseRecordUpdatedOn() {
+        return caseRecordUpdatedOn;
+    }
+
+    public void setCaseRecordUpdatedOn(String caseRecordUpdatedOn) {
+        this.caseRecordUpdatedOn = caseRecordUpdatedOn;
+    }
+
+    public String getCaseRecordUpdatedBy() {
+        return caseRecordUpdatedBy;
+    }
+
+    public void setCaseRecordUpdatedBy(String caseRecordUpdatedBy) {
+        this.caseRecordUpdatedBy = caseRecordUpdatedBy;
     }
 
     public ArrayList<Attachment> getCaseRecordAttachments() {
@@ -38,4 +81,7 @@ public class CaseRecord {
         return caseRecordControlNumber;
     }
 
+    public String getCaseRecordStatus() {
+        return caseRecordStatus;
+    }
 }
