@@ -86,7 +86,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     private Bundle[] imageDataTransfer = {null};
 
-    private long patientId;
+    private long patientId = 0;
     private int caseRecordId;
     private int healthCenterId;
 
@@ -107,6 +107,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private File documentImageFile;
 
     private DataAdapter getBetterDb;
+    NewPatientSessionManager newPatientDetails;
 
     public SummaryPageFragment() {
         // Required empty public constructor
@@ -116,7 +117,9 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        NewPatientSessionManager newPatientDetails = new NewPatientSessionManager(this.getContext());
+        initializeDatabase();
+
+        newPatientDetails = new NewPatientSessionManager(getActivity());
         HashMap<String, String> patient = newPatientDetails.getNewPatientDetails();
         image = patient.get(NewPatientSessionManager.NEW_PATIENT_PROFILE_IMAGE);
         patientFirstName = patient.get(NewPatientSessionManager.NEW_PATIENT_FIRST_NAME);
@@ -134,40 +137,52 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         String familySocialHistoryFormImageTitle = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE2_TITLE);
         String chiefComplaintFormImageTitle = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE3_TITLE);
 
+        if(!newPatientDetails.isActivityNewPatient()) {
+            HashMap<String, String> pId = newPatientDetails.getPatientInfo();
+            patientId = Long.valueOf(pId.get(NewPatientSessionManager.PATIENT_ID));
+            patientFirstName = pId.get(NewPatientSessionManager.NEW_PATIENT_FIRST_NAME);
+            patientLastName = pId.get(NewPatientSessionManager.NEW_PATIENT_LAST_NAME);
+            caseRecordId = generateCaseRecordId(patientId);
+            controlNumber = generateControlNumber(patientId);
+        }
+
+        Log.e("patient id summary", patientId + "");
 
         attachments = new ArrayList<>();
 
         uploadedDate = getTimeStamp();
 
+        fileAdapter = new SummaryPageDataAdapter(attachments);
         addPhotoAttachment(patientInfoFormImage, patientInfoFormImageTitle, uploadedDate);
         addPhotoAttachment(familySocialHistoryFormImage, familySocialHistoryFormImageTitle, uploadedDate);
         addPhotoAttachment(chiefComplaintFormImage, chiefComplaintFormImageTitle, uploadedDate);
         addAudioAttachment(recordedHpiOutputFile, chiefComplaint, uploadedDate);
 
         fileListLayoutManager = new LinearLayoutManager(this.getContext());
-        fileAdapter = new SummaryPageDataAdapter(attachments);
+
 
 
         int[] birthdateTemp = new int[3];
 
-        StringTokenizer tok = new StringTokenizer(patientBirthdate, "-");
+        if(patientBirthdate != null) {
 
-        int i = 0;
-        while(tok.hasMoreTokens()) {
+            StringTokenizer tok = new StringTokenizer(patientBirthdate, "-");
+            int i = 0;
+            while(tok.hasMoreTokens()) {
 
-            birthdateTemp[i] = Integer.parseInt(tok.nextToken());
-            i++;
+                birthdateTemp[i] = Integer.parseInt(tok.nextToken());
+                i++;
+            }
+
+            LocalDate birthdate = new LocalDate(birthdateTemp[0], birthdateTemp[1], birthdateTemp[2]);
+            LocalDate now = new LocalDate();
+
+            Years age = Years.yearsBetween(birthdate, now);
+
+            String patientAge = age.getYears() + "";
+            patientName = patientFirstName + " " + patientMiddleName + " " + patientLastName;
+            patientAgeGender = patientAge + " yrs. old, " + patientGender;
         }
-
-        LocalDate birthdate = new LocalDate(birthdateTemp[0], birthdateTemp[1], birthdateTemp[2]);
-        LocalDate now = new LocalDate();
-
-        Years age = Years.yearsBetween(birthdate, now);
-
-        String patientAge = age.getYears() + "";
-
-        patientName = patientFirstName + " " + patientMiddleName + " " + patientLastName;
-        patientAgeGender = patientAge + " yrs. old, " + patientGender;
 
         nMediaPlayer = new MediaPlayer();
         nMediaController = new MediaController(this.getContext()) {
@@ -186,11 +201,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        initializeDatabase();
-
-
     }
 
     private void initializeDatabase () {
@@ -208,15 +218,14 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private void addPhotoAttachment (String path, String title, String uploadedOn) {
 
         Attachment attachment = new Attachment(path, title, "image", uploadedOn);
-        attachments.add(fileAdapter.getItemCount() - 1, attachment);
-        fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
-
+            attachments.add(fileAdapter.getItemCount(), attachment);
+            fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
     }
 
     private void addVideoAttachment (String path, String title, String uploadedOn) {
 
         Attachment attachment = new Attachment(path, title, "video", uploadedOn);
-        attachments.add(fileAdapter.getItemCount() - 1, attachment);
+        attachments.add(fileAdapter.getItemCount(), attachment);
         fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
     }
 
@@ -292,15 +301,18 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         if(id == R.id.summary_page_submit_btn) {
 
-            new InsertPatientTask().execute(patientFirstName, patientMiddleName, patientLastName,
-                    patientBirthdate, patientGender, patientCivilStatus, image);
 
-            new InsertCaseRecordTask().execute();
+            if(newPatientDetails.isActivityNewPatient()) {
 
-            Intent intent = new Intent (this.getContext(), HomeActivity.class);
-            startActivity(intent);
+                new InsertPatientTask().execute(patientFirstName, patientMiddleName, patientLastName,
+                        patientBirthdate, patientGender, patientCivilStatus, image);
+            } else {
+
+                new InsertCaseRecordTask().execute();
+            }
+
+            newPatientDetails.endSession();
             getActivity().finish();
-
 
 
         } else if (id == R.id.summary_page_take_pic_btn) {
@@ -381,9 +393,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     @Override
     public int getBufferPercentage() {
-        int percentage = (nMediaPlayer.getCurrentPosition() * 100) / nMediaPlayer.getDuration();
 
-        return percentage;
+        return (nMediaPlayer.getCurrentPosition() * 100) / nMediaPlayer.getDuration();
     }
 
     @Override
@@ -521,8 +532,11 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             Toast.makeText(SummaryPageFragment.this.getContext(), "Patient ID: " + result + " inserted.",
                     Toast.LENGTH_LONG).show();
 
-            caseRecordId = generateCaseRecordId((int)(long)result);
+            patientId = result;
+            caseRecordId = generateCaseRecordId(result);
+            Log.e("case record id", caseRecordId+"");
             controlNumber = generateControlNumber(result);
+            new InsertCaseRecordTask().execute();
         }
     }
 
@@ -537,8 +551,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         @Override
         protected String doInBackground(Void... params) {
 
-            String result = attachmentName;
-            return result;
+            return attachmentName;
         }
 
         @Override
@@ -558,8 +571,13 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
+        Log.e("id", caseRecordId + "");
+        Log.e("patientId", patientId + "");
+        Log.e("chiefComplaint", chiefComplaint);
+
         getBetterDb.insertCaseRecord(caseRecordId, patientId, healthCenterId, chiefComplaint,
-                controlNumber);
+                    controlNumber);
+
 
         getBetterDb.closeDatabase();
     }
@@ -572,7 +590,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
-        getBetterDb.insertCaseRecordHistory(caseRecordId, 1, "midwife", uploadedDate);
+        getBetterDb.insertCaseRecordHistory(caseRecordId, "midwife", uploadedDate);
 
         getBetterDb.closeDatabase();
     }
@@ -618,7 +636,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         return result;
     }
 
-    private int generateCaseRecordId(int patientId) {
+    private int generateCaseRecordId(long patientId) {
 
         ArrayList<Integer> storedIds;
         int caseRecordId;
@@ -628,7 +646,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         int generatedRandomId = m / 2;
 
         generatedRandomId = (a * generatedRandomId + c) % m;
-        caseRecordId = Integer.parseInt(Integer.toString(patientId) + Integer.toString(generatedRandomId));
+        caseRecordId = Integer.parseInt(Long.valueOf(patientId) + Integer.toString(generatedRandomId));
 
         try {
             getBetterDb.openDatabase();
@@ -645,7 +663,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } else {
             while(storedIds.contains(caseRecordId)) {
                 generatedRandomId = (a * generatedRandomId + c) % m;
-                caseRecordId = Integer.parseInt(Integer.toString(patientId) + Integer.toString(generatedRandomId));
+                caseRecordId = Integer.parseInt(Long.toString(patientId) + Integer.toString(generatedRandomId));
             }
 
             return caseRecordId;
@@ -678,8 +696,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
                 progressDialog.hide();
                 progressDialog.dismiss();
             }
-
-
         }
     }
 

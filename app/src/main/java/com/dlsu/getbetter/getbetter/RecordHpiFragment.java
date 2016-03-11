@@ -49,7 +49,7 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        newPatientSessionManager = new NewPatientSessionManager(this.getContext());
+        newPatientSessionManager = new NewPatientSessionManager(getActivity());
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 
