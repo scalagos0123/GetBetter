@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
-    tools:context=".UploadPatientToServerActivity">
+    tools:context=".UploadCaseRecordToServerActivity">
 
     <TextView
         android:id="@+id/home_title"
@@ -68,7 +68,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PATIENT LIST"
+                android:text="CASE RECORDS"
+                android:textStyle="bold"
                 android:textSize="32sp"/>
 
             <View
@@ -81,41 +82,41 @@
 
 
             <ListView
-                android:id="@+id/upload_page_patient_list"
+                android:id="@+id/upload_page_caserecord_list"
                 android:layout_width="match_parent"
                 android:layout_height="350dp">
 
             </ListView>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/upload_caserecord_back_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:paddingRight="60dp"
+                    android:paddingLeft="60dp"
+                    android:background="@color/redButton"
+                    android:text="Back"
+                    android:textColor="@color/cardBackground"/>
 
-                    <Button
-                        android:id="@+id/upload_patient_back_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="60dp"
-                        android:paddingLeft="60dp"
-                        android:background="@color/redButton"
-                        android:text="Back"
-                        android:textColor="@color/cardBackground"/>
+                <Button
+                    android:id="@+id/upload_caserecord_upload_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/blueButton"
+                    android:paddingLeft="60dp"
+                    android:paddingRight="60dp"
+                    android:text="Upload"
+                    android:textColor="@color/cardBackground"/>
+            </RelativeLayout>
 
-                    <Button
-                        android:id="@+id/upload_patient_upload_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:background="@color/blueButton"
-                        android:paddingLeft="60dp"
-                        android:paddingRight="60dp"
-                        android:text="Upload"
-                        android:textColor="@color/cardBackground"/>
-                </RelativeLayout>
-
-            </LinearLayout>
+        </LinearLayout>
 
 
 
