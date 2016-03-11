@@ -57,7 +57,7 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -96,9 +96,6 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
         });
 
         holder.itemView.setSelected(selectedItem == position);
-
-
-
 
 //        Bitmap imageBm = BitmapFactory.decodeFile(existingPatients.get(position).getProfileImageBytes());
 //        holder.patientImage.setImageBitmap(imageBm);
