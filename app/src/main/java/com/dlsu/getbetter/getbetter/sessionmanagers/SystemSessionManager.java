@@ -25,7 +25,7 @@ public class SystemSessionManager {
     public static final String LOGIN_USER_NAME = "loginUserName";
     public static final String IS_USER_LOGGED_IN = "isUserLoggedIn";
     public static final String HEALTH_CENTER_NAME = "healthCenterName";
-
+    public static final String HEALTH_CENTER_ID = "healthCenterId";
     public SystemSessionManager (Context context) {
 
         this._context = context;
@@ -51,9 +51,10 @@ public class SystemSessionManager {
         return userDetails;
     }
 
-    public void setHealthCenter (String healthCenterName) {
+    public void setHealthCenter (String healthCenterName, String healthCenterId) {
 
         editor.putString(HEALTH_CENTER_NAME, healthCenterName);
+        editor.putString(HEALTH_CENTER_ID, healthCenterId);
         editor.commit();
     }
 
@@ -61,6 +62,7 @@ public class SystemSessionManager {
 
         HashMap<String, String> healthCenter = new HashMap<>();
         healthCenter.put(HEALTH_CENTER_NAME, pref.getString(HEALTH_CENTER_NAME, null));
+        healthCenter.put(HEALTH_CENTER_ID, pref.getString(HEALTH_CENTER_ID, null));
 
         return healthCenter;
     }
