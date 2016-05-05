@@ -148,7 +148,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="350dp"
                 android:orientation="horizontal"
                 android:showDividers="middle"
                 android:layout_marginTop="15dp">
@@ -187,93 +187,161 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <ScrollView
+                    android:layout_weight="0.5"
+                    >
+                    
+                    <TabHost
+                        android:id="@+id/tabhost"
                         android:layout_width="match_parent"
-                        android:layout_height="350dp">
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="vertical"
-                            android:orientation="vertical">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
-                            <LinearLayout
+                            <TabWidget
+                                android:id="@android:id/tabs"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:scrollbars="vertical"
-                                android:layout_weight="1">
+                                android:layout_height="wrap_content">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Urgent Case Records"
-                                    android:textSize="18sp"/>
-
-                                <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/urgent_case_records"
+                            </TabWidget>
+                            
+                            <FrameLayout
+                                android:id="@android:id/tabcontent"
+                                android:layout_width="match_parent"
+                                android:layout_height="260dp"
+                                android:layout_marginTop="16dp">
+                                
+                                <LinearLayout
+                                    android:id="@+id/tab1"
                                     android:layout_width="match_parent"
-                                    android:layout_height="100dp">
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
 
-                                </android.support.v7.widget.RecyclerView>
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No Urgent Case Records"/>
 
-                            </LinearLayout>
+                                </LinearLayout>
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:scrollbars="vertical"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Case w/ Additional Instructions"
-                                    android:textSize="18sp"/>
-
-                                <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/additional_instructions_case_records"
+                                <LinearLayout
+                                    android:id="@+id/tab2"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
 
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No Case Records w/ Additional Instructions"/>
 
-                                </android.support.v7.widget.RecyclerView>
+                                </LinearLayout>
 
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:scrollbars="vertical"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Closed Case Records"
-                                    android:textSize="18sp"/>
-
-                                <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/closed_case_records"
+                                <LinearLayout
+                                    android:id="@+id/tab3"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
 
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No Closed Case Records"/>
 
-                                </android.support.v7.widget.RecyclerView>
+                                </LinearLayout>
 
-                            </LinearLayout>
+                            </FrameLayout>
 
                         </LinearLayout>
+                    </TabHost>
+
+                    <!--<ScrollView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="350dp">-->
+
+                        <!--<LinearLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:scrollbars="vertical"-->
+                            <!--android:orientation="vertical">-->
+
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:orientation="vertical"-->
+                                <!--android:scrollbars="vertical"-->
+                                <!--android:layout_weight="1">-->
+
+                                <!--<TextView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:text="Urgent Case Records"-->
+                                    <!--android:textSize="18sp"/>-->
+
+                                <!--<android.support.v7.widget.RecyclerView-->
+                                    <!--android:id="@+id/urgent_case_records"-->
+                                    <!--android:layout_width="match_parent"-->
+                                    <!--android:layout_height="100dp">-->
+
+                                <!--</android.support.v7.widget.RecyclerView>-->
+
+                            <!--</LinearLayout>-->
+
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:orientation="vertical"-->
+                                <!--android:scrollbars="vertical"-->
+                                <!--android:layout_weight="1">-->
+
+                                <!--<TextView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:text="Case w/ Additional Instructions"-->
+                                    <!--android:textSize="18sp"/>-->
+
+                                <!--<android.support.v7.widget.RecyclerView-->
+                                    <!--android:id="@+id/additional_instructions_case_records"-->
+                                    <!--android:layout_width="match_parent"-->
+                                    <!--android:layout_height="wrap_content">-->
+
+
+                                <!--</android.support.v7.widget.RecyclerView>-->
+
+                            <!--</LinearLayout>-->
+
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:orientation="vertical"-->
+                                <!--android:scrollbars="vertical"-->
+                                <!--android:layout_weight="1">-->
+
+                                <!--<TextView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:text="Closed Case Records"-->
+                                    <!--android:textSize="18sp"/>-->
+
+                                <!--<android.support.v7.widget.RecyclerView-->
+                                    <!--android:id="@+id/closed_case_records"-->
+                                    <!--android:layout_width="match_parent"-->
+                                    <!--android:layout_height="wrap_content">-->
+
+
+                                <!--</android.support.v7.widget.RecyclerView>-->
+
+                            <!--</LinearLayout>-->
+
+                        <!--</LinearLayout>-->
 
 
 
-                    </ScrollView>
-
-
+                    <!--</ScrollView>-->
+                    
 
                 </android.support.v7.widget.CardView>
 
@@ -281,6 +349,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/logout_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/redButton"
