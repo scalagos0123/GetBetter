@@ -6,6 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
+
+import java.sql.SQLException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -14,10 +20,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button signInBtn;
     private Button registerUserBtn;
 
+    SystemSessionManager systemSessionManager;
+    private DataAdapter getBetterDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        systemSessionManager = new SystemSessionManager(getApplicationContext());
+
 
         emailInput = (EditText)findViewById(R.id.email_input);
         passwordInput = (EditText)findViewById(R.id.password_input);
@@ -25,6 +37,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registerUserBtn = (Button)findViewById(R.id.register_user_btn);
 
         signInBtn.setOnClickListener(this);
+        initializeDatabase();
+
+    }
+
+    public void initializeDatabase () {
+
+        getBetterDb = new DataAdapter(this);
+
+        try {
+            getBetterDb.createDatabase();
+        } catch(SQLException e ){
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkLogin(String email, String password) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        boolean result = getBetterDb.checkLogin(email, password);
+        getBetterDb.closeDatabase();
+
+
+        return result;
     }
 
     @Override
@@ -32,6 +72,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
+
+        if(email.trim().length() > 0 && password.trim().length() > 0) {
+
+            if(checkLogin(email, password)) {
+
+                systemSessionManager.createUserSession(email);
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+                finish();
+
+
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "Email/Password is incorrect",
+                        Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+
+            Toast.makeText(getApplicationContext(),
+                    "Please enter Email and Password",
+                    Toast.LENGTH_LONG).show();
+
+        }
 
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

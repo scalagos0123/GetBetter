@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -19,6 +21,7 @@ import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -36,20 +39,48 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
 
         //Button changeHealthCenterBtn = (Button)findViewById(R.id.change_health_center_btn);
-        RecyclerView urgentCaseRecyclerList = (RecyclerView) findViewById(R.id.urgent_case_records);
-        RecyclerView addIntCaseRecyclerList = (RecyclerView) findViewById(R.id.additional_instructions_case_records);
-        RecyclerView closedCaseRecyclerList = (RecyclerView) findViewById(R.id.closed_case_records);
-        Spinner healthCenterSpinner = (Spinner) findViewById(R.id.health_center_spinner);
-
+//        RecyclerView urgentCaseRecyclerList = (RecyclerView) findViewById(R.id.urgent_case_records);
+//        RecyclerView addIntCaseRecyclerList = (RecyclerView) findViewById(R.id.additional_instructions_case_records);
+//        RecyclerView closedCaseRecyclerList = (RecyclerView) findViewById(R.id.closed_case_records);
         systemSessionManager = new SystemSessionManager(this);
+        if(systemSessionManager.checkLogin())
+            finish();
+
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
+
+        Spinner healthCenterSpinner = (Spinner) findViewById(R.id.health_center_spinner);
+        TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
+        tabHost.setup();
+
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("First Tab");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab");
+        TabHost.TabSpec tab3 = tabHost.newTabSpec("Third Tab");
+
+        tab1.setIndicator("Urgent Cases");
+        tab1.setContent(R.id.tab1);
+
+        tab2.setIndicator("Case w/ Additional Instructions");
+        tab2.setContent(R.id.tab2);
+
+        tab3.setIndicator("Closed Cases");
+        tab3.setContent(R.id.tab3);
+
+        tabHost.addTab(tab1);
+        tabHost.addTab(tab2);
+        tabHost.addTab(tab3);
 
         Button viewCreatePatientBtn = (Button)findViewById(R.id.view_create_patient_records_btn);
         Button downloadAdditionalContentBtn = (Button)findViewById(R.id.download_content_btn);
+        Button logoutBtn = (Button)findViewById(R.id.logout_btn);
+        TextView userLabel = (TextView)findViewById(R.id.user_label);
+        userLabel.setText(userNameLabel);
 
         viewCreatePatientBtn.setOnClickListener(this);
         downloadAdditionalContentBtn.setOnClickListener(this);
         //changeHealthCenterBtn.setOnClickListener(this);
         healthCenterSpinner.setOnItemSelectedListener(this);
+        logoutBtn.setOnClickListener(this);
 
 
         healthCenters = new ArrayList<>();
@@ -130,6 +161,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Intent i = new Intent(this, DownloadContentActivity.class);
 
             startActivity(i);
+
+        } else if (id == R.id.logout_btn) {
+
+            systemSessionManager.logoutUser();
+
         }
     }
 

@@ -46,7 +46,6 @@ public class SystemSessionManager {
         HashMap<String, String> userDetails = new HashMap<>();
 
         userDetails.put(LOGIN_USER_NAME, pref.getString(LOGIN_USER_NAME, null));
-        userDetails.put(IS_USER_LOGGED_IN, pref.getString(IS_USER_LOGGED_IN, null));
 
         return userDetails;
     }
