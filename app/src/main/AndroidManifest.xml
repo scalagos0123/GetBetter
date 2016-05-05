@@ -17,26 +17,36 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LaunchActivity">
+        <activity android:name=".LaunchActivity"
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="sensorLandscape"/>
         <activity android:name=".NewPatientRecordActivity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="sensorLandscape"/>
         <activity android:name=".ExistingPatientActivity"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".UploadPatientToServerActivity" />
-        <activity android:name=".UpdatePatientRecordActivity" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".UploadPatientToServerActivity"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".UpdatePatientRecordActivity"
+            android:screenOrientation="sensorLandscape"/>
         <activity android:name=".CreateUpdateCaseRecordActivity"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".NewCaseRecordActivity" />
-        <activity android:name=".UploadCaseRecordToServerActivity" />
-        <activity android:name=".DownloadContentActivity"></activity>
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".NewCaseRecordActivity"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".UploadCaseRecordToServerActivity"
+            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".DownloadContentActivity"
+            android:screenOrientation="sensorLandscape"></activity>
     </application>
 
 </manifest>
