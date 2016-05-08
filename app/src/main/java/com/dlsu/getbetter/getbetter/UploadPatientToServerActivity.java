@@ -39,6 +39,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private ArrayList<Patient> patientsUpload;
     private DataAdapter getBetterDb;
     private int healthCenterId;
+    private String uploadStatus = "";
     PatientUploadAdapter patientUploadAdapter = null;
 
 
@@ -116,14 +117,19 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
                 if(selectedPatients.isChecked()) {
                     selectedPatientsList.add(selectedPatients);
-                    removePatientUpload((int) selectedPatients.getId());
+
                 }
             }
 
             UploadPatientToServer uploadPatientToServer = new UploadPatientToServer();
             uploadPatientToServer.execute(selectedPatientsList);
-            Intent intent = new Intent(this, ExistingPatientActivity.class);
-            startActivity(intent);
+            if(uploadStatus.equalsIgnoreCase("Successfully Uploaded")) {
+                for(int i = 0; i < selectedPatientsList.size(); i++) {
+                    removePatientUpload((int) selectedPatientsList.get(i).getId());
+                }
+            }
+//            Intent intent = new Intent(this, ExistingPatientActivity.class);
+//            startActivity(intent);
             finish();
 
         } else if (id == R.id.upload_patient_back_btn) {
@@ -163,15 +169,15 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
     private class UploadPatientToServer extends AsyncTask<ArrayList<Patient>, Void, String> {
 
-        ProgressDialog progressDialog = new ProgressDialog(UploadPatientToServerActivity.this);
+        //ProgressDialog progressDialog = new ProgressDialog(UploadPatientToServerActivity.this);
         RequestHandler rh = new RequestHandler();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog.setMessage("Uploading patient...");
-            progressDialog.show();
+//            progressDialog.setMessage("Uploading patient...");
+//            progressDialog.show();
         }
 
         @Override
@@ -203,10 +209,10 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-
+//            if(progressDialog.isShowing()) {
+//                progressDialog.dismiss();
+//            }
+            uploadStatus = s;
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         }
     }

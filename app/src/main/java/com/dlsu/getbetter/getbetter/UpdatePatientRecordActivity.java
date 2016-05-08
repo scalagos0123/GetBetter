@@ -117,11 +117,15 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
         setBirthday.setOnClickListener(this);
         genderSpinner.setOnItemSelectedListener(this);
         civilStatusSpinner.setOnItemSelectedListener(this);
-        StringTokenizer token = new StringTokenizer(patient.getBirthdate(), "-");
 
-        year = Integer.parseInt(token.nextElement().toString());
-        month = Integer.parseInt(token.nextElement().toString());
-        day = Integer.parseInt(token.nextElement().toString());
+        if(patient.getBirthdate() != null) {
+
+            StringTokenizer token = new StringTokenizer(patient.getBirthdate(), "-");
+            year = Integer.parseInt(token.nextElement().toString());
+            month = Integer.parseInt(token.nextElement().toString());
+            day = Integer.parseInt(token.nextElement().toString());
+        }
+
         showDate(year, month, day);
 
 
@@ -158,6 +162,9 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
         } else if (id == R.id.new_patient_set_birthday_btn) {
 
             showDialog(999);
+        } else if (id == R.id.newpatient_fragment_back_btn) {
+
+            finish();
         }
     }
 
@@ -247,7 +254,7 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        // TODO Auto-generated method stub
+
         if (id == 999) {
             return new DatePickerDialog(this, myDateListener, year, month, day);
         }
@@ -257,7 +264,6 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
     private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-            // TODO Auto-generated method stub
             // arg1 = year
             // arg2 = month
             // arg3 = day

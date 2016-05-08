@@ -10,14 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.ExistingPatientAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
+import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ExistingPatientActivity extends AppCompatActivity implements View.OnClickListener {
@@ -39,11 +42,21 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_existing_patient);
 
+        SystemSessionManager systemSessionManager = new SystemSessionManager(this);
+        if(systemSessionManager.checkLogin())
+            finish();
+
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
+
         newPatientRecBtn = (Button)findViewById(R.id.create_new_patient_btn);
         uploadPatientRecBtn = (Button)findViewById(R.id.upload_patient_record);
         updatePatientRecBtn  = (Button)findViewById(R.id.update_patient_record_btn);
         createUpdateCaseRecBtn = (Button)findViewById(R.id.create_update_case_record_btn);
         Button backBtn = (Button)findViewById(R.id.existing_patient_back_btn);
+
+        TextView userLabel = (TextView)findViewById(R.id.user_label);
+        userLabel.setText(userNameLabel);
 
         RecyclerView existingPatientListView = (RecyclerView) findViewById(R.id.existing_patient_list);
         RecyclerView.LayoutManager existingPatientLayoutManager = new LinearLayoutManager(this);
