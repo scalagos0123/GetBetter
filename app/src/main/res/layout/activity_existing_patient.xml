@@ -83,13 +83,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CREATE NEW PATIENT RECORD"
-                        android:textSize="18sp"
                         android:background="@color/greenButton"
                         android:textColor="@color/cardBackground"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignBottom="@+id/textView"
-                        android:padding="8dp"/>
+                        android:paddingLeft="18dp"
+                        android:paddingRight="18dp"/>
 
                 </RelativeLayout>
 

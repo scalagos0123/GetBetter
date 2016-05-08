@@ -31,6 +31,18 @@
                 android:layout_toEndOf="@id/upload_caserecord_checkbox"/>
 
             <TextView
+                android:id="@+id/upload_case_record_patient_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Patient Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/upload_control_number"
+                android:layout_toEndOf="@id/upload_control_number"/>
+
+            <TextView
                 android:id="@+id/upload_caserecord_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,8 +51,8 @@
                 android:textSize="16sp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="30dp"
-                android:layout_toRightOf="@id/upload_control_number"
-                android:layout_toEndOf="@id/upload_control_number"/>
+                android:layout_toRightOf="@id/upload_case_record_patient_name"
+                android:layout_toEndOf="@id/upload_case_record_patient_name"/>
 
             <TextView
                 android:id="@+id/upload_caserecord_chief_complaint"

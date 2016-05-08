@@ -13,6 +13,7 @@ public class CaseRecord {
     private String caseRecordStatus;
     private String caseRecordUpdatedOn;
     private String caseRecordUpdatedBy;
+    private boolean checked = false;
 
     private ArrayList<Attachment> caseRecordAttachments;
 
@@ -83,5 +84,17 @@ public class CaseRecord {
 
     public String getCaseRecordStatus() {
         return caseRecordStatus;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public void toggleChecked() {
+        checked = !checked;
     }
 }

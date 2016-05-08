@@ -282,6 +282,11 @@ public class DataAdapter {
 
     }
 
+    public void removeCaseRecordUpload (int caseRecordId) {
+
+        getBetterDb.delete(CASE_RECORD_TABLE_UPLOAD, "_id = " + caseRecordId, null);
+    }
+
     public ArrayList<HealthCenter> getHealthCenters() {
 
         ArrayList<HealthCenter> results = new ArrayList<>();
@@ -348,6 +353,25 @@ public class DataAdapter {
         ArrayList<CaseRecord> results = new ArrayList<>();
 
         String sql = "SELECT * FROM tbl_case_records WHERE user_id = " + patientId;
+        Cursor c = getBetterDb.rawQuery(sql, null);
+        Log.e("case", c.getCount() + "");
+
+        while(c.moveToNext()) {
+            CaseRecord caseRecord = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("_id")),
+                    c.getString(c.getColumnIndexOrThrow("complaint")),
+                    c.getString(c.getColumnIndexOrThrow("control_number")));
+
+            results.add(caseRecord);
+        }
+        c.close();
+        return results;
+    }
+
+    public ArrayList<CaseRecord> getCaseRecordsUpload (long patientId) {
+
+        ArrayList<CaseRecord> results = new ArrayList<>();
+
+        String sql = "SELECT * FROM tbl_case_records_upload WHERE user_id = " + patientId;
         Cursor c = getBetterDb.rawQuery(sql, null);
         Log.e("case", c.getCount() + "");
 
@@ -429,5 +453,7 @@ public class DataAdapter {
         getBetterDb.update(USER_TABLE, cv, "_id = " + patientId, null);
 
     }
+
+
 
 }

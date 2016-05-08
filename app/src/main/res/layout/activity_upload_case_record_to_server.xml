@@ -82,7 +82,7 @@
 
 
             <ListView
-                android:id="@+id/upload_page_caserecord_list"
+                android:id="@+id/upload_page_case_record_list"
                 android:layout_width="match_parent"
                 android:layout_height="350dp">
 

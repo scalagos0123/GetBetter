@@ -19,6 +19,8 @@ import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+// TODO: 05/05/2016 Update case record function
+
 public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private long patientId;
@@ -140,6 +142,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
         } else if (id == R.id.upload_case_record) {
 
             Intent i = new Intent(this, UploadCaseRecordToServerActivity.class);
+            i.putExtra("patientId", patientId);
             startActivity(i);
 
 

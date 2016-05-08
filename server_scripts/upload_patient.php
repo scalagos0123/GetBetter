@@ -43,7 +43,7 @@
     mysqli_close($con);
 
   } else {
-    echo "Error";
+    echo "Error Uploading Patient Records";
 
   }
 
