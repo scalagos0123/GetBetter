@@ -1,6 +1,5 @@
 package com.dlsu.getbetter.getbetter;
 
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,11 +15,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -54,7 +55,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-
+// TODO: 04/05/2016 video capture attachment
+// TODO: 04/05/2016 fix add attachments list
+// TODO: 04/05/2016 audio capture attachment
+// TODO: 05/05/2016 fix image capture image files and redundancy,
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -80,9 +84,12 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private String attachmentName;
 
     private static final int REQUEST_IMAGE_ATTACHMENT = 100;
-    private static final int REQUEST_IMAGE_DOCUMENT = 200;
-    private static final int REQUEST_VIDEO_ATTACHMENT = 300;
-    private static final int REQUEST_AUDIO_ATTACHMENT = 400;
+    private static final int REQUEST_VIDEO_ATTACHMENT = 200;
+    private static final int REQUEST_AUDIO_ATTACHMENT = 300;
+
+    private static final int MEDIA_TYPE_IMAGE = 1;
+    private static final int MEDIA_TYPE_VIDEO = 2;
+    private static final int MEDIA_TYPE_AUDIO = 3;
 
     private Bundle[] imageDataTransfer = {null};
 
@@ -102,9 +109,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private MediaController nMediaController;
     private Handler nHandler = new Handler();
 
-    private File imageFile;
-    private File videoFile;
-    private File documentImageFile;
+    private Uri fileUri;
 
     private DataAdapter getBetterDb;
     NewPatientSessionManager newPatientDetails;
@@ -120,7 +125,9 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         initializeDatabase();
 
         newPatientDetails = new NewPatientSessionManager(getActivity());
+
         HashMap<String, String> patient = newPatientDetails.getNewPatientDetails();
+
         image = patient.get(NewPatientSessionManager.NEW_PATIENT_PROFILE_IMAGE);
         patientFirstName = patient.get(NewPatientSessionManager.NEW_PATIENT_FIRST_NAME);
         patientMiddleName = patient.get(NewPatientSessionManager.NEW_PATIENT_MIDDLE_NAME);
@@ -130,6 +137,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         patientCivilStatus = patient.get(NewPatientSessionManager.NEW_PATIENT_CIVIL_STATUS);
         chiefComplaint = patient.get(NewPatientSessionManager.NEW_PATIENT_CHIEF_COMPLAINT);
         recordedHpiOutputFile = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_HPI_RECORD);
+
         String patientInfoFormImage = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE1);
         String familySocialHistoryFormImage = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE2);
         String chiefComplaintFormImage = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE3);
@@ -159,8 +167,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         addAudioAttachment(recordedHpiOutputFile, chiefComplaint, uploadedDate);
 
         fileListLayoutManager = new LinearLayoutManager(this.getContext());
-
-
 
         int[] birthdateTemp = new int[3];
 
@@ -235,7 +241,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         attachments.add(attachment);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -251,13 +256,14 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         Button summaryRecordVideo = (Button)rootView.findViewById(R.id.summary_page_rec_video_btn);
         Button summaryTakePicDocBtn = (Button)rootView.findViewById(R.id.summary_page_take_pic_doc_btn);
         Button summaryUpdatePatientRecBtn = (Button)rootView.findViewById(R.id.summary_update_patient_rec_btn);
+        Button summaryEstethoscopeBtn = (Button)rootView.findViewById(R.id.summary_page_estethoscope_btn);
+        Button summarySelectFileBtn = (Button)rootView.findViewById(R.id.summary_page_select_file_btn);
         RecyclerView attachmentFileList = (RecyclerView) rootView.findViewById(R.id.summary_page_files_list);
 
         summaryProfileImage = (ImageView) rootView.findViewById(R.id.profile_picture_display);
 
         nMediaController.setMediaPlayer(SummaryPageFragment.this);
         nMediaController.setAnchorView(rootView.findViewById(R.id.hpi_media_player));
-
 
         summaryPatientName.setText(patientName);
         summaryAgeGender.setText(patientAgeGender);
@@ -268,6 +274,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         summaryTakePicDocBtn.setOnClickListener(this);
         summaryRecordVideo.setOnClickListener(this);
         summaryUpdatePatientRecBtn.setOnClickListener(this);
+        summaryEstethoscopeBtn.setOnClickListener(this);
+        summarySelectFileBtn.setOnClickListener(this);
 
         attachmentFileList.setHasFixedSize(true);
         attachmentFileList.setLayoutManager(fileListLayoutManager);
@@ -317,42 +325,23 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         } else if (id == R.id.summary_page_take_pic_btn) {
 
-            String imageName = "photoAttachment" + getTimeStamp();
-
-            try {
-                imageFile = createImageFile(imageName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(imageFile != null) {
-                imageAttachmentPath = imageFile.getAbsolutePath();
-            }
-
-            takePicture(REQUEST_IMAGE_ATTACHMENT, imageFile);
+            takePicture();
 
         } else if (id == R.id.summary_page_take_pic_doc_btn) {
 
-            String imageName = "imageDocument" + getTimeStamp();
-
-            try {
-                imageFile = createImageFile(imageName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(imageFile != null) {
-                imageAttachmentPath = imageFile.getAbsolutePath();
-            }
-
-            takePicture(REQUEST_IMAGE_DOCUMENT, imageFile);
+            takePicture();
 
         } else if (id == R.id.summary_page_rec_video_btn) {
 
-            Intent intent =new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-            startActivityForResult(intent, REQUEST_VIDEO_ATTACHMENT);
+            recordVideo();
 
+        } else if (id == R.id.summary_page_estethoscope_btn) {
+
+            featureAlertMessage();
+
+        } else if (id == R.id.summary_page_select_file_btn) {
+
+            featureAlertMessage();
         }
 //        else if (id == R.id.summary_page_hpi_play) {
 //
@@ -431,64 +420,63 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == Activity.RESULT_OK) {
+        if(requestCode == REQUEST_IMAGE_ATTACHMENT) {
+            if(resultCode == Activity.RESULT_OK) {
 
-            switch (requestCode) {
+                new InsertNewAttachment().execute();
 
-                case REQUEST_IMAGE_ATTACHMENT:
+            } else if(resultCode == Activity.RESULT_CANCELED) {
 
-                    new InsertNewAttachment().execute();
+            } else {
 
-                    break;
-
-                case REQUEST_IMAGE_DOCUMENT:
-
-                    new InsertNewAttachment().execute();
-
-                    break;
-
-                case REQUEST_VIDEO_ATTACHMENT:
-
-                    editAttachmentName();
-                    addVideoAttachment(videoAttachmentPath, "video", uploadedDate);
-                    break;
             }
+        } else if(requestCode == REQUEST_VIDEO_ATTACHMENT) {
+            if(resultCode == Activity.RESULT_OK) {
+
+                editAttachmentName();
+                addVideoAttachment(videoAttachmentPath, "video", uploadedDate);
+
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+
+            } else {
+
+            }
+        } else if(requestCode == REQUEST_AUDIO_ATTACHMENT) {
+
         }
     }
 
     private void editAttachmentName () {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Image Filename");
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Image Filename");
 
-                // Set up the input
-                final EditText input = new EditText(getContext());
+        // Set up the input
+        final EditText input = new EditText(getContext());
 
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
 
-                // Set up the buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                        attachmentName = input.getText().toString();
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                attachmentName = input.getText().toString();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+            }
+        });
 
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
 
         builder.show();
-
-
     }
 
     private class InsertPatientTask extends AsyncTask<String, Void, Long> {
@@ -699,28 +687,68 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private File createImageFile(String imageTitle) throws IOException {
+    /**
+     * Here we store the file url as it will be null after returning from camera
+     * app
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-        String imageFileName = imageTitle + "_" + timeStamp;
-
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putParcelable("file_uri", fileUri);
     }
 
-    private void takePicture(int requestImage, File imageFile) {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            fileUri = savedInstanceState.getParcelable("file_uri");
+        }
+    }
+
+    private File createMediaFile(int type) {
+
+        String timeStamp = getTimeStamp();
+        File mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File mediaFile;
+
+        if(type == MEDIA_TYPE_IMAGE) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "VID_" + timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
+
+    public Uri getOutputMediaFileUri(int type) {
+        return Uri.fromFile(createMediaFile(type));
+    }
+
+    private void takePicture() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
 
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, REQUEST_IMAGE_ATTACHMENT);
 
-        if (imageFile != null) {
+    }
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
-            startActivityForResult(intent, requestImage);
-        }
+    private void recordVideo() {
+
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5491520L);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, REQUEST_VIDEO_ATTACHMENT);
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
@@ -748,7 +776,24 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         mImageView.setImageBitmap(bitmap);
     }
 
-    private String getTimeStamp () {
-        return new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
+    public String getTimeStamp () {
+        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
     }
+
+    public void featureAlertMessage () {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SummaryPageFragment.this.getActivity());
+        builder.setTitle("Feature Not Available!");
+        builder.setMessage("Sorry! This feature is still under construction. :)");
+
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
 }
