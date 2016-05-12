@@ -1,7 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,39 +9,52 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.dlsu.getbetter.getbetter.adapters.CaseRecordAdapter;
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
-import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
+import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 // TODO: 04/05/2016 fix upload case record php script
-// TODO: 05/05/2016 add case record attachments and history
+// TODO: 05/05/2016 add case record attachments
 
 public class UploadCaseRecordToServerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String UPLOAD_URL = "http://128.199.205.226/get_better/upload_case_record.php";
     private static final String CASE_RECORD_ID_KEY = "caseRecordId";
     private static final String USER_ID_KEY = "userId";
     private static final String HEALTH_CENTER_ID_KEY = "healthCenterId";
     private static final String COMPLAINT_KEY = "complaint";
     private static final String CONTROL_NUMBER_KEY = "controlNumber";
+    private static final String CASE_RECORD_STATUS_ID_KEY = "caseRecordStatusId";
+    private static final String UPDATED_BY_KEY = "updatedBy";
+    private static final String UPDATED_ON_KEY = "updatedOn";
 
     private ArrayList<CaseRecord> caseRecordsUpload;
     private long userId;
+    private int healthCenterId;
     private String uploadStatus = "";
 
     DataAdapter getBetterDb;
     CaseRecordUploadAdapter caseRecordUploadAdapter = null;
+    SystemSessionManager systemSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_case_record_to_server);
+
+        systemSessionManager = new SystemSessionManager(this);
+
+        if(systemSessionManager.checkLogin())
+            finish();
+
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
+        healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
+        String midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
 
         Bundle extras = getIntent().getExtras();
         caseRecordsUpload = new ArrayList<>();
@@ -84,6 +96,18 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
         caseRecordsUpload.addAll(getBetterDb.getCaseRecordsUpload(userId));
         getBetterDb.closeDatabase();
+
+    }
+
+    private void getCaseRecordAttachments(int caseRecordId) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -185,12 +209,15 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
                 HashMap<String, String> data = new HashMap<>();
                 data.put(CASE_RECORD_ID_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordId()));
                 data.put(USER_ID_KEY, user);
-                data.put(HEALTH_CENTER_ID_KEY, "51");
+                data.put(HEALTH_CENTER_ID_KEY, String.valueOf(healthCenterId));
                 data.put(COMPLAINT_KEY, caseRecordsUpload.get(i).getCaseRecordComplaint());
                 data.put(CONTROL_NUMBER_KEY, caseRecordsUpload.get(i).getCaseRecordControlNumber());
-                result = rh.sendPostRequest(UPLOAD_URL, data);
-            }
+                data.put(CASE_RECORD_STATUS_ID_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordStatusId()));
+                data.put(UPDATED_BY_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordUpdatedBy()));
+                data.put(UPDATED_ON_KEY, caseRecordsUpload.get(i).getCaseRecordUpdatedOn());
 
+                result = rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_SERVER_SCRIPT_URL, data);
+            }
 
             return result;
         }
