@@ -91,10 +91,24 @@ public class DataAdapter {
         Cursor c = getBetterDb.rawQuery(sql, null);
 
         if(c.getCount() > 0) {
+            c.close();
             return true;
         } else {
+            c.close();
             return false;
         }
+    }
+
+    public int getUserId(String username) {
+
+        int result = 0;
+        String sql = "SELECT user_id FROM tbl_users WHERE email = '" + username + "'";
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        c.moveToFirst();
+        result = c.getInt(c.getColumnIndexOrThrow("user_id"));
+
+        return result;
     }
 
     public long insertPatientInfo(String firstName, String middleName, String lastName,
@@ -154,7 +168,7 @@ public class DataAdapter {
         return rowId;
     }
 
-    public long insertCaseRecordHistory(int caseRecordId, String midwifeName,
+    public long insertCaseRecordHistory(int caseRecordId, int userId,
                                         String dateUpdated) {
 
         long rowId;
@@ -162,7 +176,7 @@ public class DataAdapter {
         ContentValues cv = new ContentValues();
         cv.put("_id", caseRecordId);
         cv.put("record_status_id", 1);
-        cv.put("updated_by", midwifeName);
+        cv.put("updated_by", userId);
         cv.put("updated_on", dateUpdated);
 
         rowId = getBetterDb.insert(CASE_RECORD_HISTORY_TABLE, null, cv);
@@ -383,6 +397,20 @@ public class DataAdapter {
             results.add(caseRecord);
         }
         c.close();
+
+        for(int i = 0; i < results.size(); i++) {
+
+            String sql2 = "SELECT * FROM tbl_case_record_history WHERE _id = " + results.get(i).getCaseRecordId();
+            Cursor c2 = getBetterDb.rawQuery(sql2, null);
+
+            c2.moveToFirst();
+            results.get(i).setCaseRecordStatusId(c.getInt(c.getColumnIndexOrThrow("record_status_id")));
+            results.get(i).setCaseRecordUpdatedBy(c.getString(c.getColumnIndexOrThrow("updated_by")));
+            results.get(i).setCaseRecordUpdatedOn(c.getString(c.getColumnIndexOrThrow("updated_on")));
+            c2.close();
+        }
+
+        Log.d("record status id", results.get(0).getCaseRecordStatusId() + "");
         return results;
     }
 
@@ -402,6 +430,7 @@ public class DataAdapter {
 
         return result;
     }
+
 
     public ArrayList<Attachment> getCaseRecordAttachments (int caseRecordId) {
 
