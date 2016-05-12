@@ -8,11 +8,12 @@ import java.util.ArrayList;
 public class CaseRecord {
 
     private int caseRecordId;
+    private int caseRecordStatusId;
     private String caseRecordComplaint;
     private String caseRecordControlNumber;
     private String caseRecordStatus;
     private String caseRecordUpdatedOn;
-    private String caseRecordUpdatedBy;
+    private int caseRecordUpdatedBy;
     private boolean checked = false;
 
     private ArrayList<Attachment> caseRecordAttachments;
@@ -42,6 +43,14 @@ public class CaseRecord {
         this.caseRecordId = caseRecordId;
     }
 
+    public int getCaseRecordStatusId() {
+        return caseRecordStatusId;
+    }
+
+    public void setCaseRecordStatusId(int caseRecordStatusId) {
+        this.caseRecordStatusId = caseRecordStatusId;
+    }
+
     public void setCaseRecordComplaint(String caseRecordComplaint) {
         this.caseRecordComplaint = caseRecordComplaint;
     }
@@ -58,11 +67,11 @@ public class CaseRecord {
         this.caseRecordUpdatedOn = caseRecordUpdatedOn;
     }
 
-    public String getCaseRecordUpdatedBy() {
+    public int getCaseRecordUpdatedBy() {
         return caseRecordUpdatedBy;
     }
 
-    public void setCaseRecordUpdatedBy(String caseRecordUpdatedBy) {
+    public void setCaseRecordUpdatedBy(int caseRecordUpdatedBy) {
         this.caseRecordUpdatedBy = caseRecordUpdatedBy;
     }
 
