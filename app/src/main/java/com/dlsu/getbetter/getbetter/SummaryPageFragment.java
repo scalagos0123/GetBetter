@@ -15,16 +15,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -39,6 +36,7 @@ import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
+import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 
 import org.joda.time.LocalDate;
@@ -58,7 +56,6 @@ import java.util.StringTokenizer;
 // TODO: 04/05/2016 video capture attachment
 // TODO: 04/05/2016 fix add attachments list
 // TODO: 04/05/2016 audio capture attachment
-// TODO: 05/05/2016 fix image capture image files and redundancy,
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -96,6 +93,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private long patientId = 0;
     private int caseRecordId;
     private int healthCenterId;
+    private int userId;
 
     private ArrayList<Attachment> attachments;
 
@@ -113,6 +111,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     private DataAdapter getBetterDb;
     NewPatientSessionManager newPatientDetails;
+    SystemSessionManager systemSessionManager;
 
     public SummaryPageFragment() {
         // Required empty public constructor
@@ -122,7 +121,18 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        systemSessionManager = new SystemSessionManager(getActivity());
+
+        if(systemSessionManager.checkLogin())
+            getActivity().finish();
+
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
+        healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
+        midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
+
         initializeDatabase();
+        getUserId(user.get(SystemSessionManager.LOGIN_USER_NAME));
 
         newPatientDetails = new NewPatientSessionManager(getActivity());
 
@@ -218,6 +228,19 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void getUserId(String username) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        userId = getBetterDb.getUserId(username);
+        getBetterDb.closeDatabase();
 
     }
 
@@ -423,7 +446,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         if(requestCode == REQUEST_IMAGE_ATTACHMENT) {
             if(resultCode == Activity.RESULT_OK) {
 
-                new InsertNewAttachment().execute();
+                editAttachmentName(MEDIA_TYPE_IMAGE);
 
             } else if(resultCode == Activity.RESULT_CANCELED) {
 
@@ -433,8 +456,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } else if(requestCode == REQUEST_VIDEO_ATTACHMENT) {
             if(resultCode == Activity.RESULT_OK) {
 
-                editAttachmentName();
-                addVideoAttachment(videoAttachmentPath, "video", uploadedDate);
+                editAttachmentName(MEDIA_TYPE_VIDEO);
+//                addVideoAttachment(videoAttachmentPath, "video", uploadedDate);
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
 
@@ -446,7 +469,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void editAttachmentName () {
+    private void editAttachmentName (final int type) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Image Filename");
@@ -466,6 +489,12 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
                 attachmentName = input.getText().toString();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                if(type == MEDIA_TYPE_IMAGE) {
+                    addPhotoAttachment(fileUri.getPath(), attachmentName, uploadedDate);
+                } else if(type == MEDIA_TYPE_VIDEO) {
+                    addVideoAttachment(fileUri.getPath(), attachmentName, uploadedDate);
+                }
+
             }
         });
 
@@ -528,28 +557,29 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private class InsertNewAttachment extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            editAttachmentName();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            return attachmentName;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            addPhotoAttachment(imageAttachmentPath, result, uploadedDate);
-
-        }
-    }
+//    private class InsertNewAttachment extends AsyncTask<Void, Void, String> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... params) {
+//
+//            editAttachmentName();
+//            return attachmentName;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//
+//            addPhotoAttachment(imageAttachmentPath, result, uploadedDate);
+//
+//        }
+//    }
 
     public void insertCaseRecord() {
 
@@ -578,7 +608,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
-        getBetterDb.insertCaseRecordHistory(caseRecordId, "midwife", uploadedDate);
+        getBetterDb.insertCaseRecordHistory(caseRecordId, userId, uploadedDate);
 
         getBetterDb.closeDatabase();
     }
@@ -712,7 +742,16 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private File createMediaFile(int type) {
 
         String timeStamp = getTimeStamp();
-        File mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME);
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Debug", "Oops! Failed create "
+                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
         File mediaFile;
 
         if(type == MEDIA_TYPE_IMAGE) {
@@ -737,7 +776,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, REQUEST_IMAGE_ATTACHMENT);
-
     }
 
     private void recordVideo() {
