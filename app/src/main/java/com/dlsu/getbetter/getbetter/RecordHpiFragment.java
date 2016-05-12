@@ -31,6 +31,9 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
+
+// TODO: 12/05/2016 add progress bar when recording audio
+
 public class RecordHpiFragment extends Fragment implements View.OnClickListener {
 
     private Button nextBtn, recordBtn, stopRecBtn, playRecBtn;

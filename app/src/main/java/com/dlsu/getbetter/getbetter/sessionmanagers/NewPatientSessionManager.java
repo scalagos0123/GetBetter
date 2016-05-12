@@ -38,7 +38,6 @@ public class NewPatientSessionManager {
     public static final String NEW_PATIENT_DOC_IMAGE3_TITLE = "newPatientDocImage3Title";
     public static final String NEW_PATIENT_DOC_HPI_RECORD = "newPatientHpiRecord";
     public static final String NEW_PATIENT_CHIEF_COMPLAINT = "newPatientChiefComplaint";
-    public static final String NEW_PATIENT_IMAGE_NAME = "newPatientImageName";
     public static final String IS_ACTIVITY_NEW_PATIENT = "isActivityNewPatient";
 
 
@@ -52,7 +51,7 @@ public class NewPatientSessionManager {
 
     public void createNewPatientSession (String firstName, String middleName, String lastName,
                                          String birthdate, String gender, String civilStatus,
-                                         String profileImage, String imageName) {
+                                         String profileImage) {
 
         editor.putString(NEW_PATIENT_FIRST_NAME, firstName);
         editor.putString(NEW_PATIENT_MIDDLE_NAME, middleName);
@@ -61,7 +60,6 @@ public class NewPatientSessionManager {
         editor.putString(NEW_PATIENT_GENDER, gender);
         editor.putString(NEW_PATIENT_CIVIL_STATUS, civilStatus);
         editor.putString(NEW_PATIENT_PROFILE_IMAGE, profileImage);
-        editor.putString(NEW_PATIENT_IMAGE_NAME, imageName);
         editor.putBoolean(IS_ACTIVITY_NEW_PATIENT, true);
         editor.commit();
     }
@@ -85,7 +83,6 @@ public class NewPatientSessionManager {
         newPatient.put(NEW_PATIENT_DOC_IMAGE3_TITLE, pref.getString(NEW_PATIENT_DOC_IMAGE3_TITLE, null));
         newPatient.put(NEW_PATIENT_DOC_HPI_RECORD, pref.getString(NEW_PATIENT_DOC_HPI_RECORD, null));
         newPatient.put(NEW_PATIENT_CHIEF_COMPLAINT, pref.getString(NEW_PATIENT_CHIEF_COMPLAINT, null));
-        newPatient.put(NEW_PATIENT_IMAGE_NAME, pref.getString(NEW_PATIENT_IMAGE_NAME, null));
 
         return newPatient;
     }

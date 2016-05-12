@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,11 +26,10 @@ import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class UpdatePatientRecordActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -49,11 +47,13 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
     private String civilStatusSelected;
     private String profilePicTitle;
     private String profilePicPath;
-    private String profileImageName;
+
     private ArrayAdapter<CharSequence> genderAdapter;
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
+
+    Uri fileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +135,6 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
     public void onClick(View v) {
 
         int id = v.getId();
-        File imageFile = null;
 
         if(id == R.id.new_patient_next_btn) {
 
@@ -146,18 +145,7 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
 
         } else if (id == R.id.profile_picture_select) {
 
-            profilePicTitle = "patientprofileimage";
-            try {
-                imageFile = createImageFile(profilePicTitle);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(imageFile != null) {
-                profilePicPath = imageFile.getAbsolutePath();
-            }
-
-            takePicture(REQUEST_IMAGE1, imageFile);
+            takePicture();
 
         } else if (id == R.id.new_patient_set_birthday_btn) {
 
@@ -290,7 +278,7 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
 
         if(requestCode == REQUEST_IMAGE1 && resultCode == Activity.RESULT_OK) {
 
-            setPic(setProfilePicBtn, profilePicPath);
+            setPic(setProfilePicBtn, fileUri.getPath());
 
 //            Bitmap photo = (Bitmap)data.getExtras().get("data");
 //            setProfilePicBtn.setImageBitmap(photo);
@@ -308,29 +296,33 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
         }
     }
 
-    private File createImageFile(String imageTitle) throws IOException {
+    private File createImageFile() {
+
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DirectoryConstants.PROFILE_IMAGE_DIRECTORY_NAME);
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Debug", "Oops! Failed create "
+                        + DirectoryConstants.PROFILE_IMAGE_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
+        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "ProfileIMG_" + getTimeStamp() + ".jpg");
 
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = imageTitle + "_" + timeStamp;
-        profileImageName = imageFileName;
-
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
+        return profileImageFile;
     }
 
-    private void takePicture(int requestImage, File imageFile) {
+    private void takePicture() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        fileUri = Uri.fromFile(createImageFile());
 
-        if (imageFile != null) {
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, REQUEST_IMAGE1);
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
-            startActivityForResult(intent, requestImage);
-            Log.e("image path", imageFile.getAbsolutePath());
-        }
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
@@ -355,5 +347,9 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
+    }
+
+    public String getTimeStamp () {
+        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
     }
 }

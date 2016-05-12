@@ -1,7 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,15 +16,18 @@ import android.widget.Toast;
 import com.dlsu.getbetter.getbetter.adapters.PatientUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
+import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class UploadPatientToServerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String UPLOAD_URL = "http://128.199.205.226/get_better/upload_patient.php";
     private static final String ID_KEY = "id";
     private static final String FIRST_NAME_KEY = "firstName";
     private static final String MIDDLE_NAME_KEY = "middleName";
@@ -35,18 +37,31 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private static final String CIVIL_STATUS_KEY = "civilStatusId";
     private static final String IMAGE_NAME_KEY = "imageName";
     private static final String IMAGE = "image";
+    private static final String HEALTH_CENTER_KEY = "healthCenterId";
+
 
     private ArrayList<Patient> patientsUpload;
     private DataAdapter getBetterDb;
     private int healthCenterId;
     private String uploadStatus = "";
-    PatientUploadAdapter patientUploadAdapter = null;
 
+    PatientUploadAdapter patientUploadAdapter = null;
+    SystemSessionManager systemSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_to_server);
+
+        systemSessionManager = new SystemSessionManager(this);
+
+        if(systemSessionManager.checkLogin())
+            finish();
+
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
+        healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
+        String midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
 
         patientsUpload = new ArrayList<>();
         ListView patientList = (ListView)findViewById(R.id.upload_page_patient_list);
@@ -187,7 +202,8 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
             String result = "";
             for(int i = 0; i < uploadPatientList.size(); i++) {
                 String uploadImage = getStringImage(uploadPatientList.get(i).getProfileImageBytes());
-                String imageFileName = uploadPatientList.get(i).getProfileImageBytes().substring(29);
+                String imageFileName = uploadPatientList.get(i).getLastName() + "_" +
+                        uploadPatientList.get(i).getFirstName() + ".jpg";
 
                 HashMap<String, String> data = new HashMap<>();
                 data.put(ID_KEY, String.valueOf(uploadPatientList.get(i).getId()));
@@ -199,7 +215,8 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
                 data.put(CIVIL_STATUS_KEY, uploadPatientList.get(i).getCivilStatus());
                 data.put(IMAGE_NAME_KEY, imageFileName);
                 data.put(IMAGE, uploadImage);
-                result = rh.sendPostRequest(UPLOAD_URL, data);
+                data.put(HEALTH_CENTER_KEY, String.valueOf(healthCenterId));
+                result = rh.sendPostRequest(DirectoryConstants.UPLOAD_PATIENT_SERVER_SCRIPT_URL, data);
 
             }
 
@@ -224,4 +241,5 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         byte[] imageBytes = baos.toByteArray();
         return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
+
 }
