@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,16 +24,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.dlsu.getbetter.getbetter.objects.Patient;
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -54,15 +50,13 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private String birthDate;
     private String genderSelected;
     private String civilStatusSelected;
-    private String profilePicTitle;
-    private String profilePicPath;
-    private String profileImageName;
 
     private ArrayAdapter<CharSequence> genderAdapter;
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
     NewPatientSessionManager newPatientSessionManager;
+    Uri fileUri;
 
 
     public NewPatientFragment() {
@@ -157,18 +151,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         } else if (id == R.id.profile_picture_select) {
 
-            profilePicTitle = "patientprofileimage";
-            try {
-                imageFile = createImageFile(profilePicTitle);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(imageFile != null) {
-                profilePicPath = imageFile.getAbsolutePath();
-            }
-
-            takePicture(REQUEST_IMAGE1, imageFile);
+            takePicture();
 
         } else if (id == R.id.newpatient_fragment_back_btn) {
             getActivity().finish();
@@ -198,7 +181,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         String lastName = this.lastNameInput.getText().toString();
 
         newPatientSessionManager.createNewPatientSession(firstName, middleName, lastName,
-                birthDate, genderSelected, civilStatusSelected, profilePicPath, profileImageName);
+                birthDate, genderSelected, civilStatusSelected, fileUri.getPath());
     }
 
     @Override
@@ -278,7 +261,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         if(requestCode == REQUEST_IMAGE1 && resultCode == Activity.RESULT_OK) {
 
-            setPic(setProfilePicBtn, profilePicPath);
+            setPic(setProfilePicBtn, fileUri.getPath());
 
 //            Bitmap photo = (Bitmap)data.getExtras().get("data");
 //            setProfilePicBtn.setImageBitmap(photo);
@@ -297,29 +280,33 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private File createImageFile(String imageTitle) throws IOException {
+    private File createImageFile() {
+
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DirectoryConstants.PROFILE_IMAGE_DIRECTORY_NAME);
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Debug", "Oops! Failed create "
+                        + DirectoryConstants.PROFILE_IMAGE_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
+        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "ProfileIMG_" + getTimeStamp() + ".jpg");
 
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = imageTitle + "_" + timeStamp;
-        profileImageName = imageFileName;
-
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
+        return profileImageFile;
     }
 
-    private void takePicture(int requestImage, File imageFile) {
+    private void takePicture() {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        fileUri = Uri.fromFile(createImageFile());
 
-        if (imageFile != null) {
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, REQUEST_IMAGE1);
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
-            startActivityForResult(intent, requestImage);
-            Log.e("image path", imageFile.getAbsolutePath());
-        }
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
@@ -344,5 +331,9 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
+    }
+
+    public String getTimeStamp () {
+        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
     }
 }
