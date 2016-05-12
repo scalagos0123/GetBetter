@@ -1,6 +1,6 @@
 <?php
 
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
     require_once('db_connect.php');
 
     $case_record_id = $_POST['caseRecordId'];
@@ -9,21 +9,49 @@
     $complaint = $_POST['complaint'];
     $control_number = $_POST['controlNumber'];
 
-    $sql_query = "INSERT INTO tbl_case_records (case_record_id, user_id, health_center_id, complaint, control_number)
-    VALUES ('$case_record_id', '$user_id', '$health_center_id', '$complaint', '$control_number')";
+    $case_record_status_id = $_POST['caseRecordStatusId'];
+    $updated_by = $_POST['updatedBy'];
+    $updated_on = $_POST['updatedOn'];
 
-    if(mysqli_query($con, $sql_query)) {
-      echo "Successfully Uploaded";
+
+    if($stmt = $mysqli->prepare("INSERT INTO tbl_case_records
+      (case_record_id, user_id, health_center_id, complaint, control_number)
+      VALUES (?,?,?,?,?)")) {
+
+        $stmt->bind_param('iiiss', $case_record_id, $user_id, $health_center_id, $complaint, $control_number);
+
+        $stmt->execute();
+
+        // $stmt->bind_result($result);
+        //
+        // $stmt->fetch();
+
+        $stmt->close();
+
+      } else {
+         echo "Error Uploading Case Records";
+      }
+
+    if($stmt2 = $mysqli->prepare("INSERT INTO tbl_case_record_history
+      (case_record_id, case_record_status_id, updated_by, updated_on) VALUES (?,?,?,?)")) {
+
+        $stmt2->bind_param('iiis', $case_record_id, $case_record_status_id, $updated_by, $updated_on);
+
+        $stmt2->execute();
+
+        $stmt2->close();
+
+
+    } else {
+      echo "Error Uploading Case Record History";
     }
 
-    mysqli_close($con);
+    echo "Successfully Uploaded Case Record";
 
   } else {
-
-    echo "Error Uploading Case Records";
-
+    echo "Unable to process request!";
   }
 
-
+$mysqli->close()
 
 ?>
