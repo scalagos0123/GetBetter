@@ -49,6 +49,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         HashMap<String, String> user = systemSessionManager.getUserDetails();
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
 
+
         Spinner healthCenterSpinner = (Spinner) findViewById(R.id.health_center_spinner);
         TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
         tabHost.setup();
@@ -98,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         healthCenterId = healthCenters.get(0).getHealthCenterId();
         healthCenterName = healthCenters.get(0).getHealthCenterName();
         healthCenterSpinner.setAdapter(healthCenterAdapter);
+        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
     }
 
     public void initializeDatabase () {
@@ -194,6 +196,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         healthCenterName = parent.getItemAtPosition(position).toString();
         healthCenterId = getHealthCenterId(healthCenterName);
+        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
         Log.e("health center id", healthCenterId + "");
         Toast.makeText(HomeActivity.this, healthCenterName + "", Toast.LENGTH_SHORT).show();
 
@@ -205,5 +208,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         healthCenterName = parent.getSelectedItem().toString();
         healthCenterId = getHealthCenterId(healthCenterName);
+        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
     }
 }
