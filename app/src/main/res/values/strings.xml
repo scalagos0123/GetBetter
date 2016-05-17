@@ -18,11 +18,23 @@
         <item>Separated</item>
         <item>Widowed</item>
     </string-array>
+
     <string-array name="genders">
         <item>Male</item>
         <item>Female</item>
     </string-array>
 
+    <string-array name="record_status">
+        <item>New</item>
+        <item>Updated</item>
+        <item>Additional Instructions</item>
+        <item>Talk to Health Center</item>
+        <item>Talk to Patient</item>
+        <item>Urgent</item>
+        <item>Diagnosed</item>
+    </string-array>
+
     <string name="title_activity_existing_patient">ExistingPatientActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="download">Download</string>
 </resources>
