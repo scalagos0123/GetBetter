@@ -112,7 +112,7 @@
                     android:background="@color/blueButton"
                     android:paddingLeft="60dp"
                     android:paddingRight="60dp"
-                    android:text="Upload"
+                    android:text="@string/download"
                     android:textColor="@color/cardBackground"/>
             </RelativeLayout>
 
