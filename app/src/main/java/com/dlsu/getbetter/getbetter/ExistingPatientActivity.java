@@ -47,7 +47,9 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
             finish();
 
         HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
+        int healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
 
         newPatientRecBtn = (Button)findViewById(R.id.create_new_patient_btn);
         uploadPatientRecBtn = (Button)findViewById(R.id.upload_patient_record);
@@ -64,7 +66,7 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
         existingPatients = new ArrayList<>();
         initializeDatabase();
-        new GetPatientListTask().execute(51);
+        new GetPatientListTask().execute(healthCenterId);
         Log.e("patient size", existingPatients.size() + "");
         ExistingPatientAdapter existingPatientsAdapter = new ExistingPatientAdapter(existingPatients);
 
