@@ -1,5 +1,7 @@
 <?php
 
+  header('Content-type : bitmap; charset=utf-8');
+
   if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['id'])) {
     require_once('db_connect.php');
 
@@ -21,8 +23,32 @@
     $full_path = "http://128.199.205.226/get_better/" . $file_path;
     $image_name = $_POST['imageName'];
     $profile_image_path = $full_path . $image_name;
-    $image = $_POST["image"];
+    $image = $_POST['image'];
     $decoded_image = base64_decode($image);
+
+
+    // $file = fopen($file_path . $image_name, 'wb');
+    // $is_written = fwrite($file, $decoded_image);
+    // fclose($file);
+
+    // function base64_to_jpeg($base64_string, $output_file) {
+    // $ifp = fopen($output_file, "wb");
+    //
+    // $data = explode(',', $base64_string);
+    //
+    // fwrite($ifp, base64_decode($data[1]));
+    // fclose($ifp);
+    //
+    // return $output_file;
+    // }
+    // $image_created= imagecreatefromstring($decoded_image);
+
+    //header('Content-type: image/jpeg');
+    // imagesavealpha($image_created, true);
+    // imagejpeg($image_created);
+    // imagedestroy($image_created);
+
+
 
     if($gender_stmt = $mysqli->prepare("SELECT gender_id FROM tbl_genders WHERE gender_name = ?")) {
 
@@ -49,28 +75,34 @@
 
       $cs_stmt->close();
     }
+    if(file_put_contents($file_path . $image_name, $decoded_image) != false) {
 
-    if($stmt = $mysqli->prepare("INSERT INTO tbl_users (user_id, first_name, middle_name, last_name,
-    birthdate, gender_id, civil_status_id, role_id, profile_url, default_health_center)
-    VALUES (?,?,?,?,?,?,?,?,?,?)")) {
+      if($stmt = $mysqli->prepare("INSERT INTO tbl_users (user_id, first_name, middle_name, last_name,
+      birthdate, gender_id, civil_status_id, role_id, profile_url, default_health_center)
+      VALUES (?,?,?,?,?,?,?,?,?,?)")) {
 
-      $stmt->bind_param('issssiiisi', $patient_id, $patient_first_name,
-      $patient_middle_name, $patient_last_name, $birthdate, $gender_id,
-      $civil_status_id, $role_id, $profile_image_path, $health_center);
+        $stmt->bind_param('issssiiisi', $patient_id, $patient_first_name,
+        $patient_middle_name, $patient_last_name, $birthdate, $gender_id,
+        $civil_status_id, $role_id, $profile_image_path, $health_center);
 
-      $stmt->execute();
+        $stmt->execute();
 
-      // $dir = fopen($profile_image_name, 'ab');
-      // fwrite($dir, $decoded_image);
-      // fclose($dir);
-      file_put_contents($file_path . $image_name, $decoded_image);
 
-      $stmt->close();
 
+        // $dir = fopen($file_path . $image_name, 'wb');
+        // fwrite($dir, $image_created);
+        // fclose($dir);
+        //file_put_contents($file_path . $image_name, $decoded_image);
+
+        $stmt->close();
+
+      }
+
+      echo 'Successfully Uploaded!';
+    } else {
+      echo 'Failed to upload image';
     }
-
-    echo 'Successfully Uploaded Patient #' . $patient_id;
-    // $sql_query = "INSERT INTO tbl_users (user_id, first_name, middle_name, last_name,
+        // $sql_query = "INSERT INTO tbl_users (user_id, first_name, middle_name, last_name,
     // birthdate, gender_id, civil_status_id, role_id, profile_url, default_health_center)
     // VALUES ('$patient_id', '$patient_first_name', '$patient_middle_name', '$patient_last_name', '$birthdate',
     // '$gender_id', '$civil_status_id', '$role_id', '$profile_image_name', '$health_center')";
@@ -83,6 +115,8 @@
     // }
     //
     // mysqli_close($con);
+
+  $mysqli->close();
 
   } else {
     echo 'Error Uploading Patient Records';
