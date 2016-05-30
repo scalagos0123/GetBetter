@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -28,7 +29,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
     private String patientLastName;
     private DataAdapter getBetterDb;
     private ArrayList<CaseRecord> caseRecords;
-    private int selectedCaseRecordId;
+    private int selectedCaseRecordId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 
         Button createNewCaseRecBtn = (Button)findViewById(R.id.create_new_case_record_btn);
         Button uploadCaseRecBtn = (Button)findViewById(R.id.upload_case_record);
-        Button updateCaseRecBtn = (Button)findViewById(R.id.update_case_record_btn);
+        Button viewCaseRecBtn = (Button)findViewById(R.id.view_case_record_btn);
         Button backBtn = (Button)findViewById(R.id.case_records_back_btn);
         RecyclerView caseRecordsList = (RecyclerView)findViewById(R.id.patient_case_record_list);
         RecyclerView.LayoutManager caseRecordsLayoutManager = new LinearLayoutManager(this);
@@ -75,7 +76,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 
         createNewCaseRecBtn.setOnClickListener(this);
         uploadCaseRecBtn.setOnClickListener(this);
-        updateCaseRecBtn.setOnClickListener(this);
+        viewCaseRecBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
     }
 
@@ -116,7 +117,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
             ArrayList<String> caseRecordHistory = new ArrayList<>();
             caseRecordHistory.addAll(getBetterDb.getCaseRecordHistory(caseRecords.get(i).getCaseRecordId()));
 
-            caseRecords.get(i).setCaseRecordUpdatedBy(caseRecordHistory.get(0));
+            //caseRecords.get(i).setCaseRecordUpdatedBy(caseRecordHistory.get(0));
             caseRecords.get(i).setCaseRecordUpdatedOn(caseRecordHistory.get(1));
             caseRecords.get(i).setCaseRecordStatus(caseRecordHistory.get(2));
         }
@@ -136,8 +137,16 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
             finish();
 
 
-        } else if (id == R.id.update_case_record_btn) {
+        } else if (id == R.id.view_case_record_btn) {
 
+            if(selectedCaseRecordId == 0) {
+                Toast.makeText(this, "Please select a case record...", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent  = new Intent(this, ViewCaseRecordActivity.class);
+                intent.putExtra("caseRecordId", selectedCaseRecordId);
+                intent.putExtra("patientId", patientId);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.upload_case_record) {
 
@@ -154,13 +163,13 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 
     private class GetCaseRecordsTask extends AsyncTask<Void, Void, Void> {
 
-        private ProgressDialog progressDialog = new ProgressDialog(CreateUpdateCaseRecordActivity.this);
+//        private ProgressDialog progressDialog = new ProgressDialog(CreateUpdateCaseRecordActivity.this);
 
         @Override
         protected void onPreExecute () {
             super.onPreExecute();
-            progressDialog.setMessage("Populating Case Records List...");
-            progressDialog.show();
+//            progressDialog.setMessage("Populating Case Records List...");
+//            progressDialog.show();
 
         }
 
@@ -177,8 +186,8 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
         protected void onPostExecute (Void aVoid) {
 
             super.onPostExecute(aVoid);
-            progressDialog.hide();
-            progressDialog.dismiss();
+//            progressDialog.hide();
+//            progressDialog.dismiss();
         }
 
     }
