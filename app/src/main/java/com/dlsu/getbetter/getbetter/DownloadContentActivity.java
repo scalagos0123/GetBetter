@@ -39,16 +39,17 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     CaseRecordDownloadAdapter caseRecordDownloadAdapter = null;
     ListView caseRecordList;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_content);
 
         Button backBtn = (Button)findViewById(R.id.download_back_btn);
+        Button downloadBtn = (Button)findViewById(R.id.download_selected_btn);
         caseRecordList = (ListView)findViewById(R.id.download_page_case_record_list);
 
         backBtn.setOnClickListener(this);
+        downloadBtn.setOnClickListener(this);
 
         caseRecordsData = new ArrayList<>();
 
@@ -73,6 +74,21 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
         if (id == R.id.download_back_btn) {
             finish();
+        } else if (id == R.id.download_selected_btn) {
+
+            ArrayList<CaseRecord> selectedCaseRecordList = new ArrayList<>();
+
+            for(int i = 0; i < caseRecordsData.size(); i++) {
+
+                CaseRecord selectedCaseRecord = caseRecordsData.get(i);
+
+                if(selectedCaseRecord.isChecked()) {
+                    selectedCaseRecordList.add(selectedCaseRecord);
+                }
+            }
+
+            updateLocalCaseRecordHistory(selectedCaseRecordList);
+
         }
     }
 
@@ -104,6 +120,40 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
     }
 
+    public void downloadSelectedData(ArrayList<CaseRecord> caseRecords) {
+
+        class DownloadSelectedData extends AsyncTask<ArrayList<CaseRecord>, Void, String> {
+
+            RequestHandler rh = new RequestHandler();
+
+            @SafeVarargs
+            @Override
+            protected final String doInBackground(ArrayList<CaseRecord>... params) {
+
+                ArrayList<CaseRecord> selectedCaseRecords = params[0];
+                String result = null;
+
+                for(int i = 0; i < selectedCaseRecords.size(); i++) {
+
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put(TAG_CASE_RECORD_ID, String.valueOf(selectedCaseRecords.get(i).getCaseRecordId()));
+                    result = rh.getPostRequest("");
+                }
+
+
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        }
+
+        DownloadSelectedData downloadSelectedData = new DownloadSelectedData();
+        downloadSelectedData.execute(caseRecords);
+    }
+
     public void populateCaseRecordsList() {
 
         try {
@@ -122,6 +172,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                 CaseRecord caseRecord = new CaseRecord(caseRecordId, patientName, complaint,
                         healthCenter, recordStatus, updatedOn);
+                caseRecord.setCaseRecordStatusId(Integer.parseInt(c.getString(TAG_RECORD_STATUS_ID)));
                 caseRecordsData.add(caseRecord);
 
             }
@@ -199,5 +250,43 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
         return result;
     }
+
+    public void updateLocalCaseRecordHistory(ArrayList<CaseRecord> caseRecords) {
+
+        class UpdateLocalCaseRecordHistory extends AsyncTask<ArrayList<CaseRecord>, Void, String> {
+
+            @SafeVarargs
+            @Override
+            protected final String doInBackground(ArrayList<CaseRecord>... params) {
+
+                ArrayList<CaseRecord> data = params[0];
+                try {
+                    getBetterDb.openDatabase();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                for(int i = 0; i < data.size(); i++) {
+
+                    getBetterDb.updateLocalCaseRecordHistory(data.get(i));
+                }
+
+                getBetterDb.closeDatabase();
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        }
+
+        UpdateLocalCaseRecordHistory updateLocalCaseRecordHistory = new UpdateLocalCaseRecordHistory();
+        updateLocalCaseRecordHistory.execute(caseRecords);
+
+    }
+
+
 
 }

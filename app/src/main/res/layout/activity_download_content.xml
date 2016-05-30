@@ -104,7 +104,7 @@
                     android:textColor="@color/cardBackground"/>
 
                 <Button
-                    android:id="@+id/upload_caserecord_upload_btn"
+                    android:id="@+id/download_selected_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
