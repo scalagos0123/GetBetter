@@ -59,7 +59,8 @@
         <activity
             android:name=".DownloadContentActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".ViewCaseRecordActivity"></activity>
+        <activity android:name=".ViewCaseRecordActivity" />
+        <activity android:name=".ViewImageActivity"></activity>
     </application>
 
 </manifest>
