@@ -36,7 +36,8 @@ import java.util.Locale;
 
 public class RecordHpiFragment extends Fragment implements View.OnClickListener {
 
-    private Button nextBtn, recordBtn, stopRecBtn, playRecBtn;
+    private Button stopRecBtn;
+    private Button playRecBtn;
     private MediaRecorder hpiRecorder;
     private String outputFile;
     private String chiefComplaintName = "";
@@ -74,8 +75,8 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_record_hpi, container, false);
 
-        nextBtn = (Button)rootView.findViewById(R.id.hpi_next_btn);
-        recordBtn = (Button)rootView.findViewById(R.id.hpi_record_btn);
+        Button nextBtn = (Button) rootView.findViewById(R.id.hpi_next_btn);
+        Button recordBtn = (Button) rootView.findViewById(R.id.hpi_record_btn);
         stopRecBtn = (Button)rootView.findViewById(R.id.hpi_stop_record_btn);
         playRecBtn = (Button)rootView.findViewById(R.id.hpi_play_recorded_btn);
 

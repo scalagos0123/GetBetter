@@ -350,6 +350,6 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
     }
 
     public String getTimeStamp () {
-        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 }

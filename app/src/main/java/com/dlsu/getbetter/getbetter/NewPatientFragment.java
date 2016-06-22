@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,7 +127,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         showDate(year, month, day);
 
 
-
         return rootView;
     }
 
@@ -135,16 +135,17 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
 
         int id = v.getId();
-        File imageFile = null;
 
         if(id == R.id.new_patient_next_btn) {
 
             savePatientInfo();
 
             CaptureDocumentsFragment captureDocumentsFragment = new CaptureDocumentsFragment();
-            getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
-            getActivity().getSupportFragmentManager().beginTransaction().
-                    replace(R.id.fragment_container, captureDocumentsFragment).commit();
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.add(captureDocumentsFragment, "captureDocumentsFragment");
+            ft.addToBackStack("captureDocumentsFragment");
+            ft.replace(R.id.fragment_container, captureDocumentsFragment);
+            ft.commit();
 
         } else if(id == R.id.new_patient_set_birthday_btn) {
             showPicker();
@@ -334,6 +335,6 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     }
 
     public String getTimeStamp () {
-        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 }

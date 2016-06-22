@@ -8,10 +8,10 @@ public class Attachment {
     private int caseRecordId;
     private String attachmentPath;
     private String attachmentDescription;
-    private String attachmentType;
+    private int attachmentType;
     private String uploadedDate;
 
-    public Attachment(String attachmentPath, String attachmentDescription, String attachmentType, String uploadedDate) {
+    public Attachment(String attachmentPath, String attachmentDescription, int attachmentType, String uploadedDate) {
         this.attachmentPath = attachmentPath;
         this.attachmentDescription = attachmentDescription;
         this.attachmentType = attachmentType;
@@ -24,7 +24,7 @@ public class Attachment {
     }
 
     public Attachment(int caseRecordId, String attachmentPath, String attachmentDescription,
-                      String attachmentType, String uploadedDate) {
+                      int attachmentType, String uploadedDate) {
         this.caseRecordId = caseRecordId;
         this.attachmentPath = attachmentPath;
         this.attachmentDescription = attachmentDescription;
@@ -48,11 +48,11 @@ public class Attachment {
         this.attachmentDescription = attachmentDescription;
     }
 
-    public String getAttachmentType() {
+    public int getAttachmentType() {
         return attachmentType;
     }
 
-    public void setAttachmentType(String attachmentType) {
+    public void setAttachmentType(int attachmentType) {
         this.attachmentType = attachmentType;
     }
 

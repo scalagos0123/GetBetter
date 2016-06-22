@@ -21,4 +21,6 @@ public class DirectoryConstants {
 
     public static final String UPLOAD_CASE_RECORD_HISTORY_SERVER_SCRIPT_URL = "http://128.199.205.226/get_better/upload_case_record_history.php";
 
+    public static final String DOWNLOAD_CASE_RECORD_NEW_ATTACHMENTS_SERVER_SCRIPT_URL = "http://128.199.205.226/get_better/download_selected_data.php";
+
 }

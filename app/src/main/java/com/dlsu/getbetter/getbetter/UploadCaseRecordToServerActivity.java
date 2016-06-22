@@ -1,9 +1,11 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -11,15 +13,17 @@ import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
+import com.kosalgeek.android.photoutil.ImageBase64;
+import com.kosalgeek.android.photoutil.ImageLoader;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// TODO: 04/05/2016 fix upload case record php script
-// TODO: 05/05/2016 add case record attachments
 
 public class UploadCaseRecordToServerActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,10 +36,18 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private static final String UPDATED_BY_KEY = "updatedBy";
     private static final String UPDATED_ON_KEY = "updatedOn";
 
+    private static final String ATTACHMENT_DESCRIPTION_KEY = "description";
+    private static final String ATTACHMENT_NAME_KEY = "attachment_name";
+    private static final String ENCODED_IMAGE_KEY = "encoded_image";
+    private static final String ATTACHMENT_TYPE_ID_KEY = "attachment_type";
+    private static final String UPLOADED_ON_KEY = "uploaded_on";
+
     private ArrayList<CaseRecord> caseRecordsUpload;
+    private ArrayList<Attachment> caseRecordAttachmentsUpload;
+    private ArrayList<CaseRecord> caseRecordHistoryUpload;
+    private ArrayList<Integer> caseRecordId;
     private long userId;
     private int healthCenterId;
-    private String uploadStatus = "";
 
     DataAdapter getBetterDb;
     CaseRecordUploadAdapter caseRecordUploadAdapter = null;
@@ -58,6 +70,9 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
         Bundle extras = getIntent().getExtras();
         caseRecordsUpload = new ArrayList<>();
+        caseRecordAttachmentsUpload = new ArrayList<>();
+        caseRecordHistoryUpload = new ArrayList<>();
+        caseRecordId = new ArrayList<>();
 
         userId = extras.getLong("patientId");
 
@@ -95,6 +110,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         }
 
         caseRecordsUpload.addAll(getBetterDb.getCaseRecordsUpload(userId));
+        Log.d("case upload size", caseRecordsUpload.size() + "");
         getBetterDb.closeDatabase();
 
     }
@@ -107,6 +123,22 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
             e.printStackTrace();
         }
 
+        caseRecordAttachmentsUpload.addAll(getBetterDb.getCaseRecordAttachments(caseRecordId));
+        getBetterDb.closeDatabase();
+
+    }
+
+    private CaseRecord getCaseRecordHistory(int caseRecordId) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CaseRecord caseRecordHistory = getBetterDb.getCaseRecordHistoryUpload(caseRecordId);
+        getBetterDb.closeDatabase();
+        return caseRecordHistory;
 
 
     }
@@ -140,28 +172,26 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
                 if (selectedCaseRecord.isChecked()) {
                     selectedCaseRecordsList.add(selectedCaseRecord);
+                    caseRecordId.add(selectedCaseRecord.getCaseRecordId());
                 }
             }
 
+            Log.e("size", selectedCaseRecordsList.size() + "");
             UploadCaseRecordsTask uploadCaseRecordsTask = new UploadCaseRecordsTask();
             uploadCaseRecordsTask.execute(selectedCaseRecordsList);
-            if (uploadStatus.equalsIgnoreCase("Successfully Uploaded")) {
-                for(int i = 0; i < selectedCaseRecordsList.size(); i++) {
-                    removeCaseRecordsUpload(selectedCaseRecordsList.get(i).getCaseRecordId());
-                }
-            }
+
             finish();
         }
     }
 
     private class PopulateCaseRecordListTask extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog = new ProgressDialog(UploadCaseRecordToServerActivity.this);
+//        ProgressDialog progressDialog = new ProgressDialog(UploadCaseRecordToServerActivity.this);
 
         @Override
         protected void onPreExecute() {
-            progressDialog.setMessage("Populating Case Record List");
-            progressDialog.show();
+//            progressDialog.setMessage("Populating Case Record List");
+//            progressDialog.show();
 
         }
 
@@ -175,10 +205,11 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         protected void onPostExecute(Void aVoid) {
 
             super.onPostExecute(aVoid);
-            if(progressDialog.isShowing()) {
-                progressDialog.hide();
-                progressDialog.dismiss();
-            }
+//            if(progressDialog.isShowing()) {
+//                progressDialog.hide();
+//                progressDialog.dismiss();
+
+//            }
 
         }
 
@@ -200,25 +231,38 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         @Override
         protected String doInBackground(ArrayList<CaseRecord>... params) {
 
-            ArrayList<CaseRecord> caseRecordsUpload = params[0];
+            ArrayList<CaseRecord> caseRecordUpload = params[0];
             String result = "";
             String user = String.valueOf(userId);
 
-            for(int i = 0; i < caseRecordsUpload.size(); i++) {
+            for(int i = 0; i < caseRecordUpload.size(); i++) {
+
+
+                Log.d("id", caseRecordUpload.get(i).getCaseRecordId() + "");
+                Log.d("user", user);
+                Log.d("hc", healthCenterId + "");
+                Log.d("complaint", caseRecordUpload.get(i).getCaseRecordComplaint());
+                Log.d("cn", caseRecordUpload.get(i).getCaseRecordControlNumber());
+//                Log.d("status", history.getCaseRecordStatusId() + "");
+//                Log.d("by", history.getCaseRecordUpdatedBy() + "");
+//                Log.d("on", history.getCaseRecordUpdatedOn());
 
                 HashMap<String, String> data = new HashMap<>();
-                data.put(CASE_RECORD_ID_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordId()));
+                data.put(CASE_RECORD_ID_KEY, String.valueOf(caseRecordUpload.get(i).getCaseRecordId()));
                 data.put(USER_ID_KEY, user);
                 data.put(HEALTH_CENTER_ID_KEY, String.valueOf(healthCenterId));
-                data.put(COMPLAINT_KEY, caseRecordsUpload.get(i).getCaseRecordComplaint());
-                data.put(CONTROL_NUMBER_KEY, caseRecordsUpload.get(i).getCaseRecordControlNumber());
-                data.put(CASE_RECORD_STATUS_ID_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordStatusId()));
-                data.put(UPDATED_BY_KEY, String.valueOf(caseRecordsUpload.get(i).getCaseRecordUpdatedBy()));
-                data.put(UPDATED_ON_KEY, caseRecordsUpload.get(i).getCaseRecordUpdatedOn());
-
+                data.put(COMPLAINT_KEY, caseRecordUpload.get(i).getCaseRecordComplaint());
+                data.put(CONTROL_NUMBER_KEY, caseRecordUpload.get(i).getCaseRecordControlNumber());
+//                data.put(CASE_RECORD_STATUS_ID_KEY, String.valueOf(history.getCaseRecordStatusId()));
+//                data.put(UPDATED_BY_KEY, String.valueOf(history.getCaseRecordUpdatedBy()));
+//                data.put(UPDATED_ON_KEY, history.getCaseRecordUpdatedOn());
                 result = rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_SERVER_SCRIPT_URL, data);
-            }
 
+                CaseRecord history = getCaseRecordHistory(caseRecordUpload.get(i).getCaseRecordId());
+                caseRecordHistoryUpload.add(history);
+                getCaseRecordAttachments(caseRecordsUpload.get(i).getCaseRecordId());
+            }
+            Log.d("Attachments", caseRecordAttachmentsUpload.size() + "");
             return result;
         }
 
@@ -230,10 +274,170 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 //                progressDialog.dismiss();
 //            }
 
-            uploadStatus = s;
+
+
+            uploadCaseRecordHistory();
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void uploadCaseRecordAttachments() {
+
+        class UploadCaseRecordAttachments extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                String result = "";
+                for(int i = 0; i < caseRecordAttachmentsUpload.size(); i++) {
+
+                    if(caseRecordAttachmentsUpload.get(i).getAttachmentType() == 1) {
+                        result = uploadImageAttachment(caseRecordAttachmentsUpload.get(i));
+                    } else if (caseRecordAttachmentsUpload.get(i).getAttachmentType() == 2) {
+                        result = uploadVideoAttachment(caseRecordAttachmentsUpload.get(i)) ;
+                    } else if (caseRecordAttachmentsUpload.get(i).getAttachmentType() == 3 ||
+                            caseRecordAttachmentsUpload.get(i).getAttachmentType() == 5) {
+                        result = uploadAudioAttachment(caseRecordAttachmentsUpload.get(i));
+                    }
+
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+
+//                if (s.equalsIgnoreCase("Successfully Uploaded")) {
+//                    for(int i = 0; i < caseRecordId.size(); i++) {
+//                        removeCaseRecordsUpload(caseRecordId.get(i));
+//                    }
+//                }
+
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        UploadCaseRecordAttachments uploadCaseRecordAttachments = new UploadCaseRecordAttachments();
+        uploadCaseRecordAttachments.execute();
+    }
+
+    private void uploadCaseRecordHistory() {
+
+        class UploadCaseRecordHistory extends AsyncTask<String, Void, String> {
+
+            RequestHandler rh = new RequestHandler();
+            String result;
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                for(int i = 0; i < caseRecordHistoryUpload.size(); i++) {
+
+                    Log.d("cid", caseRecordHistoryUpload.get(i).getCaseRecordId() + "");
+                    Log.d("stat", caseRecordHistoryUpload.get(i).getCaseRecordStatusId() + "");
+                    Log.d("by", caseRecordHistoryUpload.get(i).getCaseRecordUpdatedBy() + "");
+                    Log.d("on", caseRecordHistoryUpload.get(i).getCaseRecordUpdatedOn());
+
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put(CASE_RECORD_ID_KEY, String.valueOf(caseRecordHistoryUpload.get(i).getCaseRecordId()));
+                    data.put(CASE_RECORD_STATUS_ID_KEY, String.valueOf(caseRecordHistoryUpload.get(i).getCaseRecordStatusId()));
+                    data.put(UPDATED_BY_KEY, String.valueOf(caseRecordHistoryUpload.get(i).getCaseRecordUpdatedBy()));
+                    data.put(UPDATED_ON_KEY, caseRecordHistoryUpload.get(i).getCaseRecordUpdatedOn());
+                    result = rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_HISTORY_SERVER_SCRIPT_URL, data);
+
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                //super.onPostExecute(s);
+
+                uploadCaseRecordAttachments();
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        UploadCaseRecordHistory uploadCaseRecordHistory = new UploadCaseRecordHistory();
+        uploadCaseRecordHistory.execute();
+
+    }
+
+    private String uploadImageAttachment(Attachment attachment) {
+
+        RequestHandler rh = new RequestHandler();
+        String result;
+
+        String attachmentName = attachment.getCaseRecordId() + "_" +
+                attachment.getAttachmentDescription() + "_" +
+                attachment.getUploadedDate() + ".jpg";
+
+        String image = null;
+
+        try {
+            Bitmap bmp = ImageLoader.init().from(attachment.getAttachmentPath()).requestSize(512, 512).getBitmap();
+            image = ImageBase64.encode(bmp);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put(CASE_RECORD_ID_KEY, String.valueOf(attachment.getCaseRecordId()));
+        data.put(ATTACHMENT_DESCRIPTION_KEY, attachment.getAttachmentDescription());
+        data.put(ATTACHMENT_TYPE_ID_KEY, String.valueOf(attachment.getAttachmentType()));
+        data.put(ATTACHMENT_NAME_KEY, attachmentName);
+        data.put(ENCODED_IMAGE_KEY, image);
+        data.put(UPLOADED_ON_KEY, attachment.getUploadedDate());
+        result = rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_IMAGE_ATTACHMENTS_SERVER_SCRIPT_URL, data);
+
+        return result;
+    }
+
+    private String uploadVideoAttachment(Attachment attachment) {
+
+        RequestHandler rh = new RequestHandler();
+        String result;
+
+        String attachmentName = attachment.getCaseRecordId() + "_" +
+                attachment.getAttachmentDescription() + "_" +
+                attachment.getUploadedDate() + ".mp4";
+
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put(CASE_RECORD_ID_KEY, String.valueOf(attachment.getCaseRecordId()));
+        data.put(ATTACHMENT_DESCRIPTION_KEY, attachment.getAttachmentDescription());
+        data.put(ATTACHMENT_TYPE_ID_KEY, String.valueOf(attachment.getAttachmentType()));
+        data.put(ATTACHMENT_NAME_KEY, attachmentName);
+        data.put(UPLOADED_ON_KEY, attachment.getUploadedDate());
+        rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, data);
+
+        result = rh.sendFileRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, attachment.getAttachmentPath());
+
+
+        return result;
+    }
+
+    private String uploadAudioAttachment(Attachment attachment) {
+
+        RequestHandler rh = new RequestHandler();
+        String result;
+
+        String attachmentName = attachment.getCaseRecordId() + "_" +
+                attachment.getAttachmentDescription() + "_" +
+                attachment.getUploadedDate() + ".3gp";
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put(CASE_RECORD_ID_KEY, String.valueOf(attachment.getCaseRecordId()));
+        data.put(ATTACHMENT_DESCRIPTION_KEY, attachment.getAttachmentDescription());
+        data.put(ATTACHMENT_TYPE_ID_KEY, String.valueOf(attachment.getAttachmentType()));
+        data.put(ATTACHMENT_NAME_KEY, attachmentName);
+        data.put(UPLOADED_ON_KEY, attachment.getUploadedDate());
+        rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, data);
+
+        result = rh.sendFileRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, attachment.getAttachmentPath());
+
+        return result;
     }
 
 

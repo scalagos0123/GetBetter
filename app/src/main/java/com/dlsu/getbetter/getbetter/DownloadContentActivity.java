@@ -1,9 +1,14 @@
 package com.dlsu.getbetter.getbetter;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -11,12 +16,17 @@ import android.widget.ListView;
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordDownloadAdapter;
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,16 +34,24 @@ import java.util.HashMap;
 public class DownloadContentActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG_CASE_RECORD = "case_records";
+    private static final String TAG_CASE_ATTACHMENTS = "case_attachments";
     private static final String TAG_CASE_RECORD_ID = "case_record_id";
     private static final String TAG_USER_ID = "user_id";
     private static final String TAG_COMPLAINT = "complaint";
     private static final String TAG_HEALTH_CENTER_ID = "health_center_id";
     private static final String TAG_RECORD_STATUS_ID = "record_status_id";
     private static final String TAG_UPDATED_ON = "updated_on";
+    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_ENCODED_IMAGE = "encoded_image";
+    private static final String TAG_CASE_ATTACHMENT_TYPE = "case_attachment_type";
+    private static final String TAG_UPLOADED_ON = "uploaded_on";
 
     String myJSON;
+    String myJSONAttachments;
     JSONArray caseRecords = null;
+    JSONArray caseAttachments = null;
     ArrayList<CaseRecord> caseRecordsData;
+    ArrayList<Attachment> caseRecordAttachments;
 
     DataAdapter getBetterDb;
     CaseRecordDownloadAdapter caseRecordDownloadAdapter = null;
@@ -52,6 +70,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         downloadBtn.setOnClickListener(this);
 
         caseRecordsData = new ArrayList<>();
+        caseRecordAttachments = new ArrayList<>();
 
         initializeDatabase();
         getDownloadableData();
@@ -88,6 +107,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             }
 
             updateLocalCaseRecordHistory(selectedCaseRecordList);
+            downloadSelectedData(selectedCaseRecordList);
 
         }
     }
@@ -112,6 +132,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             protected void onPostExecute(String s) {
                 myJSON = s;
                 populateCaseRecordsList();
+
             }
         }
 
@@ -137,7 +158,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                     HashMap<String, String> data = new HashMap<>();
                     data.put(TAG_CASE_RECORD_ID, String.valueOf(selectedCaseRecords.get(i).getCaseRecordId()));
-                    result = rh.getPostRequest("");
+                    result = rh.sendPostRequest(DirectoryConstants.DOWNLOAD_CASE_RECORD_NEW_ATTACHMENTS_SERVER_SCRIPT_URL, data);
                 }
 
 
@@ -147,6 +168,9 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+
+                myJSONAttachments = s;
+                insertNewAttachmentsToLocalDB();
             }
         }
 
@@ -154,6 +178,35 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         downloadSelectedData.execute(caseRecords);
     }
 
+    public void insertNewAttachmentsToLocalDB() {
+
+        try{
+            JSONObject jsonObject = new JSONObject(myJSONAttachments);
+            caseAttachments = jsonObject.getJSONArray(TAG_CASE_ATTACHMENTS);
+
+            for(int i = 0; i < caseAttachments.length(); i++) {
+                JSONObject o = caseAttachments.getJSONObject(i);
+                int caseRecordId = Integer.parseInt(o.getString(TAG_CASE_RECORD_ID));
+                String description = o.getString(TAG_DESCRIPTION);
+                String encodedImage = o.getString(TAG_ENCODED_IMAGE);
+                int attachmentTypeId = Integer.parseInt(o.getString(TAG_CASE_ATTACHMENT_TYPE));
+                String uploadedOn = o.getString(TAG_UPLOADED_ON);
+
+                File fileName = createImageFile(uploadedOn);
+                String path = Uri.fromFile(fileName).getPath();
+
+                writeImageToDirectory(encodedImage, fileName);
+
+                Attachment caseAttachment = new Attachment(caseRecordId, path, description,
+                        attachmentTypeId, uploadedOn);
+
+                insertCaseAttachment(caseAttachment);
+            }
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public void populateCaseRecordsList() {
 
         try {
@@ -175,6 +228,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 caseRecord.setCaseRecordStatusId(Integer.parseInt(c.getString(TAG_RECORD_STATUS_ID)));
                 caseRecordsData.add(caseRecord);
 
+                Log.e("case records data", caseRecordsData.size() + "");
             }
 
             caseRecordDownloadAdapter = new CaseRecordDownloadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsData);
@@ -278,13 +332,65 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             @Override
             protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+
+
+                finish();
             }
         }
 
         UpdateLocalCaseRecordHistory updateLocalCaseRecordHistory = new UpdateLocalCaseRecordHistory();
         updateLocalCaseRecordHistory.execute(caseRecords);
 
+    }
+
+    private void insertCaseAttachment(Attachment attachment) {
+
+        try{
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        getBetterDb.insertCaseRecordAttachments(attachment);
+
+        getBetterDb.closeDatabase();
+    }
+
+    private File createImageFile(String uploaded_on) {
+
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME);
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Debug", "Oops! Failed create "
+                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
+        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + uploaded_on + ".jpg");
+
+
+        return profileImageFile;
+    }
+
+    private void writeImageToDirectory(String encodedImage, File file) {
+
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(file);
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            fos.write(decodedImage);
+
+            fos.flush();
+            fos.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

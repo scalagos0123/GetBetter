@@ -36,6 +36,7 @@ public class RequestHandler {
             conn.setReadTimeout(30000);
             conn.setConnectTimeout(30000);
             conn.setRequestMethod("POST");
+//            conn.setRequestProperty("Content-type", "application/json");
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
@@ -53,7 +54,7 @@ public class RequestHandler {
                 sb = new StringBuilder();
                 String response;
                 while ((response = br.readLine()) != null) {
-                    sb.append(response);
+                    sb.append(response).append("\n");
                 }
             }
 

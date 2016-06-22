@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 public class NewPatientRecordActivity extends AppCompatActivity {
 
-
+    private String data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,11 @@ public class NewPatientRecordActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-//    @Override
+    public String getData() {
+        return data;
+    }
+
+    //    @Override
 //    protected void onSaveInstanceState(Bundle outState) {
 //        super.onSaveInstanceState(outState);
 //

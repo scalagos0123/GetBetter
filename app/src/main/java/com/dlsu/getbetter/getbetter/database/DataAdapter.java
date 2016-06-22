@@ -110,6 +110,7 @@ public class DataAdapter {
         c.moveToFirst();
         result = c.getInt(c.getColumnIndexOrThrow("_id"));
 
+        c.close();
         return result;
     }
 
@@ -187,20 +188,18 @@ public class DataAdapter {
         return rowId;
     }
 
-    public long insertCaseRecordAttachments(int caseRecordId, String description, String caseFileUrl,
-                                            int caseRecordAttachmentTypeId, String uploadedDate) {
+    public long insertCaseRecordAttachments(Attachment attachment) {
 
         long rowId;
 
         ContentValues cv = new ContentValues();
-        cv.put("case_record_id", caseRecordId);
-        cv.put("description", description);
-        cv.put("case_file_url", caseFileUrl);
-        cv.put("case_record_attachment_type_id", caseRecordAttachmentTypeId);
-        cv.put("uploaded_on", uploadedDate);
+        cv.put("case_record_id", attachment.getCaseRecordId());
+        cv.put("description", attachment.getAttachmentDescription());
+        cv.put("case_file_url", attachment.getAttachmentPath());
+        cv.put("case_record_attachment_type_id", attachment.getAttachmentType());
+        cv.put("uploaded_on", attachment.getUploadedDate());
 
         rowId = getBetterDb.insert(CASE_RECORD_ATTACHMENTS_TABLE, null, cv);
-        getBetterDb.insert(CASE_RECORD_ATTACHMENTS_TABLE_UPLOAD, null, cv);
 
         return rowId;
     }
@@ -323,6 +322,21 @@ public class DataAdapter {
         return results;
     }
 
+    public String getHealthCenterString(int healthCenterId) {
+
+        String result;
+
+        String sql = "SELECT * FROM " + HEALTH_CENTER_TABLE + " WHERE _id = " + healthCenterId;
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        c.moveToFirst();
+        result = c.getString(c.getColumnIndexOrThrow("health_center_name"));
+
+        c.close();
+
+        return result;
+    }
+
     public int getHealthCenterId(String healthCenter) {
 
         int result;
@@ -413,6 +427,24 @@ public class DataAdapter {
         return result;
     }
 
+    public CaseRecord getCaseRecordDetail(int caseRecordId) {
+
+        String sql = "SELECT * FROM tbl_case_records WHERE _id = " + caseRecordId;
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        c.moveToFirst();
+        Log.d("control number", c.getString(c.getColumnIndexOrThrow("control_number")));
+        CaseRecord result = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("_id")),
+                c.getString(c.getColumnIndexOrThrow("complaint")),
+                c.getInt(c.getColumnIndexOrThrow("user_id")),
+                c.getString(c.getColumnIndexOrThrow("control_number")));
+
+        c.close();
+
+        return result;
+
+    }
+
     public ArrayList<CaseRecord> getCaseRecordsUpload (long patientId) {
 
         ArrayList<CaseRecord> results = new ArrayList<>();
@@ -440,7 +472,8 @@ public class DataAdapter {
         Cursor c = getBetterDb.rawQuery(sql, null);
 
         c.moveToFirst();
-        CaseRecord caseRecordHistory = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("record_status_id")),
+        CaseRecord caseRecordHistory = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("_id")),
+                c.getInt(c.getColumnIndexOrThrow("record_status_id")),
                 c.getInt(c.getColumnIndexOrThrow("updated_by")),
                 c.getString(c.getColumnIndexOrThrow("updated_on")));
 
@@ -456,7 +489,7 @@ public class DataAdapter {
         String sql = "SELECT u.first_name AS updated_by, h.updated_on AS updated_on, " +
                 "s.case_record_status_name AS status FROM tbl_case_record_history AS h, " +
                 "tbl_case_record_statuses AS s, tbl_users AS u WHERE u._id = h.updated_by AND " +
-                "h.record_status_id = s._id AND h._id = " + caseRecordId;
+                "h.record_status_id = s._id AND h._id = " + caseRecordId + " ORDER BY updated_on LIMIT 1";
 
         Cursor c = getBetterDb.rawQuery(sql, null);
 
@@ -489,6 +522,9 @@ public class DataAdapter {
 
         }
 
+        Log.d("attachments", attachments.size() + "");
+
+        c.close();
         return attachments;
     }
 
@@ -541,6 +577,8 @@ public class DataAdapter {
 
     public void updateLocalCaseRecordHistory(CaseRecord caseRecord) {
 
+        Log.e("update case record", caseRecord.getCaseRecordId() + "");
+
         ContentValues cv = new ContentValues();
         cv.put("_id", caseRecord.getCaseRecordId());
         cv.put("record_status_id", caseRecord.getCaseRecordStatusId());
@@ -555,8 +593,9 @@ public class DataAdapter {
 
         String sql = "SELECT c._id AS id, c.user_id AS user, c.complaint AS complaint, h.updated_on AS updated_on" +
                 " FROM tbl_case_records AS c INNER JOIN tbl_case_record_history AS h ON c._id = h._id" +
-                " WHERE h.record_status_id = 6 AND c.health_center_id = ?";
-        Cursor c = getBetterDb.rawQuery(sql, new String[]{String.valueOf(healthCenterId)});
+                " WHERE h.record_status_id = 6 AND c.health_center_id = " + healthCenterId;
+
+        Cursor c = getBetterDb.rawQuery(sql, null);
 
         while(c.moveToNext()) {
             CaseRecord caseRecord = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("id")),
@@ -566,7 +605,8 @@ public class DataAdapter {
 
             result.add(caseRecord);
         }
-
+        Log.e("urgent case size", result.size() + "");
+        c.close();
         return result;
     }
 
@@ -587,7 +627,7 @@ public class DataAdapter {
             result.add(caseRecord);
         }
 
-
+        c.close();
         return result;
     }
 
@@ -608,11 +648,15 @@ public class DataAdapter {
             result.add(caseRecord);
         }
 
+        c.close();
         return result;
     }
 
-    public ArrayList<CaseRecord> getClosedCaseRecords() {
+    public ArrayList<CaseRecord> getClosedCaseRecords(int healthCenterId) {
+
         ArrayList<CaseRecord> result = new ArrayList<>();
+
+
 
 
         return result;

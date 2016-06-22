@@ -26,30 +26,6 @@
     $image = $_POST['image'];
     $decoded_image = base64_decode($image);
 
-
-    // $file = fopen($file_path . $image_name, 'wb');
-    // $is_written = fwrite($file, $decoded_image);
-    // fclose($file);
-
-    // function base64_to_jpeg($base64_string, $output_file) {
-    // $ifp = fopen($output_file, "wb");
-    //
-    // $data = explode(',', $base64_string);
-    //
-    // fwrite($ifp, base64_decode($data[1]));
-    // fclose($ifp);
-    //
-    // return $output_file;
-    // }
-    // $image_created= imagecreatefromstring($decoded_image);
-
-    //header('Content-type: image/jpeg');
-    // imagesavealpha($image_created, true);
-    // imagejpeg($image_created);
-    // imagedestroy($image_created);
-
-
-
     if($gender_stmt = $mysqli->prepare("SELECT gender_id FROM tbl_genders WHERE gender_name = ?")) {
 
       $gender_stmt->bind_param('s', $gender);
@@ -87,13 +63,6 @@
 
         $stmt->execute();
 
-
-
-        // $dir = fopen($file_path . $image_name, 'wb');
-        // fwrite($dir, $image_created);
-        // fclose($dir);
-        //file_put_contents($file_path . $image_name, $decoded_image);
-
         $stmt->close();
 
       }
@@ -102,19 +71,6 @@
     } else {
       echo 'Failed to upload image';
     }
-        // $sql_query = "INSERT INTO tbl_users (user_id, first_name, middle_name, last_name,
-    // birthdate, gender_id, civil_status_id, role_id, profile_url, default_health_center)
-    // VALUES ('$patient_id', '$patient_first_name', '$patient_middle_name', '$patient_last_name', '$birthdate',
-    // '$gender_id', '$civil_status_id', '$role_id', '$profile_image_name', '$health_center')";
-    //
-    // if(mysqli_query($con, $sql_query)) {
-    //   file_put_contents($actual_path, base64_decode($image));
-    //   echo "Successfully Uploaded";
-    // } else {
-    //   echo "Error Uploading Image";
-    // }
-    //
-    // mysqli_close($con);
 
   $mysqli->close();
 

@@ -1,0 +1,149 @@
+package com.dlsu.getbetter.getbetter;
+
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.objects.CaseRecord;
+import com.dlsu.getbetter.getbetter.objects.Patient;
+
+import java.sql.SQLException;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class DetailsFragment extends Fragment {
+
+    DataAdapter getBetterDb;
+
+
+    private CaseRecord caseRecord;
+    private ImageView profilePic;
+
+
+    public DetailsFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initializeDatabase();
+        int caseRecordId;
+
+        if(getArguments().containsKey("case record id")) {
+            caseRecordId = getArguments().getInt("case record id");
+            getCaseDetails(caseRecordId);
+        }
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_view_updated_case_record, container, false);
+        TextView patientName = (TextView)rootView.findViewById(R.id.detail_patient_name);
+        TextView ageGender = (TextView)rootView.findViewById(R.id.detail_age_gender);
+        TextView chiefComplaint = (TextView)rootView.findViewById(R.id.detail_chief_complaint);
+        TextView controlNumber = (TextView)rootView.findViewById(R.id.detail_control_number);
+        Button viewUpdatedCaseBtn = (Button)rootView.findViewById(R.id.detail_view_case_btn);
+        profilePic = (ImageView)rootView.findViewById(R.id.detail_picture_display);
+
+
+        patientName.setText(caseRecord.getPatientName());
+        chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
+        controlNumber.setText(caseRecord.getCaseRecordControlNumber());
+
+        viewUpdatedCaseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewCaseRecordActivity.class);
+                intent.putExtra("caseRecordId", caseRecord.getCaseRecordId());
+                intent.putExtra("patientId", (long)caseRecord.getUserId());
+                startActivity(intent);
+            }
+        });
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setPic(profilePic, caseRecord.getProfilePic());
+    }
+
+    private void initializeDatabase () {
+
+        getBetterDb = new DataAdapter(this.getContext());
+
+        try {
+            getBetterDb.createDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCaseDetails(int caseRecordId) {
+
+        try {
+            getBetterDb.openDatabase();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        caseRecord = getBetterDb.getCaseRecordDetail(caseRecordId);
+
+        Patient patientInfo = getBetterDb.getPatient((long) caseRecord.getUserId());
+        String patientName = patientInfo.getFirstName() + " " + patientInfo.getLastName();
+        caseRecord.setPatientName(patientName);
+        caseRecord.setProfilePic(patientInfo.getProfileImageBytes());
+
+        getBetterDb.closeDatabase();
+
+    }
+
+    private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
+        // Get the dimensions of the View
+        int targetW = 100;
+        int targetH = 100;
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        mImageView.setImageBitmap(bitmap);
+    }
+
+
+
+}

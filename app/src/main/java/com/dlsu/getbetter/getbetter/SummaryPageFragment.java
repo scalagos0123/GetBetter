@@ -50,12 +50,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.StringTokenizer;
 
-// TODO: 04/05/2016 video capture attachment
-// TODO: 04/05/2016 fix add attachments list
-// TODO: 04/05/2016 audio capture attachment
+//  TODO: 04/05/2016 audio capture attachment
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -75,9 +72,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private String controlNumber;
     private String uploadedDate;
     private String midwifeName;
-    private String imageAttachmentPath;
-    private String videoAttachmentPath;
-    private String audioAttachmentPath;
     private String attachmentName;
 
     private static final int REQUEST_IMAGE_ATTACHMENT = 100;
@@ -100,8 +94,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private SummaryPageDataAdapter fileAdapter;
     private RecyclerView.LayoutManager fileListLayoutManager;
     private ImageView summaryProfileImage;
-    private Button hpiPauseBtn;
-    private Button hpiPlayBtn;
 
     private MediaPlayer nMediaPlayer;
     private MediaController nMediaController;
@@ -174,7 +166,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         addPhotoAttachment(patientInfoFormImage, patientInfoFormImageTitle, uploadedDate);
         addPhotoAttachment(familySocialHistoryFormImage, familySocialHistoryFormImageTitle, uploadedDate);
         addPhotoAttachment(chiefComplaintFormImage, chiefComplaintFormImageTitle, uploadedDate);
-        addAudioAttachment(recordedHpiOutputFile, chiefComplaint, uploadedDate);
+        addHPIAttachment(recordedHpiOutputFile, chiefComplaint, uploadedDate);
 
         fileListLayoutManager = new LinearLayoutManager(this.getContext());
 
@@ -246,21 +238,27 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     private void addPhotoAttachment (String path, String title, String uploadedOn) {
 
-        Attachment attachment = new Attachment(path, title, "image", uploadedOn);
+        Attachment attachment = new Attachment(path, title, 1, uploadedOn);
             attachments.add(fileAdapter.getItemCount(), attachment);
             fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
     }
 
     private void addVideoAttachment (String path, String title, String uploadedOn) {
 
-        Attachment attachment = new Attachment(path, title, "video", uploadedOn);
+        Attachment attachment = new Attachment(path, title, 2, uploadedOn);
         attachments.add(fileAdapter.getItemCount(), attachment);
         fileAdapter.notifyItemInserted(fileAdapter.getItemCount() - 1);
     }
 
     private void addAudioAttachment (String path, String title, String uploadedOn) {
 
-        Attachment attachment = new Attachment(path, title, "audio", uploadedOn);
+        Attachment attachment = new Attachment(path, title, 3, uploadedOn);
+        attachments.add(attachment);
+    }
+
+    private void addHPIAttachment(String path, String title, String uploadedOn) {
+
+        Attachment attachment = new Attachment(path, title, 5, uploadedOn);
         attachments.add(attachment);
     }
 
@@ -303,6 +301,15 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         attachmentFileList.setHasFixedSize(true);
         attachmentFileList.setLayoutManager(fileListLayoutManager);
         attachmentFileList.setAdapter(fileAdapter);
+        fileAdapter.SetOnItemClickListener(new SummaryPageDataAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), ViewImageActivity.class);
+                intent.putExtra("imageUrl", attachments.get(position).getAttachmentPath());
+                intent.putExtra("imageTitle", attachments.get(position).getAttachmentDescription());
+                startActivity(intent);
+            }
+        });
 
         nMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -532,7 +539,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             }
 
             rowId = getBetterDb.insertPatientInfo(params[0], params[1], params[2], params[3], params[4],
-                    params[5], params[6]);
+                    params[5], params[6], healthCenterId);
 
             getBetterDb.closeDatabase();
 
@@ -608,6 +615,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
+        Log.e("history id", caseRecordId + "");
         getBetterDb.insertCaseRecordHistory(caseRecordId, userId, uploadedDate);
 
         getBetterDb.closeDatabase();
@@ -621,21 +629,11 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
-        int attachmentTypeId = 1;
-
         for(int i = 0; i < attachments.size(); i++) {
 
-            if (Objects.equals(attachments.get(i).getAttachmentType(), "image")) {
-                attachmentTypeId = 1;
-            } else if (Objects.equals(attachments.get(i).getAttachmentType(), "video")) {
-                attachmentTypeId = 2;
-            } else if (Objects.equals(attachments.get(i).getAttachmentType(), "audio")) {
-                attachmentTypeId = 3;
-            }
-
-            getBetterDb.insertCaseRecordAttachments(caseRecordId, attachments.get(i).getAttachmentDescription(),
-                    attachments.get(i).getAttachmentPath(), attachmentTypeId,
-                    attachments.get(i).getUploadedDate());
+            Log.e("attachment id", caseRecordId + "");
+            attachments.get(i).setCaseRecordId(caseRecordId);
+            getBetterDb.insertCaseRecordAttachments(attachments.get(i));
         }
 
         getBetterDb.closeDatabase();
@@ -815,7 +813,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     }
 
     public String getTimeStamp () {
-        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 
     public void featureAlertMessage () {

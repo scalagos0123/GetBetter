@@ -20,9 +20,9 @@ public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageData
     private OnItemClickListener mItemClickListener;
     private int selectedItem = 0;
 
-    public SummaryPageDataAdapter (ArrayList<Attachment> dataset) {
+    public SummaryPageDataAdapter (ArrayList<Attachment> filesDataset) {
 
-        filesDataset = dataset;
+        this.filesDataset = filesDataset;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

@@ -6,9 +6,8 @@
   if($stmt = $mysqli->prepare('SELECT c.case_record_id, c.user_id, c.complaint,
     c.health_center_id, h.record_status_id, h.updated_on FROM tbl_case_records AS c,
     tbl_case_record_history AS h WHERE c.case_record_id = h.case_record_id AND
-    (h.record_status_id = 6 || h.record_status_id = 3 || h.record_status_id = 7) AND
-    h.updated_on IN (SELECT MAX(updated_on) FROM tbl_case_record_history GROUP BY case_record_id)
-    GROUP BY h.case_record_id')) {
+    (h.record_status_id = 6 || h.record_status_id = 3 || h.record_status_id = 7)
+    GROUP BY c.case_record_id')) {
 
       $stmt->execute();
 

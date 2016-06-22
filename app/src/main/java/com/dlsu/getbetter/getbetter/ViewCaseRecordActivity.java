@@ -1,5 +1,7 @@
 package com.dlsu.getbetter.getbetter;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -7,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -15,15 +18,21 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class ViewCaseRecordActivity extends AppCompatActivity implements MediaController.MediaPlayerControl, View.OnClickListener {
 
@@ -48,6 +57,11 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         int caseRecordId = extras.getInt("caseRecordId");
         long patientId = extras.getLong("patientId");
 
+        HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
+        int healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
+        String midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
+
         TextView userLabel = (TextView)findViewById(R.id.user_label);
         TextView patientName = (TextView)findViewById(R.id.view_case_patient_name);
         TextView healthCenterName = (TextView)findViewById(R.id.view_case_health_center);
@@ -58,6 +72,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         ImageView profilePic = (ImageView)findViewById(R.id.profile_picture_display);
         Button backBtn = (Button)findViewById(R.id.view_case_back_btn);
         Button updateCaseBtn = (Button)findViewById(R.id.update_case_record_btn);
+
 
         backBtn.setOnClickListener(this);
         updateCaseBtn.setOnClickListener(this);
@@ -75,12 +90,56 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         getCaseAttachments(caseRecordId);
         getPatientInfo(patientId);
 
+        SummaryPageDataAdapter fileAdapter = new SummaryPageDataAdapter(caseAttachments);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        attachmentList.setHasFixedSize(true);
+        attachmentList.setLayoutManager(layoutManager);
+        attachmentList.setAdapter(fileAdapter);
+        fileAdapter.SetOnItemClickListener(new SummaryPageDataAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(ViewCaseRecordActivity.this, ViewImageActivity.class);
+                intent.putExtra("imageUrl", caseAttachments.get(position).getAttachmentPath());
+                intent.putExtra("imageTitle", caseAttachments.get(position).getAttachmentDescription());
+                startActivity(intent);
+            }
+        });
+
         String recordedHpiOutputFile = getHpiOutputFile();
         String fullName = patientInfo.getFirstName() + " " + patientInfo.getMiddleName() + " " + patientInfo.getLastName();
+        String gender = patientInfo.getGender();
+        setPic(profilePic, patientInfo.getProfileImageBytes());
+
+        int[] birthdateTemp = new int[3];
+        String patientAgeGender = "";
+
+        if(patientInfo.getBirthdate() != null) {
+
+            StringTokenizer tok = new StringTokenizer(patientInfo.getBirthdate(), "-");
+            int i = 0;
+            while(tok.hasMoreTokens()) {
+
+                birthdateTemp[i] = Integer.parseInt(tok.nextToken());
+                i++;
+            }
+
+            LocalDate birthdate = new LocalDate(birthdateTemp[0], birthdateTemp[1], birthdateTemp[2]);
+            LocalDate now = new LocalDate();
+
+            Years age = Years.yearsBetween(birthdate, now);
+
+            String patientAge = age.getYears() + "";
+            patientAgeGender = patientAge + " yrs. old, " + gender;
+        }
+
+        ageGender.setText(patientAgeGender);
 
         chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
         controlNumber.setText(caseRecord.getCaseRecordControlNumber());
         patientName.setText(fullName);
+        userLabel.setText(midwifeName);
+        healthCenterName.setText(getHealthCenterString(healthCenterId));
 
         nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -141,6 +200,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
             e.printStackTrace();
         }
 
+        caseAttachments = new ArrayList<>();
         caseAttachments.addAll(getBetterDb.getCaseRecordAttachments(caseRecordId));
 
         getBetterDb.closeDatabase();
@@ -158,6 +218,22 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         patientInfo = getBetterDb.getPatient(patientId);
 
         getBetterDb.closeDatabase();
+    }
+
+    public String getHealthCenterString (int healthCenterId) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String healthCenterName = getBetterDb.getHealthCenterString(healthCenterId);
+
+        getBetterDb.closeDatabase();
+
+        return healthCenterName;
+
     }
 
     @Override

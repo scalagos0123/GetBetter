@@ -2,20 +2,20 @@ package com.dlsu.getbetter.getbetter;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 import com.dlsu.getbetter.getbetter.objects.HealthCenter;
 import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
@@ -24,14 +24,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener,
+        DiagnosedCaseFragment.OnCaseRecordSelected, UrgentCaseFragment.OnCaseRecordSelected,
+        ClosedCaseFragment.OnCaseRecordSelected {
 
     private DataAdapter getBetterDb;
     private int healthCenterId;
     private String healthCenterName;
     private ArrayList<HealthCenter> healthCenters;
-    SystemSessionManager systemSessionManager;
 
+    SystemSessionManager systemSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
 
         //Button changeHealthCenterBtn = (Button)findViewById(R.id.change_health_center_btn);
-//        RecyclerView urgentCaseRecyclerList = (RecyclerView) findViewById(R.id.urgent_case_records);
-//        RecyclerView addIntCaseRecyclerList = (RecyclerView) findViewById(R.id.additional_instructions_case_records);
-//        RecyclerView closedCaseRecyclerList = (RecyclerView) findViewById(R.id.closed_case_records);
+
         systemSessionManager = new SystemSessionManager(this);
         if(systemSessionManager.checkLogin())
             finish();
@@ -49,27 +50,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         HashMap<String, String> user = systemSessionManager.getUserDetails();
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
 
-
         Spinner healthCenterSpinner = (Spinner) findViewById(R.id.health_center_spinner);
-        TabHost tabHost = (TabHost)findViewById(R.id.tabhost);
-        tabHost.setup();
 
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("First Tab");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab");
-        TabHost.TabSpec tab3 = tabHost.newTabSpec("Third Tab");
+        FragmentTabHost fragmentTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        fragmentTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        tab1.setIndicator("Urgent Cases");
-        tab1.setContent(R.id.tab1);
+        fragmentTabHost.addTab(fragmentTabHost.newTabSpec("urgent").setIndicator("Urgent Cases"),
+                UrgentCaseFragment.class, null);
 
-        tab2.setIndicator("Case w/ Additional Instructions");
-        tab2.setContent(R.id.tab2);
+        fragmentTabHost.addTab(fragmentTabHost.newTabSpec("additional instructions").setIndicator("Cases w/ Additional Instructions"),
+                AddInstructionsCaseFragment.class, null);
 
-        tab3.setIndicator("Closed Cases");
-        tab3.setContent(R.id.tab3);
+        fragmentTabHost.addTab(fragmentTabHost.newTabSpec("diagnosed").setIndicator("Diagnosed Cases"),
+                DiagnosedCaseFragment.class, null);
 
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
-        tabHost.addTab(tab3);
+        fragmentTabHost.addTab(fragmentTabHost.newTabSpec("closed").setIndicator("Closed Cases"),
+                ClosedCaseFragment.class, null);
 
         Button viewCreatePatientBtn = (Button)findViewById(R.id.view_create_patient_records_btn);
         Button downloadAdditionalContentBtn = (Button)findViewById(R.id.download_content_btn);
@@ -83,10 +79,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         healthCenterSpinner.setOnItemSelectedListener(this);
         logoutBtn.setOnClickListener(this);
 
-
         healthCenters = new ArrayList<>();
+
         initializeDatabase();
         getHealthCenter();
+
         String healthCenterArray [] = new String[healthCenters.size()] ;
         for(int i = 0; i < healthCenters.size(); i++) {
 
@@ -100,6 +97,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         healthCenterName = healthCenters.get(0).getHealthCenterName();
         healthCenterSpinner.setAdapter(healthCenterAdapter);
         systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
+
     }
 
     public void initializeDatabase () {
@@ -171,26 +169,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void downloadContent () {
-
-        class DownloadContentTask extends AsyncTask<Void, Void, Void> {
-
-            @Override
-            protected void onPreExecute() {
-
-
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                return null;
-            }
-        }
-
-         new DownloadContentTask().execute();
-    }
-
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -200,7 +178,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Log.e("health center id", healthCenterId + "");
         Toast.makeText(HomeActivity.this, healthCenterName + "", Toast.LENGTH_SHORT).show();
 
-
     }
 
     @Override
@@ -209,5 +186,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         healthCenterName = parent.getSelectedItem().toString();
         healthCenterId = getHealthCenterId(healthCenterName);
         systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
+    }
+
+    @Override
+    public void onCaseRecordSelected(int caseRecordId) {
+
+        if(findViewById(R.id.case_detail) != null) {
+            Log.d("choice", caseRecordId + "");
+            Bundle arguments = new Bundle();
+            arguments.putInt("case record id", caseRecordId);
+            DetailsFragment fragment = new DetailsFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().replace(R.id.case_detail, fragment).commit();
+        }
     }
 }

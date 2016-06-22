@@ -52,7 +52,6 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
                 selectedItem = getAdapterPosition();
                 notifyItemChanged(selectedItem);
             }
-
         }
     }
 
@@ -87,7 +86,6 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
         holder.patientGender.setText(existingPatients.get(position).getGender());
         //holder.patientImage.setImageBitmap(decodeEncodedImage(existingPatients.get(position).getProfileImageBytes()));
 
-
         holder.itemView.post(new Runnable() {
             @Override
             public void run() {
@@ -100,24 +98,13 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
 //        Bitmap imageBm = BitmapFactory.decodeFile(existingPatients.get(position).getProfileImageBytes());
 //        holder.patientImage.setImageBitmap(imageBm);
 
-
     }
-
 
     @Override
     public int getItemCount() {
         return existingPatients.size();
     }
 
-
-    public Bitmap decodeEncodedImage(String encodedImage) {
-
-        byte[] imageAsBytes = Base64.decode(encodedImage.getBytes(), Base64.DEFAULT);
-
-        Bitmap image = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-
-        return image;
-    }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
         // Get the dimensions of the View

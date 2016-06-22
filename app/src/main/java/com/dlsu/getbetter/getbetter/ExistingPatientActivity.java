@@ -135,16 +135,19 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
         } else if (id == R.id.update_patient_record_btn) {
 
-            Intent intent = new Intent(this, UpdatePatientRecordActivity.class);
-            intent.putExtra("selectedPatient", selectedPatientId);
-            startActivity(intent);
+            if(selectedPatientId == null) {
+                Toast.makeText(this, "Please select a patient", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(this, UpdatePatientRecordActivity.class);
+                intent.putExtra("selectedPatient", selectedPatientId);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.create_update_case_record_btn) {
 
             if(selectedPatientId == null) {
                 Toast.makeText(this, "Please select a patient", Toast.LENGTH_LONG).show();
             } else {
-
 
                 Intent intent = new Intent(this, CreateUpdateCaseRecordActivity.class);
                 intent.putExtra("selectedPatient", selectedPatientId);

@@ -127,16 +127,16 @@
                             android:background="@color/blueButton"
                             android:textColor="@color/cardBackground"
                             android:text="Sign In"
-                            android:textSize="10sp"/>
+                            android:textSize="18sp"/>
 
-                        <Button
-                            android:id="@+id/register_user_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@color/neutralButton"
-                            android:text="Register"
-                            android:textSize="10sp"/>
+                        <!--<Button-->
+                            <!--android:id="@+id/register_user_btn"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@color/neutralButton"-->
+                            <!--android:text="Register"-->
+                            <!--android:textSize="10sp"/>-->
 
                     </LinearLayout>
 

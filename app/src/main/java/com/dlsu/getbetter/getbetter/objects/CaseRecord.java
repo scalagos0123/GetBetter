@@ -9,6 +9,10 @@ public class CaseRecord {
 
     private int caseRecordId;
     private int caseRecordStatusId;
+    private int userId;
+    private String patientName;
+    private String profilePic;
+    private String healthCenter;
     private String caseRecordComplaint;
     private String caseRecordControlNumber;
     private String caseRecordStatus;
@@ -16,13 +20,15 @@ public class CaseRecord {
     private int caseRecordUpdatedBy;
     private boolean checked = false;
 
-    private ArrayList<Attachment> caseRecordAttachments;
+    public CaseRecord() {
 
-    public CaseRecord(int caseRecordId, String caseRecordComplaint, String caseRecordControlNumber, String caseRecordStatus) {
+    }
+
+    public CaseRecord(int caseRecordId, int caseRecordStatusId, int caseRecordUpdatedBy, String caseRecordUpdatedOn) {
         this.caseRecordId = caseRecordId;
-        this.caseRecordComplaint = caseRecordComplaint;
-        this.caseRecordControlNumber = caseRecordControlNumber;
-        this.caseRecordStatus = caseRecordStatus;
+        this.caseRecordStatusId = caseRecordStatusId;
+        this.caseRecordUpdatedBy = caseRecordUpdatedBy;
+        this.caseRecordUpdatedOn = caseRecordUpdatedOn;
     }
 
     public CaseRecord(int caseRecordId, String caseRecordComplaint, String caseRecordControlNumber) {
@@ -31,12 +37,54 @@ public class CaseRecord {
         this.caseRecordControlNumber = caseRecordControlNumber;
     }
 
-    public void setCaseRecordAttachments(ArrayList<Attachment> caseRecordAttachments) {
-        this.caseRecordAttachments = caseRecordAttachments;
+    public CaseRecord(int caseRecordId, String patientName, String caseRecordComplaint,
+                      String healthCenter, String caseRecordStatus, String caseRecordUpdatedOn) {
+        this.caseRecordId = caseRecordId;
+        this.patientName = patientName;
+        this.caseRecordComplaint = caseRecordComplaint;
+        this.healthCenter = healthCenter;
+        this.caseRecordStatus = caseRecordStatus;
+        this.caseRecordUpdatedOn = caseRecordUpdatedOn;
+    }
+
+    public CaseRecord(String caseRecordComplaint, String caseRecordControlNumber) {
+        this.caseRecordComplaint = caseRecordComplaint;
+        this.caseRecordControlNumber = caseRecordControlNumber;
+    }
+
+    public CaseRecord(int caseRecordId, int userId, String caseRecordComplaint, String caseRecordUpdatedOn) {
+        this.caseRecordId = caseRecordId;
+        this.userId = userId;
+        this.caseRecordComplaint = caseRecordComplaint;
+        this.caseRecordUpdatedOn = caseRecordUpdatedOn;
+    }
+
+    public CaseRecord(int caseRecordId, String complaint, int userId, String caseRecordControlNumber) {
+        this.caseRecordId = caseRecordId;
+        this.caseRecordComplaint = complaint;
+        this.userId = userId;
+        this.caseRecordControlNumber = caseRecordControlNumber;
+    }
+
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setCaseRecordStatus(String caseRecordStatus) {
         this.caseRecordStatus = caseRecordStatus;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public void setCaseRecordId(int caseRecordId) {
@@ -75,8 +123,20 @@ public class CaseRecord {
         this.caseRecordUpdatedBy = caseRecordUpdatedBy;
     }
 
-    public ArrayList<Attachment> getCaseRecordAttachments() {
-        return caseRecordAttachments;
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public String getHealthCenter() {
+        return healthCenter;
+    }
+
+    public void setHealthCenter(String healthCenter) {
+        this.healthCenter = healthCenter;
     }
 
     public int getCaseRecordId() {

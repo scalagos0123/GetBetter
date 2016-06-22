@@ -305,7 +305,7 @@
 
                             <android.support.v7.widget.RecyclerView
                                 android:id="@+id/view_case_files_list"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="340dp"
                                 android:scrollbars="vertical">
 
