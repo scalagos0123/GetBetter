@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -18,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
@@ -38,11 +41,17 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
     private Button stopRecBtn;
     private Button playRecBtn;
+    private SeekBar seekBar;
+    private TextView timeView;
     private MediaRecorder hpiRecorder;
     private String outputFile;
     private String chiefComplaintName = "";
+    private int recordTime, playTime;
+    private boolean isRecording;
 
     NewPatientSessionManager newPatientSessionManager;
+    Handler handler;
+    MediaPlayer mp;
 
 
     public RecordHpiFragment() {
@@ -54,6 +63,7 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
         super.onCreate(savedInstanceState);
 
         newPatientSessionManager = new NewPatientSessionManager(getActivity());
+        handler = new Handler();
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 
@@ -77,12 +87,13 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
         Button nextBtn = (Button) rootView.findViewById(R.id.hpi_next_btn);
         Button recordBtn = (Button) rootView.findViewById(R.id.hpi_record_btn);
+        timeView = (TextView)rootView.findViewById(R.id.record_hpi_time);
+        seekBar = (SeekBar)rootView.findViewById(R.id.record_hpi_seek_bar);
         stopRecBtn = (Button)rootView.findViewById(R.id.hpi_stop_record_btn);
         playRecBtn = (Button)rootView.findViewById(R.id.hpi_play_recorded_btn);
 
         stopRecBtn.setEnabled(false);
         playRecBtn.setEnabled(false);
-
 
         recordBtn.setOnClickListener(this);
         stopRecBtn.setOnClickListener(this);
@@ -125,11 +136,12 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
                 e.printStackTrace();
             }
 
+            isRecording = true;
             stopRecBtn.setEnabled(true);
+            handler.post(UpdateRecordTime);
             Toast.makeText(this.getContext(), "Now Recording....", Toast.LENGTH_LONG).show();
 
         } else if (id == R.id.hpi_stop_record_btn) {
-
 
             hpiRecorder.stop();
             hpiRecorder.release();
@@ -137,12 +149,18 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
             stopRecBtn.setEnabled(false);
             playRecBtn.setEnabled(true);
+            isRecording = false;
+            timeView.setVisibility(TextView.GONE);
 
             editImageTitle();
 
         } else if (id == R.id.hpi_play_recorded_btn) {
 
-            MediaPlayer mp = new MediaPlayer();
+            mp = new MediaPlayer();
+            playTime = 0;
+
+            seekBar.setMax(recordTime);
+            seekBar.setProgress(0);
 
             try {
 
@@ -155,14 +173,39 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
             try {
                 mp.prepare();
+                mp.start();
+                handler.post(UpdatePlayTime);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            mp.start();
-
         }
     }
+
+    Runnable UpdateRecordTime = new Runnable() {
+        @Override
+        public void run() {
+            if(isRecording) {
+                timeView.setText(String.valueOf(recordTime));
+                recordTime += 1;
+                //Delay 1s before next call
+                handler.postDelayed(this, 1000);
+            }
+        }
+    };
+
+    Runnable UpdatePlayTime = new Runnable() {
+        @Override
+        public void run() {
+            if(mp.isPlaying()){
+                timeView.setText(String.valueOf(playTime));
+                playTime += 1;
+                seekBar.setProgress(playTime);
+
+                handler.postDelayed(this, 1000);
+            }
+
+        }
+    };
 
     private void editImageTitle () {
 

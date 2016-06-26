@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if(checkLogin(email, password)) {
 
                 systemSessionManager.createUserSession(email);
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, HealthCenterActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -100,11 +100,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-        Intent intent = new Intent(this, HealthCenterActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        finish();
     }
 }

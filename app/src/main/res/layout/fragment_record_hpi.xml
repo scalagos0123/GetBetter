@@ -122,9 +122,12 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
                     <LinearLayout
+                        android:id="@+id/record_hpi_button_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -157,6 +160,37 @@
                             android:background="@color/blueButton"/>
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/seek_bar_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_below="@id/record_hpi_button_container"
+                        android:layout_alignStart="@id/record_hpi_button_container"
+                        android:layout_marginTop="8dp"
+                        >
+
+                        <SeekBar
+                            android:id="@+id/record_hpi_seek_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:max="100"
+                            android:progress="0"
+                            />
+
+                        <TextView
+                            android:id="@+id/record_hpi_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="10"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            />
+
+                    </LinearLayout>
+
+
 
                 </RelativeLayout>
 
