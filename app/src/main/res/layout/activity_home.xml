@@ -75,56 +75,62 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:id="@+id/current_health_center_container">
+                    android:id="@+id/current_health_center_container"
+                    android:weightSum="1">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Current Health Center: "
-                        android:textSize="24sp" />
+                        android:textSize="18sp"
+                        android:textAllCaps="true"/>
 
-                    <Spinner
-                        android:id="@+id/health_center_spinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        />
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/current_health_center"-->
+                    <!--<Spinner-->
+                        <!--android:id="@+id/health_center_spinner"-->
                         <!--android:layout_width="wrap_content"-->
                         <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Children's Medical Clinic"-->
-                        <!--android:textSize="24sp"-->
-                        <!--android:textStyle="bold"/>-->
+                        <!--/>-->
+
+                    <TextView
+                        android:id="@+id/home_current_health_center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Children's Medical Clinic"
+                        android:textSize="24sp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:layout_weight="0.55"
+                        android:maxWidth="300dp"
+                        android:maxLines="1" />
 
                 </LinearLayout>
 
-                <!--<Button-->
-                    <!--android:id="@+id/change_health_center_btn"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Change Health Center"-->
-                    <!--android:textColor="@color/cardBackground"-->
-                    <!--android:textSize="14sp"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:layout_alignParentEnd="true"-->
-                    <!--android:background="@color/greenButton"-->
-                    <!--android:paddingRight="30dp"-->
-                    <!--android:paddingLeft="30dp"-->
-                    <!--android:layout_alignBottom="@+id/current_health_center_container" />-->
+                <Button
+                    android:id="@+id/change_health_center_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Health Center"
+                    android:textColor="@color/cardBackground"
+                    android:textSize="14sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/greenButton"
+                    android:paddingRight="30dp"
+                    android:paddingLeft="30dp"
+                    android:layout_alignBottom="@+id/current_health_center_container" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="14dp">
 
                 <Button
                     android:id="@+id/download_content_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:background="@color/greenButton"
                     android:text="Download Content"
                     android:textColor="@color/cardBackground"
@@ -136,7 +142,6 @@
                     android:id="@+id/view_create_patient_records_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:background="@color/blueButton"
                     android:text="View/Create Patient Records"
                     android:textColor="@color/cardBackground"
@@ -209,129 +214,7 @@
 
                             </LinearLayout>
 
-                </android.support.v4.app.FragmentTabHost>
-
-                <!--<TabHost-->
-                            <!--android:id="@+id/tabhost"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="match_parent">-->
-
-                            <!--<LinearLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:orientation="vertical"-->
-                                <!--android:padding="8dp">-->
-
-                                <!--<TabWidget-->
-                                    <!--android:id="@android:id/tabs"-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="wrap_content">-->
-
-                                <!--</TabWidget>-->
-
-                                <!--<FrameLayout-->
-                                    <!--android:id="@android:id/tabcontent"-->
-                                    <!--android:layout_width="match_parent"-->
-                                    <!--android:layout_height="260dp"-->
-                                    <!--android:layout_marginTop="16dp">-->
-
-                                    <!--<FrameLayout-->
-                                        <!--android:id="@+id/tab1"-->
-                                        <!--android:layout_width="match_parent"-->
-                                        <!--android:layout_height="match_parent"-->
-                                        <!--android:orientation="vertical">-->
-
-                                        <!--<android.support.v7.widget.RecyclerView-->
-                                            <!--android:id="@+id/urgent_case_recycler"-->
-                                            <!--android:layout_width="match_parent"-->
-                                            <!--android:layout_height="match_parent">-->
-
-                                        <!--</android.support.v7.widget.RecyclerView>-->
-
-                                        <!--<TextView-->
-                                            <!--android:id="@+id/empty_urgent_view"-->
-                                            <!--android:layout_width="wrap_content"-->
-                                            <!--android:layout_height="wrap_content"-->
-                                            <!--android:visibility="gone"-->
-                                            <!--android:gravity="center"-->
-                                            <!--android:text="No Urgent Case Records"/>-->
-
-                                    <!--</FrameLayout>-->
-
-                                    <!--<FrameLayout-->
-                                        <!--android:id="@+id/tab2"-->
-                                        <!--android:layout_width="match_parent"-->
-                                        <!--android:layout_height="match_parent"-->
-                                        <!--android:orientation="vertical">-->
-
-                                        <!--<android.support.v7.widget.RecyclerView-->
-                                            <!--android:id="@+id/add_instructions_recycler"-->
-                                            <!--android:layout_width="match_parent"-->
-                                            <!--android:layout_height="match_parent">-->
-
-                                        <!--</android.support.v7.widget.RecyclerView>-->
-
-                                        <!--<TextView-->
-                                            <!--android:id="@+id/empty_add_instruction_view"-->
-                                            <!--android:layout_width="wrap_content"-->
-                                            <!--android:layout_height="wrap_content"-->
-                                            <!--android:visibility="gone"-->
-                                            <!--android:gravity="center"-->
-                                            <!--android:text="No Case Records w/ Additional Instructions"/>-->
-
-                                    <!--</FrameLayout>-->
-
-                                    <!--<FrameLayout-->
-                                        <!--android:id="@+id/tab3"-->
-                                        <!--android:layout_width="match_parent"-->
-                                        <!--android:layout_height="match_parent"-->
-                                        <!--android:orientation="vertical">-->
-
-                                        <!--<android.support.v7.widget.RecyclerView-->
-                                            <!--android:id="@+id/diagnosed_case_recycler"-->
-                                            <!--android:layout_width="match_parent"-->
-                                            <!--android:layout_height="match_parent">-->
-
-                                        <!--</android.support.v7.widget.RecyclerView>-->
-
-                                        <!--<TextView-->
-                                            <!--android:id="@+id/empty_diagnosed_view"-->
-                                            <!--android:layout_width="wrap_content"-->
-                                            <!--android:layout_height="wrap_content"-->
-                                            <!--android:visibility="gone"-->
-                                            <!--android:gravity="center"-->
-                                            <!--android:text="No Diagnosed Case Records"/>-->
-
-                                    <!--</FrameLayout>-->
-
-                                    <!--<FrameLayout-->
-                                        <!--android:id="@+id/tab4"-->
-                                        <!--android:layout_width="match_parent"-->
-                                        <!--android:layout_height="match_parent"-->
-                                        <!--android:orientation="vertical">-->
-
-                                        <!--<android.support.v7.widget.RecyclerView-->
-                                            <!--android:id="@+id/closed_case_recycler"-->
-                                            <!--android:layout_width="match_parent"-->
-                                            <!--android:layout_height="match_parent">-->
-
-                                        <!--</android.support.v7.widget.RecyclerView>-->
-
-                                        <!--<TextView-->
-                                            <!--android:id="@+id/empty_closed_view"-->
-                                            <!--android:layout_width="wrap_content"-->
-                                            <!--android:layout_height="wrap_content"-->
-                                            <!--android:visibility="gone"-->
-                                            <!--android:gravity="center"-->
-                                            <!--android:text="No Closed Case Records"/>-->
-
-                                    <!--</FrameLayout>-->
-
-                                <!--</FrameLayout>-->
-
-                            <!--</LinearLayout>-->
-
-                        <!--</TabHost>-->
+                        </android.support.v4.app.FragmentTabHost>
 
 
                     </android.support.v7.widget.CardView>

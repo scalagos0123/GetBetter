@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         emailInput = (EditText)findViewById(R.id.email_input);
         passwordInput = (EditText)findViewById(R.id.password_input);
         signInBtn = (Button)findViewById(R.id.sign_in_btn);
-        registerUserBtn = (Button)findViewById(R.id.register_user_btn);
+//        registerUserBtn = (Button)findViewById(R.id.register_user_btn);
 
         signInBtn.setOnClickListener(this);
         initializeDatabase();
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, HealthCenterActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

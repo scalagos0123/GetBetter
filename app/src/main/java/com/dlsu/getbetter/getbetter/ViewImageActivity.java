@@ -36,8 +36,8 @@ public class ViewImageActivity extends AppCompatActivity implements View.OnClick
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
         // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+        int targetW = 1000;
+        int targetH = 550;
         Log.e("width and height", targetW + targetH + "");
 
         // Get the dimensions of the bitmap

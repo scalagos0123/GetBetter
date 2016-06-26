@@ -73,9 +73,8 @@ public class CaseRecordAdapter extends RecyclerView.Adapter<CaseRecordAdapter.Ca
 
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.case_record_list_item, parent, false);
-        CaseRecordViewHolder caseRecordViewHolder = new CaseRecordViewHolder(v);
 
-        return caseRecordViewHolder;
+        return new CaseRecordViewHolder(v);
     }
 
     @Override

@@ -25,14 +25,9 @@ import java.util.HashMap;
 
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener,
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener,
         DiagnosedCaseFragment.OnCaseRecordSelected, UrgentCaseFragment.OnCaseRecordSelected,
         ClosedCaseFragment.OnCaseRecordSelected {
-
-    private DataAdapter getBetterDb;
-    private int healthCenterId;
-    private String healthCenterName;
-    private ArrayList<HealthCenter> healthCenters;
 
     SystemSessionManager systemSessionManager;
 
@@ -41,16 +36,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //Button changeHealthCenterBtn = (Button)findViewById(R.id.change_health_center_btn);
-
         systemSessionManager = new SystemSessionManager(this);
         if(systemSessionManager.checkLogin())
             finish();
 
         HashMap<String, String> user = systemSessionManager.getUserDetails();
+        HashMap<String, String> hc = systemSessionManager.getHealthCenter();
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
-
-        Spinner healthCenterSpinner = (Spinner) findViewById(R.id.health_center_spinner);
+        String currentHealthCenter = hc.get(SystemSessionManager.HEALTH_CENTER_NAME);
 
         FragmentTabHost fragmentTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         fragmentTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
@@ -70,75 +63,32 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Button viewCreatePatientBtn = (Button)findViewById(R.id.view_create_patient_records_btn);
         Button downloadAdditionalContentBtn = (Button)findViewById(R.id.download_content_btn);
         Button logoutBtn = (Button)findViewById(R.id.logout_btn);
+        Button changeHealthCenterBtn = (Button)findViewById(R.id.change_health_center_btn);
+        TextView healthCenter = (TextView)findViewById(R.id.home_current_health_center);
+
+        healthCenter.setText(currentHealthCenter);
+
         TextView userLabel = (TextView)findViewById(R.id.user_label);
-        userLabel.setText(userNameLabel);
-
-        viewCreatePatientBtn.setOnClickListener(this);
-        downloadAdditionalContentBtn.setOnClickListener(this);
-        //changeHealthCenterBtn.setOnClickListener(this);
-        healthCenterSpinner.setOnItemSelectedListener(this);
-        logoutBtn.setOnClickListener(this);
-
-        healthCenters = new ArrayList<>();
-
-        initializeDatabase();
-        getHealthCenter();
-
-        String healthCenterArray [] = new String[healthCenters.size()] ;
-        for(int i = 0; i < healthCenters.size(); i++) {
-
-            healthCenterArray[i] = healthCenters.get(i).getHealthCenterName();
-
+        if (userLabel != null) {
+            userLabel.setText(userNameLabel);
         }
 
-        ArrayAdapter<CharSequence> healthCenterAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, healthCenterArray);
-
-        healthCenterId = healthCenters.get(0).getHealthCenterId();
-        healthCenterName = healthCenters.get(0).getHealthCenterName();
-        healthCenterSpinner.setAdapter(healthCenterAdapter);
-        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
-
-    }
-
-    public void initializeDatabase () {
-
-        getBetterDb = new DataAdapter(this);
-
-        try {
-            getBetterDb.createDatabase();
-        } catch(SQLException e ){
-            e.printStackTrace();
-        }
-    }
-
-    public void getHealthCenter() {
-
-        try {
-            getBetterDb.openDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (viewCreatePatientBtn != null) {
+            viewCreatePatientBtn.setOnClickListener(this);
         }
 
-        healthCenters.addAll(getBetterDb.getHealthCenters());
-
-        getBetterDb.closeDatabase();
-
-    }
-
-    public int getHealthCenterId (String healthCenterName) {
-
-        int id;
-        try {
-            getBetterDb.openDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (downloadAdditionalContentBtn != null) {
+            downloadAdditionalContentBtn.setOnClickListener(this);
         }
 
-        id = getBetterDb.getHealthCenterId(healthCenterName);
+        if (changeHealthCenterBtn != null) {
+            changeHealthCenterBtn.setOnClickListener(this);
+        }
 
-        getBetterDb.closeDatabase();
+        if (logoutBtn != null) {
+            logoutBtn.setOnClickListener(this);
+        }
 
-        return id;
     }
 
     @Override
@@ -148,44 +98,32 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         if(id == R.id.view_create_patient_records_btn) {
 
-            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
-
+//            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
             Intent intent = new Intent(this, ExistingPatientActivity.class);
 
             startActivity(intent);
 
+
         } else if (id == R.id.download_content_btn) {
 
-            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
+//            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
+            Intent intent = new Intent(this, DownloadContentActivity.class);
 
-            Intent i = new Intent(this, DownloadContentActivity.class);
+            startActivity(intent);
 
-            startActivity(i);
 
         } else if (id == R.id.logout_btn) {
 
             systemSessionManager.logoutUser();
 
+        } else if (id == R.id.change_health_center_btn) {
+
+            Intent intent = new Intent(this, HealthCenterActivity.class);
+
+            startActivity(intent);
+
+            finish();
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        healthCenterName = parent.getItemAtPosition(position).toString();
-        healthCenterId = getHealthCenterId(healthCenterName);
-        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
-        Log.e("health center id", healthCenterId + "");
-        Toast.makeText(HomeActivity.this, healthCenterName + "", Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-        healthCenterName = parent.getSelectedItem().toString();
-        healthCenterId = getHealthCenterId(healthCenterName);
-        systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
     }
 
     @Override

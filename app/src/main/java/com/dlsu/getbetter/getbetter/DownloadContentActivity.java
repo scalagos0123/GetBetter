@@ -192,6 +192,8 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 int attachmentTypeId = Integer.parseInt(o.getString(TAG_CASE_ATTACHMENT_TYPE));
                 String uploadedOn = o.getString(TAG_UPLOADED_ON);
 
+                Log.d("encoded image", encodedImage);
+
                 File fileName = createImageFile(uploadedOn);
                 String path = Uri.fromFile(fileName).getPath();
 

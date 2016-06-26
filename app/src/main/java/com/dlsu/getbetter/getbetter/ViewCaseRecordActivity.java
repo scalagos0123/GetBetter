@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -99,10 +101,16 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         fileAdapter.SetOnItemClickListener(new SummaryPageDataAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(ViewCaseRecordActivity.this, ViewImageActivity.class);
-                intent.putExtra("imageUrl", caseAttachments.get(position).getAttachmentPath());
-                intent.putExtra("imageTitle", caseAttachments.get(position).getAttachmentDescription());
-                startActivity(intent);
+
+                if(caseAttachments.get(position).getAttachmentType() == 1) {
+                    Intent intent = new Intent(ViewCaseRecordActivity.this, ViewImageActivity.class);
+                    intent.putExtra("imageUrl", caseAttachments.get(position).getAttachmentPath());
+                    intent.putExtra("imageTitle", caseAttachments.get(position).getAttachmentDescription());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Sorry, this feature is not yet available.", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -133,13 +141,29 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
             patientAgeGender = patientAge + " yrs. old, " + gender;
         }
 
-        ageGender.setText(patientAgeGender);
+        if (ageGender != null) {
+            ageGender.setText(patientAgeGender);
+        }
 
-        chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
-        controlNumber.setText(caseRecord.getCaseRecordControlNumber());
-        patientName.setText(fullName);
-        userLabel.setText(midwifeName);
-        healthCenterName.setText(getHealthCenterString(healthCenterId));
+        if (chiefComplaint != null) {
+            chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
+        }
+
+        if (controlNumber != null) {
+            controlNumber.setText(caseRecord.getCaseRecordControlNumber());
+        }
+
+        if (patientName != null) {
+            patientName.setText(fullName);
+        }
+
+        if (userLabel != null) {
+            userLabel.setText(midwifeName);
+        }
+
+        if (healthCenterName != null) {
+            healthCenterName.setText(getHealthCenterString(healthCenterId));
+        }
 
         nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -153,13 +177,20 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         nMediaController.setMediaPlayer(this);
         nMediaController.setAnchorView(findViewById(R.id.hpi_media_player));
 
+
         nMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 nHandler.post(new Runnable() {
                     public void run() {
                         nMediaController.show(0);
-                        nMediaPlayer.start();
+                        nMediaController.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nMediaPlayer.start();
+                            }
+                        });
+
                     }
                 });
             }
@@ -242,6 +273,8 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         int id = v.getId();
 
         if(id == R.id.view_case_back_btn) {
+
+
             finish();
 
         } else if (id == R.id.update_case_record_btn) {
@@ -290,6 +323,23 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
             }
         }
         return result;
+    }
+
+    @Override
+    protected void onPause() {
+
+
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        nMediaController.hide();
+        nMediaPlayer.stop();
+        nMediaPlayer.release();
+        super.onDestroy();
     }
 
     @Override

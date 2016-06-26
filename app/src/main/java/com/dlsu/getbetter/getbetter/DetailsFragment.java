@@ -19,7 +19,11 @@ import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
+
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 
 /**
@@ -32,6 +36,7 @@ public class DetailsFragment extends Fragment {
 
     private CaseRecord caseRecord;
     private ImageView profilePic;
+    private Patient patientInfo;
 
 
     public DetailsFragment() {
@@ -65,6 +70,32 @@ public class DetailsFragment extends Fragment {
         Button viewUpdatedCaseBtn = (Button)rootView.findViewById(R.id.detail_view_case_btn);
         profilePic = (ImageView)rootView.findViewById(R.id.detail_picture_display);
 
+        int[] birthdateTemp = new int[3];
+        String patientAgeGender = "";
+        String gender = patientInfo.getGender();
+
+        if(patientInfo.getBirthdate() != null) {
+
+            StringTokenizer tok = new StringTokenizer(patientInfo.getBirthdate(), "-");
+            int i = 0;
+            while(tok.hasMoreTokens()) {
+
+                birthdateTemp[i] = Integer.parseInt(tok.nextToken());
+                i++;
+            }
+
+            LocalDate birthdate = new LocalDate(birthdateTemp[0], birthdateTemp[1], birthdateTemp[2]);
+            LocalDate now = new LocalDate();
+
+            Years age = Years.yearsBetween(birthdate, now);
+
+            String patientAge = age.getYears() + "";
+            patientAgeGender = patientAge + " yrs. old, " + gender;
+        }
+
+        if (ageGender != null) {
+            ageGender.setText(patientAgeGender);
+        }
 
         patientName.setText(caseRecord.getPatientName());
         chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
@@ -111,7 +142,7 @@ public class DetailsFragment extends Fragment {
 
         caseRecord = getBetterDb.getCaseRecordDetail(caseRecordId);
 
-        Patient patientInfo = getBetterDb.getPatient((long) caseRecord.getUserId());
+        patientInfo = getBetterDb.getPatient((long) caseRecord.getUserId());
         String patientName = patientInfo.getFirstName() + " " + patientInfo.getLastName();
         caseRecord.setPatientName(patientName);
         caseRecord.setProfilePic(patientInfo.getProfileImageBytes());
