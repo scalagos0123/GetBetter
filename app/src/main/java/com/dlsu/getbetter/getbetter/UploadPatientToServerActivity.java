@@ -38,17 +38,17 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private static final String IMAGE_NAME_KEY = "imageName";
     private static final String IMAGE = "image";
     private static final String HEALTH_CENTER_KEY = "healthCenterId";
-    private static final String RESULT_MESSAGE = "Successfully Uploaded!";
+    private static final String RESULT_MESSAGE = "UPLOAD SUCCESS";
 
     private ArrayList<Patient> patientsUpload;
     ArrayList<Patient> selectedPatientsList;
     private DataAdapter getBetterDb;
     private int healthCenterId;
     private String encodedImage;
+    private ProgressDialog pDialog = null;
 
     PatientUploadAdapter patientUploadAdapter = null;
     SystemSessionManager systemSessionManager;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,8 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_upload_to_server);
 
         systemSessionManager = new SystemSessionManager(this);
+
+
 
         if(systemSessionManager.checkLogin())
             finish();
@@ -74,7 +76,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         userLabel.setText(midwifeName);
 
         initializeDatabase();
-        new GetPatientListTask(this).execute();
+        new GetPatientListTask().execute();
 
         patientUploadAdapter = new PatientUploadAdapter(this, R.layout.patient_list_item_checkbox, patientsUpload);
         patientList.setAdapter(patientUploadAdapter);
@@ -147,7 +149,6 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
 //            Intent intent = new Intent(this, ExistingPatientActivity.class);
 //            startActivity(intent);
-            finish();
 
         } else if (id == R.id.upload_patient_back_btn) {
 
@@ -157,20 +158,20 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
     private class GetPatientListTask extends AsyncTask<Void, Void, Void> {
 
-
-        private Context context;
-
-        public GetPatientListTask(AppCompatActivity activity) {
-            context = activity;
-            progressDialog = new ProgressDialog(context);
-        }
+//        ProgressDialog progressDialog = null;
+//        Context context;
+//
+//        public GetPatientListTask(AppCompatActivity activity) {
+//            context = activity;
+//            progressDialog = new ProgressDialog(context);
+//        }
 
         @Override
         protected void onPreExecute() {
-            progressDialog.setMessage("Populating patient list");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setIndeterminate(true);
-            progressDialog.show();
+//            progressDialog.setMessage("Populating patient list");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//            progressDialog.setIndeterminate(true);
+//            progressDialog.show();
         }
 
         @Override
@@ -184,30 +185,27 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if(progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
+//            if(progressDialog.isShowing()) {
+//                progressDialog.dismiss();
+//            }
 
         }
     }
 
     private class UploadPatientToServer extends AsyncTask<ArrayList<Patient>, Void, String> {
 
-        private ProgressDialog progressDialog;
-        private Context context;
-        private RequestHandler rh = new RequestHandler();
-
-        public UploadPatientToServer(AppCompatActivity activity) {
-            context = activity;
-            progressDialog = new ProgressDialog(context);
-        }
+//        ProgressDialog progressDialog = null;
+//        Context context;
+        RequestHandler rh = new RequestHandler();
+//
+//        public UploadPatientToServer(Context context) {
+//            this.context = context;
+//
+//        }
 
         @Override
         protected void onPreExecute() {
-            progressDialog.setMessage("Uploading patient");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setIndeterminate(true);
-            progressDialog.show();
+            showProgressDialog();
         }
 
         @Override
@@ -241,19 +239,18 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         @Override
         protected void onPostExecute(String s) {
 
-            if(progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
+            dismissProgressDialog();
 
-            if(s.equals(RESULT_MESSAGE)) {
+            StringBuilder message = new StringBuilder(s);
+
+            if(RESULT_MESSAGE.contentEquals(message)) {
                 for(int i = 0; i < selectedPatientsList.size(); i++) {
                     removePatientUpload((int) selectedPatientsList.get(i).getId());
                 }
+                featureAlertMessage(s);
+            } else {
+                featureAlertMessage("Failed to upload Patient Record.");
             }
-
-//            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-
-            featureAlertMessage(s);
         }
     }
 
@@ -262,12 +259,6 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
         class EncodeImage extends AsyncTask<String, Void, String> {
 
-            private AppCompatActivity activity;
-
-            public EncodeImage(AppCompatActivity activity) {
-                this.activity = activity;
-
-            }
 
             @Override
             protected String doInBackground(String... params) {
@@ -290,12 +281,12 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
             @Override
             protected void onPostExecute(String s) {
                 encodedImage = s;
-                UploadPatientToServer uploadPatientToServer = new UploadPatientToServer(activity);
+                UploadPatientToServer uploadPatientToServer = new UploadPatientToServer();
                 uploadPatientToServer.execute(selectedPatientsList);
             }
         }
 
-        EncodeImage encodeImage = new EncodeImage(this);
+        EncodeImage encodeImage = new EncodeImage();
         encodeImage.execute(currentPhotoPath);
 
     }
@@ -317,4 +308,26 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         builder.show();
     }
 
+    private void showProgressDialog() {
+        if(pDialog == null) {
+            pDialog = new ProgressDialog(UploadPatientToServerActivity.this);
+            pDialog.setMessage("Uploading patient");
+            pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pDialog.setIndeterminate(true);
+        }
+        pDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+
+        if(pDialog != null && pDialog.isShowing()) {
+            pDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
+    }
 }

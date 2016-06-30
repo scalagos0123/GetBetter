@@ -1,10 +1,13 @@
 package com.dlsu.getbetter.getbetter;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -45,6 +48,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private static final String TAG_ENCODED_IMAGE = "encoded_image";
     private static final String TAG_CASE_ATTACHMENT_TYPE = "case_attachment_type";
     private static final String TAG_UPLOADED_ON = "uploaded_on";
+    private static final String RESULT_MESSAGE = "DOWNLOAD SUCCESS";
 
     String myJSON;
     String myJSONAttachments;
@@ -54,6 +58,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     ArrayList<Attachment> caseRecordAttachments;
 
     DataAdapter getBetterDb;
+    ProgressDialog dDialog = null;
     CaseRecordDownloadAdapter caseRecordDownloadAdapter = null;
     ListView caseRecordList;
 
@@ -147,6 +152,11 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             RequestHandler rh = new RequestHandler();
 
+            @Override
+            protected void onPreExecute() {
+                showProgressDialog("Downloading data...");
+            }
+
             @SafeVarargs
             @Override
             protected final String doInBackground(ArrayList<CaseRecord>... params) {
@@ -167,10 +177,17 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             @Override
             protected void onPostExecute(String s) {
-                super.onPostExecute(s);
+                dismissProgressDialog();
 
-                myJSONAttachments = s;
-                insertNewAttachmentsToLocalDB();
+                StringBuilder message = new StringBuilder(s);
+
+                if(RESULT_MESSAGE.contentEquals(message)) {
+                    myJSONAttachments = s;
+                    insertNewAttachmentsToLocalDB();
+                    featureAlertMessage("Download Complete!");
+                } else {
+                    featureAlertMessage("Download Failed.");
+                }
             }
         }
 
@@ -412,6 +429,45 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }
     }
 
+    public void featureAlertMessage (String result) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Download Status");
+        builder.setMessage(result);
+
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showProgressDialog(String message) {
+        if(dDialog == null) {
+            dDialog = new ProgressDialog(DownloadContentActivity.this);
+            dDialog.setMessage(message);
+            dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dDialog.setIndeterminate(true);
+        }
+        dDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+
+        if(dDialog != null && dDialog.isShowing()) {
+            dDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
+    }
 
 
 }

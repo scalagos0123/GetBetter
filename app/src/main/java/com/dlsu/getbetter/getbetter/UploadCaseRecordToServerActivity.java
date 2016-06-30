@@ -1,8 +1,10 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +43,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private static final String ENCODED_IMAGE_KEY = "encoded_image";
     private static final String ATTACHMENT_TYPE_ID_KEY = "attachment_type";
     private static final String UPLOADED_ON_KEY = "uploaded_on";
+    private static final String RESULT_MESSAGE = "UPLOAD SUCCESS";
 
     private ArrayList<CaseRecord> caseRecordsUpload;
     private ArrayList<Attachment> caseRecordAttachmentsUpload;
@@ -48,6 +51,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private ArrayList<Integer> caseRecordId;
     private long userId;
     private int healthCenterId;
+    private ProgressDialog cDialog = null;
 
     DataAdapter getBetterDb;
     CaseRecordUploadAdapter caseRecordUploadAdapter = null;
@@ -180,7 +184,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
             UploadCaseRecordsTask uploadCaseRecordsTask = new UploadCaseRecordsTask();
             uploadCaseRecordsTask.execute(selectedCaseRecordsList);
 
-            finish();
         }
     }
 
@@ -222,10 +225,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-
-//            progressDialog.setMessage("Uploading Case Record/s..");
-//            progressDialog.show();
+            showProgressDialog("Uploading Case Record/s...");
         }
 
         @Override
@@ -243,9 +243,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
                 Log.d("hc", healthCenterId + "");
                 Log.d("complaint", caseRecordUpload.get(i).getCaseRecordComplaint());
                 Log.d("cn", caseRecordUpload.get(i).getCaseRecordControlNumber());
-//                Log.d("status", history.getCaseRecordStatusId() + "");
-//                Log.d("by", history.getCaseRecordUpdatedBy() + "");
-//                Log.d("on", history.getCaseRecordUpdatedOn());
 
                 HashMap<String, String> data = new HashMap<>();
                 data.put(CASE_RECORD_ID_KEY, String.valueOf(caseRecordUpload.get(i).getCaseRecordId()));
@@ -253,9 +250,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
                 data.put(HEALTH_CENTER_ID_KEY, String.valueOf(healthCenterId));
                 data.put(COMPLAINT_KEY, caseRecordUpload.get(i).getCaseRecordComplaint());
                 data.put(CONTROL_NUMBER_KEY, caseRecordUpload.get(i).getCaseRecordControlNumber());
-//                data.put(CASE_RECORD_STATUS_ID_KEY, String.valueOf(history.getCaseRecordStatusId()));
-//                data.put(UPDATED_BY_KEY, String.valueOf(history.getCaseRecordUpdatedBy()));
-//                data.put(UPDATED_ON_KEY, history.getCaseRecordUpdatedOn());
                 result = rh.sendPostRequest(DirectoryConstants.UPLOAD_CASE_RECORD_SERVER_SCRIPT_URL, data);
 
                 CaseRecord history = getCaseRecordHistory(caseRecordUpload.get(i).getCaseRecordId());
@@ -268,16 +262,16 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
 
-//            if(progressDialog.isShowing()) {
-//                progressDialog.dismiss();
-//            }
+            dismissProgressDialog();
 
+            StringBuilder message = new StringBuilder(s);
 
-
-            uploadCaseRecordHistory();
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            if(RESULT_MESSAGE.contentEquals(message)) {
+                uploadCaseRecordHistory();
+            } else {
+                featureAlertMessage("Failed to upload Case Record.");
+            }
         }
 
     }
@@ -285,6 +279,11 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private void uploadCaseRecordAttachments() {
 
         class UploadCaseRecordAttachments extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                showProgressDialog("Uploading Case Record Attachments...");
+            }
 
             @Override
             protected String doInBackground(String... params) {
@@ -308,13 +307,23 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
             @Override
             protected void onPostExecute(String s) {
 
-//                if (s.equalsIgnoreCase("Successfully Uploaded")) {
-//                    for(int i = 0; i < caseRecordId.size(); i++) {
-//                        removeCaseRecordsUpload(caseRecordId.get(i));
-//                    }
-//                }
+                dismissProgressDialog();
 
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                StringBuilder message = new StringBuilder(s);
+
+                if(RESULT_MESSAGE.contentEquals(message)) {
+
+                    for(int i = 0; i < caseRecordId.size(); i++) {
+                        removeCaseRecordsUpload(caseRecordId.get(i));
+                    }
+
+                    featureAlertMessage("Successfully Uploaded Case Record/s");
+
+                } else {
+                    featureAlertMessage("Failed to upload Case Record Attachments.");
+                }
+
+
             }
         }
 
@@ -327,10 +336,16 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         class UploadCaseRecordHistory extends AsyncTask<String, Void, String> {
 
             RequestHandler rh = new RequestHandler();
-            String result;
+
+            @Override
+            protected void onPreExecute() {
+                showProgressDialog("Uploading Case Record History...");
+            }
 
             @Override
             protected String doInBackground(String... params) {
+
+                String result = "";
 
                 for(int i = 0; i < caseRecordHistoryUpload.size(); i++) {
 
@@ -352,10 +367,16 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
             @Override
             protected void onPostExecute(String s) {
-                //super.onPostExecute(s);
 
-                uploadCaseRecordAttachments();
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                dismissProgressDialog();
+
+                StringBuilder message = new StringBuilder(s);
+
+                if(RESULT_MESSAGE.contentEquals(message)) {
+                    uploadCaseRecordAttachments();
+                } else {
+                    featureAlertMessage("Failed to upload Case Record History.");
+                }
             }
         }
 
@@ -438,6 +459,46 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         result = rh.sendFileRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, attachment.getAttachmentPath());
 
         return result;
+    }
+
+    public void featureAlertMessage (String result) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Upload Status");
+        builder.setMessage(result);
+
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showProgressDialog(String message) {
+        if(cDialog == null) {
+            cDialog = new ProgressDialog(UploadCaseRecordToServerActivity.this);
+            cDialog.setMessage(message);
+            cDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            cDialog.setIndeterminate(true);
+        }
+        cDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+
+        if(cDialog != null && cDialog.isShowing()) {
+            cDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
     }
 
 

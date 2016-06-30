@@ -65,17 +65,19 @@
 
         $stmt->close();
 
+        echo 'UPLOAD SUCCESS';
+      } else {
+        echo 'UPLOAD FAILED'
       }
 
-      echo 'Successfully Uploaded!';
-    } else {
-      echo 'Failed to upload image';
     }
+
+
 
   $mysqli->close();
 
   } else {
-    echo 'Error Uploading Patient Records';
+    echo 'UPLOAD FAILED';
 
   }
 

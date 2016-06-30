@@ -29,14 +29,14 @@
 
           $stmt->close();
       }
-      echo 'Successfully Uploaded';
+      echo 'UPLOAD SUCCESS';
     } else {
-      echo 'Failed to upload attachment';
+      echo 'UPLOAD FAILED';
     }
 $mysqli->close();
   }else {
 
-    echo "Unable to process request!";
+    echo "UPLOAD FAILED";
   }
 
 

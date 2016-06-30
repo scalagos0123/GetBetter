@@ -23,10 +23,10 @@ if($stmt = $mysqli->prepare("INSERT INTO tbl_case_record_history
 
     $stmt->close();
 
-    echo "Successfully Uploaded Case Record History";
+    echo "UPLOAD SUCCESS";
 
 } else {
-  echo "Error Uploading Case Record History";
+  echo "UPLOAD FAILED";
 }
 
 

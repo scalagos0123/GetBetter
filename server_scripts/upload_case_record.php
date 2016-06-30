@@ -29,8 +29,10 @@
 
         $stmt->close();
 
+        echo "UPLOAD SUCCESS";
+
       } else {
-         echo "Error Uploading Case Records";
+         echo "UPLOAD FAILED";
       }
 
     // if($stmt2 = $mysqli->prepare("INSERT INTO tbl_case_record_history
@@ -47,12 +49,12 @@
     //   echo "Error Uploading Case Record History";
     // }
 
-    echo "Successfully Uploaded Case Record";
+
 
   $mysqli->close();
 
   } else {
-    echo "Unable to process request!";
+    echo "UPLOAD FAILED";
   }
 
 
