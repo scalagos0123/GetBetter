@@ -48,6 +48,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
     PatientUploadAdapter patientUploadAdapter = null;
     SystemSessionManager systemSessionManager;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
     private class GetPatientListTask extends AsyncTask<Void, Void, Void> {
 
-        private ProgressDialog progressDialog;
+
         private Context context;
 
         public GetPatientListTask(AppCompatActivity activity) {
