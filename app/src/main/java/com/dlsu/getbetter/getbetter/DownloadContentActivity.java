@@ -291,6 +291,23 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         return result;
     }
 
+    public String getDoctorName (int updatedBy) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String result;
+
+        result = getBetterDb.getUserName(updatedBy);
+
+        getBetterDb.closeDatabase();
+
+        return result;
+    }
+
     public String getHealthCenterName (int healthCenterId) {
 
         try {
@@ -300,7 +317,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }
 
         String result;
-        result = getBetterDb.getHealthCenterName(healthCenterId);
+        result = getBetterDb.getHealthCenterString(healthCenterId);
 
         getBetterDb.closeDatabase();
 

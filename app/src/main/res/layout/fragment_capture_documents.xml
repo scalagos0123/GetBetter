@@ -112,15 +112,14 @@
                             android:layout_alignStart="@id/capture_docu_patient_info_image"
                             />
 
-                        <TextView
+                        <Button
                             android:id="@+id/capture_docu_view_patient_info_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/capture_docu_patient_info_image"
-                            android:layout_alignRight="@id/capture_docu_patient_info_image"
-                            android:layout_alignEnd="@id/capture_docu_patient_info_image"
+                            android:layout_below="@id/patient_info_form"
                             android:text="View"
-                            android:textColor="@color/blueButton"
+                            android:textColor="@color/cardBackground"
+                            android:background="@color/blueButton"
                             />
 
 
@@ -212,7 +211,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:layout_marginTop="16dp">
 
                     <Button
                         android:id="@+id/capture_document_fragment_back_btn"

@@ -127,6 +127,7 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
             Intent intent = new Intent(this, NewPatientRecordActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.upload_patient_record) {
 

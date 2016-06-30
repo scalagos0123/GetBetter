@@ -114,6 +114,21 @@ public class DataAdapter {
         return result;
     }
 
+    public String getUserName (int userId) {
+
+        String result;
+        String sql = "SELECT first_name, last_name FROM " + USER_TABLE + " WHERE _id = " + userId;
+        Cursor c = getBetterDb.rawQuery(sql, null);
+
+        c.moveToFirst();
+
+        result = c.getString(c.getColumnIndexOrThrow("first_name")) + " " + c.getString(c.getColumnIndexOrThrow("last_name"));
+
+        c.close();
+
+        return result;
+    }
+
     public long insertPatientInfo(String firstName, String middleName, String lastName,
                                   String birthDate, String gender, String civilStatus,
                                   String profileImage, int healthCenterId) {
@@ -348,20 +363,6 @@ public class DataAdapter {
         result = c.getInt(c.getColumnIndex("_id"));
 
         c.close();
-        return result;
-    }
-
-    public String getHealthCenterName(int healthCenterId) {
-
-        String result = null;
-        String sql = "SELECT health_center_name FROM tbl_health_centers WHERE _id = " + healthCenterId;
-        Cursor c = getBetterDb.rawQuery(sql, null);
-
-        c.moveToFirst();
-        result = c.getString(c.getColumnIndexOrThrow("health_center_name"));
-
-        c.close();
-
         return result;
     }
 
