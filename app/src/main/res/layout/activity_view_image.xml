@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="IMAGE TITLE"
+        android:text="@string/image_title"
         android:textSize="32sp"
         android:textColor="@color/cardBackground"
         android:layout_marginBottom="8dp"/>
@@ -30,6 +30,7 @@
         <ImageView
             android:id="@+id/view_image"
             android:layout_width="match_parent"
+            android:contentDescription="@string/attachment_display"
             android:layout_height="match_parent" />
 
     </FrameLayout>
@@ -46,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Back"
+            android:text="@string/back_button_text"
             android:textSize="18sp"
             />
 
@@ -55,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Remove"
+            android:text="@string/remove_button_text"
             android:textSize="18sp"/>
 
 

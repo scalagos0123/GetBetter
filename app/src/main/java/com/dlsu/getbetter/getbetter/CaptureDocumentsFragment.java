@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
@@ -65,7 +64,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
     // very frequently.
     private int mShortAnimationDuration;
 
-    NewPatientSessionManager newPatientSessionManager;
+    private NewPatientSessionManager newPatientSessionManager;
 
     public CaptureDocumentsFragment() {
         // Required empty public constructor
@@ -332,7 +331,6 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

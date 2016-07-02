@@ -1,7 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -41,21 +40,18 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private static final String RESULT_MESSAGE = "UPLOAD SUCCESS";
 
     private ArrayList<Patient> patientsUpload;
-    ArrayList<Patient> selectedPatientsList;
+    private ArrayList<Patient> selectedPatientsList;
     private DataAdapter getBetterDb;
     private int healthCenterId;
     private String encodedImage;
     private ProgressDialog pDialog = null;
-
-    PatientUploadAdapter patientUploadAdapter = null;
-    SystemSessionManager systemSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_to_server);
 
-        systemSessionManager = new SystemSessionManager(this);
+        SystemSessionManager systemSessionManager = new SystemSessionManager(this);
 
 
 
@@ -78,7 +74,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         initializeDatabase();
         new GetPatientListTask().execute();
 
-        patientUploadAdapter = new PatientUploadAdapter(this, R.layout.patient_list_item_checkbox, patientsUpload);
+        PatientUploadAdapter patientUploadAdapter = new PatientUploadAdapter(this, R.layout.patient_list_item_checkbox, patientsUpload);
         patientList.setAdapter(patientUploadAdapter);
 
         uploadBtn.setOnClickListener(this);
@@ -233,6 +229,8 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
                 result = rh.sendPostRequest(DirectoryConstants.UPLOAD_PATIENT_SERVER_SCRIPT_URL, data);
             }
 
+
+            Log.e("message1", result);
             return result;
         }
 
@@ -242,8 +240,10 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
             dismissProgressDialog();
 
             StringBuilder message = new StringBuilder(s);
+            Log.d("message2", message.toString());
 
-            if(RESULT_MESSAGE.contentEquals(message)) {
+
+            if(RESULT_MESSAGE.contentEquals(message.toString())) {
                 for(int i = 0; i < selectedPatientsList.size(); i++) {
                     removePatientUpload((int) selectedPatientsList.get(i).getId());
                 }
@@ -255,7 +255,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     }
 
 
-    public void getStringImage(String currentPhotoPath) {
+    private void getStringImage(String currentPhotoPath) {
 
         class EncodeImage extends AsyncTask<String, Void, String> {
 
@@ -291,7 +291,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
     }
 
-    public void featureAlertMessage (String result) {
+    private void featureAlertMessage(String result) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload Status");
@@ -312,7 +312,7 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
         if(pDialog == null) {
             pDialog = new ProgressDialog(UploadPatientToServerActivity.this);
             pDialog.setMessage("Uploading patient");
-            pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.setIndeterminate(true);
         }
         pDialog.show();

@@ -26,9 +26,8 @@ import java.util.HashMap;
  */
 public class UrgentCaseFragment extends Fragment {
 
-    DataAdapter getBetterDb;
-    SystemSessionManager systemSessionManager;
-    OnCaseRecordSelected mCallback;
+    private DataAdapter getBetterDb;
+    private OnCaseRecordSelected mCallback;
 
     private ArrayList<CaseRecord> urgentCases;
     private UpdatedCaseRecordAdapter updatedCaseRecordAdapter;
@@ -39,14 +38,14 @@ public class UrgentCaseFragment extends Fragment {
     }
 
     public interface OnCaseRecordSelected {
-        public void onCaseRecordSelected(int caseRecordId);
+        void onCaseRecordSelected(int caseRecordId);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        systemSessionManager = new SystemSessionManager(getActivity());
+        SystemSessionManager systemSessionManager = new SystemSessionManager(getActivity());
         HashMap<String, String> hc = systemSessionManager.getHealthCenter();
 
         urgentCases = new ArrayList<>();

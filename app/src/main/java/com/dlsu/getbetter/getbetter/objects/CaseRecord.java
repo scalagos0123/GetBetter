@@ -1,9 +1,8 @@
 package com.dlsu.getbetter.getbetter.objects;
 
-import java.util.ArrayList;
-
 /**
  * Created by mikedayupay on 25/02/2016.
+ * GetBetter 2016
  */
 public class CaseRecord {
 

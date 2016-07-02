@@ -16,7 +16,7 @@
                 android:id="@+id/summary_page_file_list_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="File Name"
+                android:text="@string/file_name_placeholder"
                 android:textSize="18sp"
                 android:textColor="@color/blueButton"
                 />

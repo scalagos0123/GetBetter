@@ -17,10 +17,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText emailInput;
     private EditText passwordInput;
-    private Button signInBtn;
     private Button registerUserBtn;
 
-    SystemSessionManager systemSessionManager;
+    private SystemSessionManager systemSessionManager;
     private DataAdapter getBetterDb;
 
     @Override
@@ -33,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         emailInput = (EditText)findViewById(R.id.email_input);
         passwordInput = (EditText)findViewById(R.id.password_input);
-        signInBtn = (Button)findViewById(R.id.sign_in_btn);
+        Button signInBtn = (Button) findViewById(R.id.sign_in_btn);
 //        registerUserBtn = (Button)findViewById(R.id.register_user_btn);
 
         signInBtn.setOnClickListener(this);
@@ -41,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void initializeDatabase () {
+    private void initializeDatabase() {
 
         getBetterDb = new DataAdapter(this);
 

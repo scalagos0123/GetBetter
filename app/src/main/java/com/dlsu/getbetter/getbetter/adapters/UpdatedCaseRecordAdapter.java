@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 30/05/2016.
+ * GetBetter 2016
  */
 public class UpdatedCaseRecordAdapter extends RecyclerView.Adapter<UpdatedCaseRecordAdapter.UpdatedCaseRecordViewHolder> {
 
@@ -127,7 +128,6 @@ public class UpdatedCaseRecordAdapter extends RecyclerView.Adapter<UpdatedCaseRe
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

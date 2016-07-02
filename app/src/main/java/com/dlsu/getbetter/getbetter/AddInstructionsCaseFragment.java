@@ -2,7 +2,6 @@ package com.dlsu.getbetter.getbetter;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,8 +25,7 @@ import java.util.HashMap;
  */
 public class AddInstructionsCaseFragment extends Fragment {
 
-    DataAdapter getBetterDb;
-    SystemSessionManager systemSessionManager;
+    private DataAdapter getBetterDb;
 
     private ArrayList<CaseRecord> addInstructionCases;
     private UpdatedCaseRecordAdapter updatedCaseRecordAdapter;
@@ -42,7 +40,7 @@ public class AddInstructionsCaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        systemSessionManager = new SystemSessionManager(getActivity());
+        SystemSessionManager systemSessionManager = new SystemSessionManager(getActivity());
 
         HashMap<String, String> hc = systemSessionManager.getHealthCenter();
         int healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));

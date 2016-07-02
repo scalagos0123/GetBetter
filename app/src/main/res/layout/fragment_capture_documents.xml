@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="48sp"
-        android:text="GetBetter"
+        android:text="@string/app_name"
         android:textColor="@color/cardBackground"
         android:layout_centerHorizontal="true"/>
 
@@ -100,13 +100,14 @@
                             android:layout_width="250dp"
                             android:layout_height="250dp"
                             android:src="@drawable/ic_add_image"
+                            android:contentDescription="@string/patient_information_form"
                             />
 
                         <TextView
                             android:id="@+id/patient_info_form"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Patient Information Form"
+                            android:text="@string/patient_information_form"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:layout_below="@id/capture_docu_patient_info_image"
@@ -119,7 +120,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/patient_info_form"
-                            android:text="View"
+                            android:text="@string/view_button_text"
                             android:textColor="@color/cardBackground"
                             android:background="@color/blueButton"
                             android:layout_marginTop="8dp"
@@ -140,13 +141,14 @@
                             android:layout_width="250dp"
                             android:layout_height="250dp"
                             android:src="@drawable/ic_add_image"
+                            android:contentDescription="@string/family_social_history_form"
                             />
 
                         <TextView
                             android:id="@+id/family_social_form"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Family/Social History Form"
+                            android:text="@string/family_social_history_form"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:layout_below="@id/capture_docu_family_social_history_image"
@@ -159,7 +161,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/family_social_form"
-                            android:text="View"
+                            android:text="@string/view_button_text"
                             android:textColor="@color/cardBackground"
                             android:background="@color/blueButton"
                             android:layout_centerHorizontal="true"
@@ -180,13 +182,14 @@
                             android:layout_width="250dp"
                             android:layout_height="250dp"
                             android:src="@drawable/ic_add_image"
+                            android:contentDescription="@string/chief_complaint_form"
                             />
 
                         <TextView
                             android:id="@+id/chief_complaint_form"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chief Complaint Form"
+                            android:text="@string/chief_complaint_form"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:layout_below="@id/capture_docu_chief_complaint_image"
@@ -199,7 +202,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/chief_complaint_form"
-                            android:text="View"
+                            android:text="@string/view_button_text"
                             android:textColor="@color/cardBackground"
                             android:background="@color/blueButton"
                             android:layout_marginTop="8dp"
@@ -226,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:background="@color/redButton"
-                        android:text="BACK"
+                        android:text="@string/back_button_text"
                         android:textColor="@color/cardBackground"
                         android:paddingLeft="100dp"
                         android:paddingRight="100dp"/>
@@ -237,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@color/greenButton"
-                        android:text="NEXT"
+                        android:text="@string/next_button_text"
                         android:textColor="@color/cardBackground"
                         android:paddingLeft="100dp"
                         android:paddingRight="100dp"/>
@@ -253,7 +256,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"
-            android:contentDescription="View Form"
+            android:contentDescription="@string/zoom_view_form"
             android:layout_centerInParent="true"
             />
 

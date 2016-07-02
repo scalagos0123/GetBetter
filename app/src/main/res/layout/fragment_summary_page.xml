@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="48sp"
-            android:text="GetBetter"
+            android:text="@string/app_name"
             android:textColor="@color/cardBackground"
             android:layout_centerHorizontal="true"/>
 
@@ -87,7 +87,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -105,6 +106,7 @@
                                 android:layout_width="255dp"
                                 android:layout_height="200dp"
                                 android:src="@drawable/profile_picture_placeholder"
+                                android:contentDescription="@string/patient_profile_image"
                                 android:padding="6dp"
                                 android:layout_alignParentTop="true"
                                 android:layout_alignParentLeft="true"
@@ -235,14 +237,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Chief Complaint"
+                            android:text="@string/chief_complaint_placeholder"
+                            android:textAllCaps="true"
                             android:textStyle="bold"/>
 
                         <TextView
                             android:id="@+id/summary_page_chief_complaint"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Chief Complaint placeholder"
+                            android:text="@string/chief_complaint_placeholder"
                             android:layout_marginTop="5dp"/>
 
                         <LinearLayout
@@ -256,7 +259,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
-                                android:text="Files"
+                                android:text="@string/files"
+                                android:textAllCaps="true"
                                 android:textStyle="bold"/>
 
                             <LinearLayout
@@ -290,7 +294,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="History of Present Illness"
+                            android:text="@string/history_of_present_illness"
+                            android:textAllCaps="true"
                             android:textStyle="bold"/>
 
                         <View
@@ -329,14 +334,16 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Attachments"
+                            android:text="@string/attachments"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
                             />
 
                         <Button
                             android:id="@+id/summary_page_take_pic_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Take Picture"
+                            android:text="@string/take_picture_button_text"
                             android:textSize="12sp"/>
 
                         <Button
@@ -364,7 +371,7 @@
                             android:id="@+id/summary_page_take_pic_doc_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Take picture of document (e.g blood chem results)"
+                            android:text="@string/take_picture_document_button_text"
                             android:textSize="12sp"/>
 
                         <Button
@@ -392,7 +399,7 @@
                         android:paddingRight="60dp"
                         android:paddingLeft="60dp"
                         android:background="@color/redButton"
-                        android:text="Back"
+                        android:text="@string/back_button_text"
                         android:textColor="@color/cardBackground"/>
 
                     <Button
@@ -400,7 +407,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/greenButton"
-                        android:text="Update Patient Record"
+                        android:text="@string/update_patient_record_button_text"
                         android:textColor="@color/cardBackground"
                         android:layout_marginLeft="10dp"
                         android:paddingLeft="10dp"
@@ -417,7 +424,7 @@
                         android:background="@color/blueButton"
                         android:paddingLeft="60dp"
                         android:paddingRight="60dp"
-                        android:text="Submit"
+                        android:text="@string/submit_button_text"
                         android:textColor="@color/cardBackground"/>
 
 

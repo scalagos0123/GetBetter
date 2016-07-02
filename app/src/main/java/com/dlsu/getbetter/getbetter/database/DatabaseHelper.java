@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 /**
  * Created by mikedayupay on 10/01/2016.
+ * GetBetter 2016
  */
 public class DatabaseHelper extends SQLiteOpenHelper{
 
@@ -23,8 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static String DB_NAME = "get_better";
 
     private static int DB_VERSION = 1;
-
-    private static String TAG = "DatabaseHelper";
 
     private SQLiteDatabase getBetterDatabase;
 
@@ -41,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return sInstance;
     }
 
-    public DatabaseHelper(Context context) {
+    private DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
 
         if(Build.VERSION.SDK_INT >= 17) {
@@ -63,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             try {
                 copyDatabase();
+                String TAG = "DatabaseHelper";
                 Log.e(TAG, "createDatabase database created");
             }catch (IOException ioe) {
                 throw new Error("Error creating database");

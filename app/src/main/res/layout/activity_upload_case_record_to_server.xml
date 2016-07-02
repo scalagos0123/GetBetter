@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="48sp"
-        android:text="GetBetter"
+        android:text="@string/app_name"
         android:textColor="@color/cardBackground"
         android:layout_centerHorizontal="true"/>
 
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Current User: "
+                android:text="@string/current_user"
                 android:textSize="18sp"/>
 
             <TextView
@@ -68,9 +68,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CASE RECORDS"
+                android:text="@string/case_record"
                 android:textStyle="bold"
-                android:textSize="32sp"/>
+                android:textAllCaps="true"
+                android:textSize="24sp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -100,7 +101,7 @@
                     android:paddingRight="60dp"
                     android:paddingLeft="60dp"
                     android:background="@color/redButton"
-                    android:text="Back"
+                    android:text="@string/back_button_text"
                     android:textColor="@color/cardBackground"/>
 
                 <Button
@@ -112,7 +113,7 @@
                     android:background="@color/blueButton"
                     android:paddingLeft="60dp"
                     android:paddingRight="60dp"
-                    android:text="Upload"
+                    android:text="@string/upload_button_text"
                     android:textColor="@color/cardBackground"/>
             </RelativeLayout>
 

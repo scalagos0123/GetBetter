@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +12,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -21,8 +19,9 @@ import java.util.Map;
 
 /**
  * Created by mikedayupay on 26/02/2016.
+ * GetBetter 2016
  */
-public class RequestHandler {
+class RequestHandler {
 
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
         URL url;
@@ -61,6 +60,8 @@ public class RequestHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.d("sb to string", sb.toString());
 
         return sb.toString();
 
@@ -182,7 +183,7 @@ public class RequestHandler {
     }
 
 
-    public String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
         StringBuilder result = new StringBuilder();
         boolean first = true;
 

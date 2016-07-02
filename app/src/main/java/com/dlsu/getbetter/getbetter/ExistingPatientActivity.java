@@ -26,10 +26,6 @@ import java.util.HashMap;
 public class ExistingPatientActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DataAdapter getBetterDb;
-    Button newPatientRecBtn;
-    Button uploadPatientRecBtn;
-    Button updatePatientRecBtn;
-    Button createUpdateCaseRecBtn;
 
     private Long selectedPatientId;
     private String patientFirstName;
@@ -51,10 +47,10 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
         int healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
 
-        newPatientRecBtn = (Button)findViewById(R.id.create_new_patient_btn);
-        uploadPatientRecBtn = (Button)findViewById(R.id.upload_patient_record);
-        updatePatientRecBtn  = (Button)findViewById(R.id.update_patient_record_btn);
-        createUpdateCaseRecBtn = (Button)findViewById(R.id.create_update_case_record_btn);
+        Button newPatientRecBtn = (Button) findViewById(R.id.create_new_patient_btn);
+        Button uploadPatientRecBtn = (Button) findViewById(R.id.upload_patient_record);
+        Button updatePatientRecBtn = (Button) findViewById(R.id.update_patient_record_btn);
+        Button createUpdateCaseRecBtn = (Button) findViewById(R.id.create_update_case_record_btn);
         Button backBtn = (Button)findViewById(R.id.existing_patient_back_btn);
 
         TextView userLabel = (TextView)findViewById(R.id.user_label);
@@ -104,7 +100,7 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
     }
 
-    public void getExistingPatients (int healthCenterId) {
+    private void getExistingPatients(int healthCenterId) {
 
         try {
             getBetterDb.openDatabase();

@@ -12,7 +12,7 @@
             android:id="@+id/health_center_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Health Center"
+            android:text="@string/health_center"
             android:textSize="24sp"
             android:textAllCaps="true"
             android:layout_centerInParent="true"

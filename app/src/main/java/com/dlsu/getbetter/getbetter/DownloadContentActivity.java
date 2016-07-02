@@ -2,7 +2,6 @@ package com.dlsu.getbetter.getbetter;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,7 +16,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordDownloadAdapter;
-import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
@@ -27,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -50,17 +47,13 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private static final String TAG_UPLOADED_ON = "uploaded_on";
     private static final String RESULT_MESSAGE = "DOWNLOAD SUCCESS";
 
-    String myJSON;
-    String myJSONAttachments;
-    JSONArray caseRecords = null;
-    JSONArray caseAttachments = null;
-    ArrayList<CaseRecord> caseRecordsData;
-    ArrayList<Attachment> caseRecordAttachments;
+    private String myJSON;
+    private String myJSONAttachments;
+    private ArrayList<CaseRecord> caseRecordsData;
 
-    DataAdapter getBetterDb;
-    ProgressDialog dDialog = null;
-    CaseRecordDownloadAdapter caseRecordDownloadAdapter = null;
-    ListView caseRecordList;
+    private DataAdapter getBetterDb;
+    private ProgressDialog dDialog = null;
+    private ListView caseRecordList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +68,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         downloadBtn.setOnClickListener(this);
 
         caseRecordsData = new ArrayList<>();
-        caseRecordAttachments = new ArrayList<>();
+        ArrayList<Attachment> caseRecordAttachments = new ArrayList<>();
 
         initializeDatabase();
         getDownloadableData();
@@ -117,7 +110,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }
     }
 
-    public void getDownloadableData() {
+    private void getDownloadableData() {
 
         class GetCaseRecordList extends AsyncTask<String, Void, String> {
 
@@ -146,7 +139,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
     }
 
-    public void downloadSelectedData(ArrayList<CaseRecord> caseRecords) {
+    private void downloadSelectedData(ArrayList<CaseRecord> caseRecords) {
 
         class DownloadSelectedData extends AsyncTask<ArrayList<CaseRecord>, Void, String> {
 
@@ -195,11 +188,11 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         downloadSelectedData.execute(caseRecords);
     }
 
-    public void insertNewAttachmentsToLocalDB() {
+    private void insertNewAttachmentsToLocalDB() {
 
         try{
             JSONObject jsonObject = new JSONObject(myJSONAttachments);
-            caseAttachments = jsonObject.getJSONArray(TAG_CASE_ATTACHMENTS);
+            JSONArray caseAttachments = jsonObject.getJSONArray(TAG_CASE_ATTACHMENTS);
 
             for(int i = 0; i < caseAttachments.length(); i++) {
                 JSONObject o = caseAttachments.getJSONObject(i);
@@ -226,11 +219,11 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             e.printStackTrace();
         }
     }
-    public void populateCaseRecordsList() {
+    private void populateCaseRecordsList() {
 
         try {
             JSONObject jsonObject = new JSONObject(myJSON);
-            caseRecords = jsonObject.getJSONArray(TAG_CASE_RECORD);
+            JSONArray caseRecords = jsonObject.getJSONArray(TAG_CASE_RECORD);
 
             for(int i = 0; i < caseRecords.length(); i++) {
                 JSONObject c = caseRecords.getJSONObject(i);
@@ -250,7 +243,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 Log.e("case records data", caseRecordsData.size() + "");
             }
 
-            caseRecordDownloadAdapter = new CaseRecordDownloadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsData);
+            CaseRecordDownloadAdapter caseRecordDownloadAdapter = new CaseRecordDownloadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsData);
             caseRecordList.setAdapter(caseRecordDownloadAdapter);
 
         }catch (JSONException e) {
@@ -258,7 +251,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }
     }
 
-    public String getCaseRecordStatusString(int caseRecordStatusId) {
+    private String getCaseRecordStatusString(int caseRecordStatusId) {
 
         String result = null;
         Resources res = getResources();
@@ -292,7 +285,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         return result;
     }
 
-    public String getUserName (int userId) {
+    private String getUserName(int userId) {
 
         try {
             getBetterDb.openDatabase();
@@ -325,7 +318,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         return result;
     }
 
-    public String getHealthCenterName (int healthCenterId) {
+    private String getHealthCenterName(int healthCenterId) {
 
         try {
             getBetterDb.openDatabase();
@@ -341,7 +334,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         return result;
     }
 
-    public void updateLocalCaseRecordHistory(ArrayList<CaseRecord> caseRecords) {
+    private void updateLocalCaseRecordHistory(ArrayList<CaseRecord> caseRecords) {
 
         class UpdateLocalCaseRecordHistory extends AsyncTask<ArrayList<CaseRecord>, Void, String> {
 
@@ -429,7 +422,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }
     }
 
-    public void featureAlertMessage (String result) {
+    private void featureAlertMessage(String result) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Download Status");

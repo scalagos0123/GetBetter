@@ -1,6 +1,5 @@
 package com.dlsu.getbetter.getbetter;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -63,9 +62,15 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
         new GetCaseRecordsTask().execute();
         Log.e("case records", caseRecords.size() + "");
 
-        caseRecordsList.setHasFixedSize(true);
-        caseRecordsList.setLayoutManager(caseRecordsLayoutManager);
-        caseRecordsList.setAdapter(caseRecordAdapter);
+        if (caseRecordsList != null) {
+            caseRecordsList.setHasFixedSize(true);
+        }
+        if (caseRecordsList != null) {
+            caseRecordsList.setLayoutManager(caseRecordsLayoutManager);
+        }
+        if (caseRecordsList != null) {
+            caseRecordsList.setAdapter(caseRecordAdapter);
+        }
         caseRecordAdapter.SetOnItemClickListener(new CaseRecordAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -74,10 +79,18 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
             }
         });
 
-        createNewCaseRecBtn.setOnClickListener(this);
-        uploadCaseRecBtn.setOnClickListener(this);
-        viewCaseRecBtn.setOnClickListener(this);
-        backBtn.setOnClickListener(this);
+        if (createNewCaseRecBtn != null) {
+            createNewCaseRecBtn.setOnClickListener(this);
+        }
+        if (uploadCaseRecBtn != null) {
+            uploadCaseRecBtn.setOnClickListener(this);
+        }
+        if (viewCaseRecBtn != null) {
+            viewCaseRecBtn.setOnClickListener(this);
+        }
+        if (backBtn != null) {
+            backBtn.setOnClickListener(this);
+        }
     }
 
     private void initializeDatabase () {
@@ -92,7 +105,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 
     }
 
-    public void getCaseRecords () {
+    private void getCaseRecords() {
 
         try {
             getBetterDb.openDatabase();
@@ -105,7 +118,7 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
         getBetterDb.closeDatabase();
     }
 
-    public void getCaseRecordStatus () {
+    private void getCaseRecordStatus() {
 
         try {
             getBetterDb.openDatabase();

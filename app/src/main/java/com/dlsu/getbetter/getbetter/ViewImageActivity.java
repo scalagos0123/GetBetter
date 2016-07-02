@@ -53,7 +53,6 @@ public class ViewImageActivity extends AppCompatActivity implements View.OnClick
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

@@ -19,8 +19,8 @@ import java.util.HashMap;
 
 public class HealthCenterActivity extends AppCompatActivity {
 
-    DataAdapter getBetterDb;
-    SystemSessionManager systemSessionManager;
+    private DataAdapter getBetterDb;
+    private SystemSessionManager systemSessionManager;
 
     private ArrayList<HealthCenter> healthCenters;
 

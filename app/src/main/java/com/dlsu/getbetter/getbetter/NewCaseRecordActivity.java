@@ -3,9 +3,6 @@ package com.dlsu.getbetter.getbetter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-
-import com.dlsu.getbetter.getbetter.sessionmanagers.NewPatientSessionManager;
 
 public class NewCaseRecordActivity extends AppCompatActivity {
 

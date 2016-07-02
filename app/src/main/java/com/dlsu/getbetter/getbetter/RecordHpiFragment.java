@@ -1,10 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.content.DialogInterface;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -12,7 +8,6 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +36,7 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
     private String outputFile;
     private String chiefComplaintName = "";
 
-    NewPatientSessionManager newPatientSessionManager;
+    private NewPatientSessionManager newPatientSessionManager;
 
 
     public RecordHpiFragment() {
@@ -115,13 +110,11 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
             try {
                 hpiRecorder.prepare();
                 hpiRecorder.start();
-            } catch (IllegalStateException e) {
+
+            } catch (IllegalStateException | IOException e) {
 
                 e.printStackTrace();
 
-            }
-            catch (IOException e) {
-                e.printStackTrace();
             }
 
             stopRecBtn.setEnabled(true);

@@ -2,8 +2,9 @@ package com.dlsu.getbetter.getbetter;
 
 /**
  * Created by mikedayupay on 11/05/2016.
+ * GetBetter 2016
  */
-public class DirectoryConstants {
+class DirectoryConstants {
 
     public static final String PROFILE_IMAGE_DIRECTORY_NAME = "Profile Images";
 

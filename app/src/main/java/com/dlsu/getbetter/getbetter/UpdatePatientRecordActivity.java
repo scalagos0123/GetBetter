@@ -34,7 +34,7 @@ import java.util.StringTokenizer;
 
 public class UpdatePatientRecordActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    DataAdapter getBetterDb;
+    private DataAdapter getBetterDb;
     private EditText firstNameInput;
     private EditText middleNameInput;
     private EditText lastNameInput;
@@ -48,12 +48,9 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
     private String profilePicTitle;
     private String profilePicPath;
 
-    private ArrayAdapter<CharSequence> genderAdapter;
-    private ArrayAdapter<CharSequence> civilStatusAdapter;
-
     private static final int REQUEST_IMAGE1 = 100;
 
-    Uri fileUri;
+    private Uri fileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,28 +92,50 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
         firstNameInput.setText(patient.getFirstName());
         middleNameInput.setText(patient.getMiddleName());
         lastNameInput.setText(patient.getLastName());
-        profilePicPlaceHolder.setText("");
         profilePicPath = patient.getProfileImageBytes();
         setPic(setProfilePicBtn, patient.getProfileImageBytes());
 
-        genderAdapter = ArrayAdapter.createFromResource(this,
+        if (profilePicPlaceHolder != null) {
+            profilePicPlaceHolder.setText("");
+        }
+
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.genders, android.R.layout.simple_spinner_item);
 
-        civilStatusAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> civilStatusAdapter = ArrayAdapter.createFromResource(this,
                 R.array.civil_statuses, android.R.layout.simple_spinner_item);
 
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         civilStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        genderSpinner.setAdapter(genderAdapter);
-        civilStatusSpinner.setAdapter(civilStatusAdapter);
+        if (genderSpinner != null) {
+            genderSpinner.setAdapter(genderAdapter);
+        }
+        if (civilStatusSpinner != null) {
+            civilStatusSpinner.setAdapter(civilStatusAdapter);
+        }
 
-        submitBtn.setText("Submit");
-        submitBtn.setOnClickListener(this);
+        if (submitBtn != null) {
+            submitBtn.setText(R.string.submit_button_text);
+        }
+
+        if (submitBtn != null) {
+            submitBtn.setOnClickListener(this);
+        }
+
+        if (setBirthday != null) {
+            setBirthday.setOnClickListener(this);
+        }
+
+        if (genderSpinner != null) {
+            genderSpinner.setOnItemSelectedListener(this);
+        }
+
+        if (civilStatusSpinner != null) {
+            civilStatusSpinner.setOnItemSelectedListener(this);
+        }
+
         setProfilePicBtn.setOnClickListener(this);
-        setBirthday.setOnClickListener(this);
-        genderSpinner.setOnItemSelectedListener(this);
-        civilStatusSpinner.setOnItemSelectedListener(this);
 
         if(patient.getBirthdate() != null) {
 
@@ -184,7 +203,7 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
                 .append(sMonth).append("-").append(sDay));
     }
 
-    public void savePatientInfo() {
+    private void savePatientInfo() {
 
         String firstName = firstNameInput.getText().toString();
         String middleName = middleNameInput.getText().toString();
@@ -309,10 +328,8 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
             }
         }
 
-        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "ProfileIMG_" + getTimeStamp() + ".jpg");
 
-
-        return profileImageFile;
+        return new File (mediaStorageDir.getPath() + File.pathSeparator + "ProfileIMG_" + getTimeStamp() + ".jpg");
     }
 
     private void takePicture() {
@@ -343,13 +360,12 @@ public class UpdatePatientRecordActivity extends AppCompatActivity implements Vi
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
     }
 
-    public String getTimeStamp () {
+    private String getTimeStamp() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 }

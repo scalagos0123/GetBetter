@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 13/02/2016.
+ * GetBetter 2016
  */
 public class SummaryPageDataAdapter extends RecyclerView.Adapter<SummaryPageDataAdapter.ViewHolder> {
 

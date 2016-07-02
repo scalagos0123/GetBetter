@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="48sp"
-            android:text="GetBetter"
+            android:text="@string/app_name"
             android:textColor="@color/cardBackground"
             android:layout_centerHorizontal="true"/>
 
@@ -95,11 +95,8 @@
 
                         <ImageView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/audio_recording_icon"
                             android:src="@drawable/ic_action_volume_on"/>
 
                         <RelativeLayout
@@ -109,7 +106,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Record the History of Present Illness"
+                                android:text="@string/record_the_history_of_present_illness"
                                 android:textSize="22sp"
                                 android:layout_centerVertical="true"/>
 

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 09/03/2016.
+ * GetBetter 2016
  */
 public class CaseRecordAdapter extends RecyclerView.Adapter<CaseRecordAdapter.CaseRecordViewHolder> {
 

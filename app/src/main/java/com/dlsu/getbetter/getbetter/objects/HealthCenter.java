@@ -2,6 +2,7 @@ package com.dlsu.getbetter.getbetter.objects;
 
 /**
  * Created by mikedayupay on 17/02/2016.
+ * GetBetter 2016
  */
 public class HealthCenter {
 

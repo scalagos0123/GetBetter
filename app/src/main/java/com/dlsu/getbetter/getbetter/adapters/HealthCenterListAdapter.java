@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 26/06/2016.
+ * GetBetter 2016
  */
 public class HealthCenterListAdapter extends RecyclerView.Adapter<HealthCenterListAdapter.HealthCenterViewHolder> {
 

@@ -22,7 +22,7 @@
                 android:id="@+id/upload_control_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Control Number"
+                android:text="@string/control_number_placeholder"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_centerVertical="true"

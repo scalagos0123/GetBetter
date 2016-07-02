@@ -26,8 +26,7 @@ import java.util.ArrayList;
 public class ClosedCaseFragment extends Fragment {
 
     SystemSessionManager systemSessionManager;
-    DataAdapter getBetterDb;
-    OnCaseRecordSelected mCallback;
+    private DataAdapter getBetterDb;
 
     private ArrayList<CaseRecord> closedCases;
 
@@ -37,7 +36,7 @@ public class ClosedCaseFragment extends Fragment {
     }
 
     public interface OnCaseRecordSelected {
-        public void onCaseRecordSelected(int caseRecordId);
+        void onCaseRecordSelected(int caseRecordId);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class ClosedCaseFragment extends Fragment {
         super.onAttach(context);
 
         try{
-            mCallback = (OnCaseRecordSelected) context;
+            OnCaseRecordSelected mCallback = (OnCaseRecordSelected) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");

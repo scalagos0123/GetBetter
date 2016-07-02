@@ -1,26 +1,16 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dlsu.getbetter.getbetter.database.DataAdapter;
-import com.dlsu.getbetter.getbetter.objects.CaseRecord;
-import com.dlsu.getbetter.getbetter.objects.HealthCenter;
 import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -29,7 +19,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         DiagnosedCaseFragment.OnCaseRecordSelected, UrgentCaseFragment.OnCaseRecordSelected,
         ClosedCaseFragment.OnCaseRecordSelected {
 
-    SystemSessionManager systemSessionManager;
+    private SystemSessionManager systemSessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

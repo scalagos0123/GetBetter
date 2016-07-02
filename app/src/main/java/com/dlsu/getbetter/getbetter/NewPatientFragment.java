@@ -3,6 +3,7 @@ package com.dlsu.getbetter.getbetter;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,8 +58,8 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
     private ArrayAdapter<CharSequence> civilStatusAdapter;
 
     private static final int REQUEST_IMAGE1 = 100;
-    NewPatientSessionManager newPatientSessionManager;
-    Uri fileUri;
+    private NewPatientSessionManager newPatientSessionManager;
+    private Uri fileUri;
 
 
     public NewPatientFragment() {
@@ -138,14 +140,20 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
 
         if(id == R.id.new_patient_next_btn) {
 
-            savePatientInfo();
+            if(checkFormMissingInput()) {
+                featureAlertMessage("Please fill out this form completely.");
+            }else {
+                savePatientInfo();
 
-            CaptureDocumentsFragment captureDocumentsFragment = new CaptureDocumentsFragment();
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.add(captureDocumentsFragment, "captureDocumentsFragment");
-            ft.addToBackStack("captureDocumentsFragment");
-            ft.replace(R.id.fragment_container, captureDocumentsFragment);
-            ft.commit();
+                CaptureDocumentsFragment captureDocumentsFragment = new CaptureDocumentsFragment();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.add(captureDocumentsFragment, "captureDocumentsFragment");
+                ft.addToBackStack("captureDocumentsFragment");
+                ft.replace(R.id.fragment_container, captureDocumentsFragment);
+                ft.commit();
+            }
+
+
 
         } else if(id == R.id.new_patient_set_birthday_btn) {
             showPicker();
@@ -175,7 +183,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
                 .append(sMonth).append("-").append(sDay));
     }
 
-    public void savePatientInfo() {
+    private void savePatientInfo() {
 
         String firstName = this.firstNameInput.getText().toString();
         String middleName = this.middleNameInput.getText().toString();
@@ -215,6 +223,13 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    private boolean checkFormMissingInput() {
+
+        return firstNameInput.getText().toString().trim().length() <= 0 || lastNameInput.getText().toString().trim().length() <= 0
+                || birthDate.trim().length() <= 0 || genderSelected.trim().length() <= 0 || civilStatusSelected.trim().length() <= 0
+                || fileUri.getPath().trim().length() <= 0;
+    }
+
     private void showPicker () {
 
         DatePickerFragment date = new DatePickerFragment();
@@ -234,7 +249,7 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         date.show(getFragmentManager(), "Date Picker");
     }
 
-    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
 
         public void onDateSet(DatePicker view, int arg1, int arg2,
                               int arg3) {
@@ -328,13 +343,28 @@ public class NewPatientFragment extends Fragment implements View.OnClickListener
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
     }
 
-    public String getTimeStamp () {
+    private String getTimeStamp() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+    }
+
+    private void featureAlertMessage(String result) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Oops! Wait a minute..");
+        builder.setMessage(result);
+
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
     }
 }

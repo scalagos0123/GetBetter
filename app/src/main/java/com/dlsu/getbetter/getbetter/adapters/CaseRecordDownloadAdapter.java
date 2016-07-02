@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 14/05/2016.
+ * GetBetter 2016
  */
 public class CaseRecordDownloadAdapter extends ArrayAdapter<CaseRecord>{
 
@@ -115,7 +116,7 @@ public class CaseRecordDownloadAdapter extends ArrayAdapter<CaseRecord>{
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        CaseRecord caseRecord = (CaseRecord)this.getItem(position);
+        CaseRecord caseRecord = this.getItem(position);
 
         if(convertView == null) {
 
@@ -144,7 +145,7 @@ public class CaseRecordDownloadAdapter extends ArrayAdapter<CaseRecord>{
         }
 
 
-        holder.controlNumber.setText(caseRecord.getCaseRecordId() + "");
+        holder.controlNumber.setText(String.valueOf(caseRecord.getCaseRecordId()));
         holder.patientName.setText(caseRecord.getPatientName());
         holder.complaint.setText(caseRecord.getCaseRecordComplaint());
         holder.healthCenter.setText(caseRecord.getHealthCenter());

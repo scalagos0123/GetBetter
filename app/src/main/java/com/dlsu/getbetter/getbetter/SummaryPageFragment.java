@@ -68,10 +68,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private String patientGender;
     private String patientCivilStatus;
     private String chiefComplaint;
-    private String recordedHpiOutputFile;
     private String controlNumber;
     private String uploadedDate;
-    private String midwifeName;
     private String attachmentName;
 
     private static final int REQUEST_IMAGE_ATTACHMENT = 100;
@@ -81,8 +79,6 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private static final int MEDIA_TYPE_IMAGE = 1;
     private static final int MEDIA_TYPE_VIDEO = 2;
     private static final int MEDIA_TYPE_AUDIO = 3;
-
-    private Bundle[] imageDataTransfer = {null};
 
     private long patientId = 0;
     private int caseRecordId;
@@ -102,8 +98,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private Uri fileUri;
 
     private DataAdapter getBetterDb;
-    NewPatientSessionManager newPatientDetails;
-    SystemSessionManager systemSessionManager;
+    private NewPatientSessionManager newPatientDetails;
 
     public SummaryPageFragment() {
         // Required empty public constructor
@@ -113,7 +108,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        systemSessionManager = new SystemSessionManager(getActivity());
+        SystemSessionManager systemSessionManager = new SystemSessionManager(getActivity());
 
         if(systemSessionManager.checkLogin())
             getActivity().finish();
@@ -121,7 +116,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         HashMap<String, String> user = systemSessionManager.getUserDetails();
         HashMap<String, String> hc = systemSessionManager.getHealthCenter();
         healthCenterId = Integer.parseInt(hc.get(SystemSessionManager.HEALTH_CENTER_ID));
-        midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
+        String midwifeName = user.get(SystemSessionManager.LOGIN_USER_NAME);
 
         initializeDatabase();
         getUserId(user.get(SystemSessionManager.LOGIN_USER_NAME));
@@ -138,7 +133,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         patientGender = patient.get(NewPatientSessionManager.NEW_PATIENT_GENDER);
         patientCivilStatus = patient.get(NewPatientSessionManager.NEW_PATIENT_CIVIL_STATUS);
         chiefComplaint = patient.get(NewPatientSessionManager.NEW_PATIENT_CHIEF_COMPLAINT);
-        recordedHpiOutputFile = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_HPI_RECORD);
+        String recordedHpiOutputFile = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_HPI_RECORD);
 
         String patientInfoFormImage = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE1);
         String familySocialHistoryFormImage = patient.get(NewPatientSessionManager.NEW_PATIENT_DOC_IMAGE2);
@@ -588,7 +583,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 //        }
 //    }
 
-    public void insertCaseRecord() {
+    private void insertCaseRecord() {
 
         try {
             getBetterDb.openDatabase();
@@ -607,7 +602,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         getBetterDb.closeDatabase();
     }
 
-    public void insertCaseRecordHistory () {
+    private void insertCaseRecordHistory() {
 
         try {
             getBetterDb.openDatabase();
@@ -621,7 +616,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         getBetterDb.closeDatabase();
     }
 
-    public void insertCaseRecordAttachments() {
+    private void insertCaseRecordAttachments() {
 
         try {
             getBetterDb.openDatabase();
@@ -639,7 +634,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         getBetterDb.closeDatabase();
     }
 
-    public String generateControlNumber(long pId) {
+    private String generateControlNumber(long pId) {
 
         String result;
         String firstChar = patientFirstName.substring(0, 1).toUpperCase();
@@ -662,7 +657,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         int generatedRandomId = m / 2;
 
         generatedRandomId = (a * generatedRandomId + c) % m;
-        caseRecordId = Integer.parseInt(Long.valueOf(patientId) + Integer.toString(generatedRandomId));
+        caseRecordId = Integer.parseInt(patientId + Integer.toString(generatedRandomId));
 
         try {
             getBetterDb.openDatabase();
@@ -763,7 +758,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         return mediaFile;
     }
 
-    public Uri getOutputMediaFileUri(int type) {
+    private Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(createMediaFile(type));
     }
 
@@ -806,17 +801,16 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);
     }
 
-    public String getTimeStamp () {
+    private String getTimeStamp() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 
-    public void featureAlertMessage () {
+    private void featureAlertMessage() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SummaryPageFragment.this.getActivity());
         builder.setTitle("Feature Not Available!");

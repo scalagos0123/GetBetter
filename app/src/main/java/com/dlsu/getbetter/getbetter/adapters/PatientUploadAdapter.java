@@ -1,6 +1,5 @@
 package com.dlsu.getbetter.getbetter.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 25/02/2016.
+ * GetBetter 2016
  */
 public class PatientUploadAdapter extends ArrayAdapter<Patient> {
 
@@ -78,7 +78,7 @@ public class PatientUploadAdapter extends ArrayAdapter<Patient> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        Patient patient = (Patient)this.getItem(position);
+        Patient patient = this.getItem(position);
 
         if(convertView == null) {
 

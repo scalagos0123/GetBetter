@@ -10,13 +10,12 @@ import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.R;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
-import com.dlsu.getbetter.getbetter.objects.Patient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by mikedayupay on 15/04/2016.
+ * GetBetter 2016
  */
 public class CaseRecordUploadAdapter extends ArrayAdapter<CaseRecord> {
 
@@ -107,7 +106,7 @@ public class CaseRecordUploadAdapter extends ArrayAdapter<CaseRecord> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        CaseRecord caseRecord = (CaseRecord)this.getItem(position);
+        CaseRecord caseRecord = this.getItem(position);
 
         if(convertView == null) {
 

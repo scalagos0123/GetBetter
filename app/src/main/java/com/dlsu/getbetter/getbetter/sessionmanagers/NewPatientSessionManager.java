@@ -11,14 +11,13 @@ import java.util.HashMap;
 
 /**
  * Created by mikedayupay on 02/02/2016.
+ * GetBetter 2016
  */
 public class NewPatientSessionManager {
 
-    SharedPreferences pref;
-    Editor editor;
-    Context _context;
-
-    int PRIVATE_MODE = 0;
+    private SharedPreferences pref;
+    private Editor editor;
+    private Context _context;
 
     private static final String PREFER_NAME = "NewPatientPref";
 
@@ -38,12 +37,13 @@ public class NewPatientSessionManager {
     public static final String NEW_PATIENT_DOC_IMAGE3_TITLE = "newPatientDocImage3Title";
     public static final String NEW_PATIENT_DOC_HPI_RECORD = "newPatientHpiRecord";
     public static final String NEW_PATIENT_CHIEF_COMPLAINT = "newPatientChiefComplaint";
-    public static final String IS_ACTIVITY_NEW_PATIENT = "isActivityNewPatient";
+    private static final String IS_ACTIVITY_NEW_PATIENT = "isActivityNewPatient";
 
 
     public NewPatientSessionManager (Context context) {
 
         this._context = context;
+        int PRIVATE_MODE = 0;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
 
         editor = pref.edit();

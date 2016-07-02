@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 16/02/2016.
+ * GetBetter 2016
  */
 public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatientAdapter.ExistingPatientViewHolder> {
 
@@ -124,7 +124,6 @@ public class ExistingPatientAdapter extends RecyclerView.Adapter<ExistingPatient
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

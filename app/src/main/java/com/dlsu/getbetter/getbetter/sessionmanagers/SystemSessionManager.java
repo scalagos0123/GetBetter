@@ -4,31 +4,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.dlsu.getbetter.getbetter.HomeActivity;
 import com.dlsu.getbetter.getbetter.LoginActivity;
 
 import java.util.HashMap;
 
 /**
  * Created by mikedayupay on 17/02/2016.
+ * GetBetter 2016
  */
 public class SystemSessionManager {
 
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    Context _context;
-
-    int PRIVATE_MODE = 0;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private Context _context;
 
     private static final String PREFER_NAME = "SystemPref";
 
     public static final String LOGIN_USER_NAME = "loginUserName";
-    public static final String IS_USER_LOGGED_IN = "isUserLoggedIn";
+    private static final String IS_USER_LOGGED_IN = "isUserLoggedIn";
     public static final String HEALTH_CENTER_NAME = "healthCenterName";
     public static final String HEALTH_CENTER_ID = "healthCenterId";
     public SystemSessionManager (Context context) {
 
         this._context = context;
+        int PRIVATE_MODE = 0;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
 
         editor = pref.edit();
@@ -98,7 +97,7 @@ public class SystemSessionManager {
         _context.startActivity(i);
     }
 
-    public boolean isUserLoggedIn () {
+    private boolean isUserLoggedIn() {
         return pref.getBoolean(IS_USER_LOGGED_IN, false);
     }
 

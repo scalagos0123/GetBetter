@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" 
         android:textSize="48sp"
-        android:text="GetBetter"
+        android:text="@string/app_name"
         android:textColor="@color/cardBackground"
         android:layout_centerHorizontal="true"/>
 
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Current User: "
+                android:text="@string/current_user"
                 android:textSize="18sp"/>
 
             <TextView
@@ -81,7 +81,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Current Health Center: "
+                        android:text="@string/current_health_center"
                         android:textSize="18sp"
                         android:textAllCaps="true"/>
 
@@ -93,9 +93,9 @@
 
                     <TextView
                         android:id="@+id/home_current_health_center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Children's Medical Clinic"
+                        android:text="@string/health_center_placeholder"
                         android:textSize="24sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
@@ -109,7 +109,7 @@
                     android:id="@+id/change_health_center_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Change Health Center"
+                    android:text="@string/change_health_center_button_text"
                     android:textColor="@color/cardBackground"
                     android:textSize="14sp"
                     android:layout_alignParentRight="true"
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/greenButton"
-                    android:text="Download Content"
+                    android:text="@string/download_content_button_text"
                     android:textColor="@color/cardBackground"
                     android:textSize="14sp"
                     android:layout_weight="0.5"
@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/blueButton"
-                    android:text="View/Create Patient Records"
+                    android:text="@string/view_create_patient_records_button_text"
                     android:textColor="@color/cardBackground"
                     android:textSize="14sp"
                     android:layout_weight="0.5"/>
@@ -156,7 +156,8 @@
                 android:layout_height="400dp"
                 android:orientation="horizontal"
                 android:showDividers="middle"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="15dp"
+                android:baselineAligned="false">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -232,7 +233,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/redButton"
-                android:text="Logout"
+                android:text="@string/logout_button_text"
                 android:textColor="@color/cardBackground"/>
 
         </LinearLayout>

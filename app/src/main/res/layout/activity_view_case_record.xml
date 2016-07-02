@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="48sp"
-            android:text="GetBetter"
+            android:text="@string/app_name"
             android:textColor="@color/cardBackground"
             android:layout_centerHorizontal="true"/>
 
@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current User: "
+                    android:text="@string/current_user"
                     android:textSize="18sp"/>
 
                 <TextView
@@ -74,8 +74,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CASE RECORD"
+                        android:text="@string/case_record"
                         android:textSize="24sp"
+                        android:textAllCaps="true"
                         android:textStyle="bold"
                         />
 
@@ -83,7 +84,8 @@
                         android:id="@+id/view_case_control_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CONTROL NUMBER"
+                        android:text="@string/control_number_placeholder"
+                        android:textAllCaps="true"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:layout_marginLeft="24dp"
@@ -103,7 +105,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -121,6 +124,7 @@
                                 android:layout_width="255dp"
                                 android:layout_height="200dp"
                                 android:src="@drawable/profile_picture_placeholder"
+                                android:contentDescription="@string/patient_profile_image"
                                 android:padding="6dp"
                                 android:layout_alignParentTop="true"
                                 android:layout_alignParentLeft="true"
@@ -139,7 +143,7 @@
 
                                     <TextView
                                         android:id="@+id/view_case_patient_name"
-                                        android:text="Name Placeholder"
+                                        android:text="@string/patient_name_placeholder"
                                         android:textStyle="bold"/>
 
                                 </TableRow>
@@ -356,7 +360,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:background="@color/redButton"
-                        android:text="BACK"
+                        android:text="@string/back_button_text"
                         android:textColor="@color/cardBackground"
                         android:paddingLeft="100dp"
                         android:paddingRight="100dp"/>
@@ -367,7 +371,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:background="@color/blueButton"
-                        android:text="Update Case Record"
+                        android:text="@string/update_case_record_button_text"
                         android:textColor="@color/cardBackground"
                         android:paddingRight="28dp"
                         android:paddingLeft="28dp"/>

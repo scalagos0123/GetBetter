@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import java.util.StringTokenizer;
  */
 public class DetailsFragment extends Fragment {
 
-    DataAdapter getBetterDb;
+    private DataAdapter getBetterDb;
 
 
     private CaseRecord caseRecord;
@@ -169,7 +168,6 @@ public class DetailsFragment extends Fragment {
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

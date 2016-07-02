@@ -17,14 +17,14 @@ import java.util.ArrayList;
 
 /**
  * Created by mikedayupay on 10/01/2016.
+ * GetBetter 2016
  */
 public class DataAdapter {
 
-    protected static final String TAG = "DataAdapter";
+    private static final String TAG = "DataAdapter";
 
     private int gOpenCounter;
 
-    private final Context myContext;
     private SQLiteDatabase getBetterDb;
     private DatabaseHelper getBetterDatabaseHelper;
 
@@ -39,7 +39,7 @@ public class DataAdapter {
 
 
     public DataAdapter(Context context) {
-        this.myContext = context;
+        Context myContext = context;
         getBetterDatabaseHelper = DatabaseHelper.getInstance(myContext);
     }
 

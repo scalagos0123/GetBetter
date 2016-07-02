@@ -1,44 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GetBetter</string>
-    <string name="login_desc_title">GetBetter Tele-Diagnosis System</string>
-    <string name="login_desc">As part of a research project of De La Salle University, the GetBetter
-        Tele-Diagnosis System was designed and developed with financial support form UNICEF, UNDP,
-        World Bank, the WHO Special Programme for Research and Training in Tropical Diseases (WHO-TDR).
-        The GetBetter team sincerely hopes that this GetBetter Tele-Diagnosis System will be
-        instrumental in providing quality healthcare to people from rural, poor and geographically
-        isolated areas. We believe that the poor and the marginalized should be able to benefit from
-        the major strides of progress in Internet and database technology, and ICT in general.</string>
-
-    <string name="existing_patient">EXISTING PATIENT</string>
-
-    <string-array name="civil_statuses">
-        <item>Single</item>
-        <item>Married</item>
-        <item>Separated</item>
-        <item>Widowed</item>
-    </string-array>
-
-    <string-array name="genders">
-        <item>Male</item>
-        <item>Female</item>
-    </string-array>
-
-    <string-array name="record_status">
-        <item>New</item>
-        <item>Updated</item>
-        <item>Additional Instructions</item>
-        <item>Talk to Health Center</item>
-        <item>Talk to Patient</item>
-        <item>Urgent</item>
-        <item>Diagnosed</item>
-    </string-array>
-
-    <string name="title_activity_existing_patient">ExistingPatientActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="download">Download</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="patient_profile_image">Patient Profile Image</string>
     <string name="attachment_display">Attachment Display</string>
     <string name="patient_information_form">Patient Information Form</string>

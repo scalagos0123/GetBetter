@@ -1,7 +1,6 @@
 package com.dlsu.getbetter.getbetter;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,8 +40,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
     private Patient patientInfo;
     private ArrayList<Attachment> caseAttachments;
 
-    SystemSessionManager systemSessionManager;
-    DataAdapter getBetterDb;
+    private DataAdapter getBetterDb;
 
     private MediaPlayer nMediaPlayer;
     private MediaController nMediaController;
@@ -54,7 +51,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_case_record);
 
-        systemSessionManager = new SystemSessionManager(this);
+        SystemSessionManager systemSessionManager = new SystemSessionManager(this);
         Bundle extras = getIntent().getExtras();
         int caseRecordId = extras.getInt("caseRecordId");
         long patientId = extras.getLong("patientId");
@@ -198,7 +195,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
 
     }
 
-    public void initializeDatabase () {
+    private void initializeDatabase() {
 
         getBetterDb = new DataAdapter(this);
 
@@ -209,7 +206,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         }
     }
 
-    public void getCaseRecord(int caseRecordId) {
+    private void getCaseRecord(int caseRecordId) {
 
         try {
             getBetterDb.openDatabase();
@@ -223,7 +220,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
 
     }
 
-    public void getCaseAttachments(int caseRecordId) {
+    private void getCaseAttachments(int caseRecordId) {
 
         try {
             getBetterDb.openDatabase();
@@ -238,7 +235,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
 
     }
 
-    public void getPatientInfo(long patientId) {
+    private void getPatientInfo(long patientId) {
 
         try {
             getBetterDb.openDatabase();
@@ -251,7 +248,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         getBetterDb.closeDatabase();
     }
 
-    public String getHealthCenterString (int healthCenterId) {
+    private String getHealthCenterString(int healthCenterId) {
 
         try {
             getBetterDb.openDatabase();
@@ -302,7 +299,6 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         mImageView.setImageBitmap(bitmap);

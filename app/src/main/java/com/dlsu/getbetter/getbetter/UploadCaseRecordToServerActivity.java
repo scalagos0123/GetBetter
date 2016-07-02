@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -53,16 +52,14 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private int healthCenterId;
     private ProgressDialog cDialog = null;
 
-    DataAdapter getBetterDb;
-    CaseRecordUploadAdapter caseRecordUploadAdapter = null;
-    SystemSessionManager systemSessionManager;
+    private DataAdapter getBetterDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_case_record_to_server);
 
-        systemSessionManager = new SystemSessionManager(this);
+        SystemSessionManager systemSessionManager = new SystemSessionManager(this);
 
         if(systemSessionManager.checkLogin())
             finish();
@@ -90,7 +87,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         initializeDatabase();
         new PopulateCaseRecordListTask().execute();
 
-        caseRecordUploadAdapter = new CaseRecordUploadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsUpload);
+        CaseRecordUploadAdapter caseRecordUploadAdapter = new CaseRecordUploadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsUpload);
         caseRecordList.setAdapter(caseRecordUploadAdapter);
     }
 
@@ -461,7 +458,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         return result;
     }
 
-    public void featureAlertMessage (String result) {
+    private void featureAlertMessage(String result) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload Status");

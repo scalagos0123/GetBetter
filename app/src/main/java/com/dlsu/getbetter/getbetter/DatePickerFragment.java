@@ -8,10 +8,11 @@ import android.support.v4.app.DialogFragment;
 
 /**
  * Created by mikedayupay on 27/01/2016.
+ * GetBetter 2016
  */
 public class DatePickerFragment extends DialogFragment {
 
-    DatePickerDialog.OnDateSetListener ondateSet;
+    private DatePickerDialog.OnDateSetListener ondateSet;
     private int year, month, day;
 
     public DatePickerFragment() {}
