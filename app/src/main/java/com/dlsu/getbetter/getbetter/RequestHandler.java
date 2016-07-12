@@ -2,17 +2,23 @@ package com.dlsu.getbetter.getbetter;
 
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +48,7 @@ class RequestHandler {
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
             writer.write(getPostDataString(postDataParams));
+
 
             writer.flush();
             writer.close();
@@ -180,6 +187,72 @@ class RequestHandler {
         }
 
         return sb.toString();
+    }
+
+    public void getAudioAttachment(String path, String url) {
+
+    }
+
+    public void getAudioFile(String path) {
+
+        int count;
+
+        try {
+            URL url1 = new URL("http://www.stephaniequinn.com/Music/Commercial%20DEMO%20-%2015.mp3");
+            URLConnection conn = url1.openConnection();
+
+            InputStream in = conn.getInputStream();
+
+            OutputStream out = new FileOutputStream(new File(path));
+
+            byte[] buffer = new byte[4096];
+
+            int len;
+
+            while((len = in.read(buffer)) != 1) {
+                out.write(buffer, 0, len);
+            }
+
+            out.close();
+
+//            HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
+//
+//            conn.setReadTimeout(30000);
+//            conn.setConnectTimeout(30000);
+//            conn.setRequestMethod("GET");
+////            conn.setRequestProperty("Connection", "Keep-Alive");
+////            conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+//            conn.setDoInput(true);
+////            conn.connect();
+
+//            int responseCode = conn.getResponseCode();
+//            Log.d("response", responseCode + "");
+
+
+//            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//            InputStream inputStream = new BufferedInputStream(conn.getInputStream(), 8192);
+
+//            FileOutputStream fos = new FileOutputStream(new File(path));
+//            byte data[] = new byte[1024];
+
+//            int data;
+//            while((data = br.read()) != -1) {
+//                fos.write(data);
+//            }
+//
+//            while((count = inputStream.read(data)) != -1) {
+//                fos.write(data, 0, count);
+//                count = inputStream.read(data);
+//            }
+//
+////            br.close();
+//            inputStream.close();
+//            fos.flush();
+//            fos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

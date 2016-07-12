@@ -15,19 +15,27 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
       $stmt->bind_result($case_record_attachment_id, $case_record_id, $description,
       $case_file_url, $case_record_attachment_type_id, $uploaded_on);
 
-      $filetype = pathinfo($case_file_url, PATHINFO_EXTENSION);
-      $image = base64_encode_image($case_file_url, $filetype);
-
-
       $result = array();
 
       while($stmt->fetch()) {
-        array_push($result, array('case_attachment_id'=>$case_record_attachment_id,
-        'case_record_id'=>$case_record_id,
-        'description'=>$description,
-        'encoded_image'=>$image,
-        'case_attachment_type'=>$case_record_attachment_type_id,
-        'uploaded_on'=>$uploaded_on));
+
+        if($case_record_attachment_type_id == 1) {
+
+          $filetype = pathinfo($case_file_url, PATHINFO_EXTENSION);
+          $image = base64_encode_image($case_file_url, $filetype);
+
+          array_push($result, array('case_attachment_id'=>$case_record_attachment_id,
+          'case_record_id'=>$case_record_id,
+          'description'=>$description,
+          'encoded_image'=>$image,
+          'case_attachment_type'=>$case_record_attachment_type_id,
+          'uploaded_on'=>$uploaded_on));
+
+        } else if($case_record_attachment_type_id == 3) {
+           
+
+        }
+
       }
 
       $stmt->close();

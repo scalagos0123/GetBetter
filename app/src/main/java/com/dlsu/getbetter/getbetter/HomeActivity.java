@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if(systemSessionManager.checkLogin())
             finish();
 
+
         HashMap<String, String> user = systemSessionManager.getUserDetails();
         HashMap<String, String> hc = systemSessionManager.getHealthCenter();
         String userNameLabel = user.get(SystemSessionManager.LOGIN_USER_NAME);
@@ -56,7 +57,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Button changeHealthCenterBtn = (Button)findViewById(R.id.change_health_center_btn);
         TextView healthCenter = (TextView)findViewById(R.id.home_current_health_center);
 
-        healthCenter.setText(currentHealthCenter);
+        if (healthCenter != null) {
+            healthCenter.setText(currentHealthCenter);
+        }
 
         TextView userLabel = (TextView)findViewById(R.id.user_label);
         if (userLabel != null) {

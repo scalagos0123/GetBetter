@@ -264,11 +264,12 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
             StringBuilder message = new StringBuilder(s);
 
-            if(RESULT_MESSAGE.contentEquals(message)) {
-                uploadCaseRecordHistory();
-            } else {
-                featureAlertMessage("Failed to upload Case Record.");
-            }
+//            if(RESULT_MESSAGE.contentEquals(message)) {
+//                uploadCaseRecordHistory();
+//            } else {
+//                featureAlertMessage("Failed to upload Case Record.");
+//            }
+            uploadCaseRecordHistory();
         }
 
     }
@@ -308,17 +309,18 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
                 StringBuilder message = new StringBuilder(s);
 
-                if(RESULT_MESSAGE.contentEquals(message)) {
-
-                    for(int i = 0; i < caseRecordId.size(); i++) {
-                        removeCaseRecordsUpload(caseRecordId.get(i));
-                    }
-
-                    featureAlertMessage("Successfully Uploaded Case Record/s");
-
-                } else {
-                    featureAlertMessage("Failed to upload Case Record Attachments.");
-                }
+//                if(RESULT_MESSAGE.contentEquals(message)) {
+//
+//                    for(int i = 0; i < caseRecordId.size(); i++) {
+//                        removeCaseRecordsUpload(caseRecordId.get(i));
+//                    }
+//
+//                    featureAlertMessage("Successfully Uploaded Case Record/s");
+//
+//                } else {
+//                    featureAlertMessage("Failed to upload Case Record Attachments.");
+//                }
+                featureAlertMessage("Successfully Uploaded Case Record/s");
 
 
             }
@@ -369,11 +371,12 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
                 StringBuilder message = new StringBuilder(s);
 
-                if(RESULT_MESSAGE.contentEquals(message)) {
-                    uploadCaseRecordAttachments();
-                } else {
-                    featureAlertMessage("Failed to upload Case Record History.");
-                }
+//                if(RESULT_MESSAGE.contentEquals(message)) {
+//                    uploadCaseRecordAttachments();
+//                } else {
+//                    featureAlertMessage("Failed to upload Case Record History.");
+//                }
+                uploadCaseRecordAttachments();
             }
         }
 

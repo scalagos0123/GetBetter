@@ -19,6 +19,8 @@ import com.dlsu.getbetter.getbetter.adapters.CaseRecordDownloadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +32,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
 
 public class DownloadContentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -156,11 +160,14 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                 ArrayList<CaseRecord> selectedCaseRecords = params[0];
                 String result = null;
+                File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "sample_audio");
+                File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "audio2.mp3");
 
                 for(int i = 0; i < selectedCaseRecords.size(); i++) {
 
                     HashMap<String, String> data = new HashMap<>();
                     data.put(TAG_CASE_RECORD_ID, String.valueOf(selectedCaseRecords.get(i).getCaseRecordId()));
+                    rh.getAudioFile(profileImageFile.getPath());
                     result = rh.sendPostRequest(DirectoryConstants.DOWNLOAD_CASE_RECORD_NEW_ATTACHMENTS_SERVER_SCRIPT_URL, data);
                 }
 
@@ -177,6 +184,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 if(RESULT_MESSAGE.contentEquals(message)) {
                     myJSONAttachments = s;
                     insertNewAttachmentsToLocalDB();
+//                    getAudioFile();
                     featureAlertMessage("Download Complete!");
                 } else {
                     featureAlertMessage("Download Failed.");
@@ -219,6 +227,25 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             e.printStackTrace();
         }
     }
+
+//    private void getAudioFile() {
+//
+//
+//        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+//        asyncHttpClient.get("http://www.stephaniequinn.com/Music/Commercial%20DEMO%20-%2015.mp3", new FileAsyncHttpResponseHandler(this) {
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+//                Log.e("error connecting", statusCode + "");
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, File file) {
+//                Log.d("filename", file.getAbsolutePath() + " " +file.length());
+//            }
+//
+//        });
+//    }
+
     private void populateCaseRecordsList() {
 
         try {
@@ -362,8 +389,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             @Override
             protected void onPostExecute(String s) {
 
-
-                finish();
             }
         }
 
