@@ -29,6 +29,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +51,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private static final String TAG_RECORD_STATUS_ID = "record_status_id";
     private static final String TAG_UPDATED_ON = "updated_on";
     private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_FILE_PATH = "file_path";
     private static final String TAG_ENCODED_IMAGE = "encoded_image";
     private static final String TAG_CASE_ATTACHMENT_TYPE = "case_attachment_type";
     private static final String TAG_UPLOADED_ON = "uploaded_on";
@@ -160,14 +166,14 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                 ArrayList<CaseRecord> selectedCaseRecords = params[0];
                 String result = null;
-                File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "sample_audio");
-                File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "audio2.mp3");
+//                File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "sample_audio");
+//                File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "audio2.mp3");
 
                 for(int i = 0; i < selectedCaseRecords.size(); i++) {
 
                     HashMap<String, String> data = new HashMap<>();
                     data.put(TAG_CASE_RECORD_ID, String.valueOf(selectedCaseRecords.get(i).getCaseRecordId()));
-                    rh.getAudioFile(profileImageFile.getPath());
+//                    rh.getAudioFile(profileImageFile.getPath());
                     result = rh.sendPostRequest(DirectoryConstants.DOWNLOAD_CASE_RECORD_NEW_ATTACHMENTS_SERVER_SCRIPT_URL, data);
                 }
 
@@ -198,6 +204,9 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
     private void insertNewAttachmentsToLocalDB() {
 
+        String path = "";
+        File fileName = null;
+
         try{
             JSONObject jsonObject = new JSONObject(myJSONAttachments);
             JSONArray caseAttachments = jsonObject.getJSONArray(TAG_CASE_ATTACHMENTS);
@@ -206,21 +215,30 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 JSONObject o = caseAttachments.getJSONObject(i);
                 int caseRecordId = Integer.parseInt(o.getString(TAG_CASE_RECORD_ID));
                 String description = o.getString(TAG_DESCRIPTION);
-                String encodedImage = o.getString(TAG_ENCODED_IMAGE);
+                String filePath = o.getString(TAG_FILE_PATH);
+//                String encodedImage = o.getString(TAG_ENCODED_IMAGE);
                 int attachmentTypeId = Integer.parseInt(o.getString(TAG_CASE_ATTACHMENT_TYPE));
                 String uploadedOn = o.getString(TAG_UPLOADED_ON);
 
-                Log.d("encoded image", encodedImage);
+//                Log.d("encoded image", encodedImage);
 
-                File fileName = createImageFile(uploadedOn);
-                String path = Uri.fromFile(fileName).getPath();
+//                writeImageToDirectory(encodedImage, fileName);
+                if(attachmentTypeId == 1) {
 
-                writeImageToDirectory(encodedImage, fileName);
+                    fileName = createImageFile(uploadedOn);
+                    path = Uri.fromFile(fileName).getPath();
+
+                } else if (attachmentTypeId == 3) {
+
+                    fileName = createAudioFile(uploadedOn);
+                    path = Uri.fromFile(fileName).getPath();
+                }
 
                 Attachment caseAttachment = new Attachment(caseRecordId, path, description,
                         attachmentTypeId, uploadedOn);
 
                 insertCaseAttachment(caseAttachment);
+                writeFileToDirectory(filePath, fileName);
             }
 
         }catch (JSONException e) {
@@ -410,15 +428,33 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         getBetterDb.closeDatabase();
     }
 
-    private File createImageFile(String uploaded_on) {
+    private File createAudioFile(String uploaded_on) {
 
-        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME);
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+                DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("Debug", "Oops! Failed create "
-                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME + " directory");
+                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
+                return null;
+            }
+        }
+
+        File audioFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "AUDIO_" + uploaded_on + ".3gp");
+
+        return audioFile;
+    }
+
+    private File createImageFile(String uploaded_on) {
+
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("Debug", "Oops! Failed create "
+                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
                 return null;
             }
         }
@@ -427,6 +463,112 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
 
         return profileImageFile;
+    }
+
+    private void writeFileToDirectory (String urlPath, File file) {
+
+        String filePath = Uri.fromFile(file).getPath();
+
+        class TransferFiletoLocal extends AsyncTask<String, Integer, Integer> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                showProgressDialog("Downloading Attachments...");
+                dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+
+            }
+
+            @Override
+            protected void onPostExecute(Integer s) {
+                super.onPostExecute(s);
+
+                dismissProgressDialog();
+
+                if(s == -1) {
+                    featureAlertMessage("Download Failed");
+                } else if (s == 0) {
+                    featureAlertMessage("Successfully Downloaded Attachments!");
+                }
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                dDialog.setProgress(values[0]);
+            }
+
+            @Override
+            protected Integer doInBackground(String... params) {
+
+                InputStream in = null;
+                OutputStream out = null;
+                HttpURLConnection conn = null;
+
+                try {
+
+                    URL url = new URL(params[0]);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.connect();
+
+                    if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        Log.d("Connection Status", "Server returned HTTP " + conn.getResponseCode()
+                                + " " + conn.getResponseMessage());
+                        return -1;
+                    }
+
+                    in = conn.getInputStream();
+
+                    out = new FileOutputStream(new File(params[1]));
+
+                    int fileLength = conn.getContentLength();
+
+                    byte data[] = new byte[4096];
+                    long total = 0;
+                    int count;
+
+                    while ((count = in.read(data)) != -1) {
+
+                        total += count;
+
+                        if(fileLength > 0) {
+                            publishProgress((int) total * 100 / fileLength);
+                        }
+
+                        out.write(data, 0, count);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return -1;
+                } finally {
+
+                    try {
+                        if(out != null) {
+                            out.close();
+                        }
+
+                        if(in != null) {
+                            in.close();
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(conn != null) {
+                        conn.disconnect();
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        TransferFiletoLocal transferFiletoLocal = new TransferFiletoLocal();
+        transferFiletoLocal.execute(urlPath, filePath);
+        
     }
 
     private void writeImageToDirectory(String encodedImage, File file) {
@@ -468,8 +610,9 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         if(dDialog == null) {
             dDialog = new ProgressDialog(DownloadContentActivity.this);
             dDialog.setMessage(message);
-            dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             dDialog.setIndeterminate(true);
+            dDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         }
         dDialog.show();
     }

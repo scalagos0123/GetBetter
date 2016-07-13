@@ -201,6 +201,7 @@ class RequestHandler {
             URL url1 = new URL("http://www.stephaniequinn.com/Music/Commercial%20DEMO%20-%2015.mp3");
             URLConnection conn = url1.openConnection();
 
+
             InputStream in = conn.getInputStream();
 
             OutputStream out = new FileOutputStream(new File(path));
@@ -213,6 +214,7 @@ class RequestHandler {
                 out.write(buffer, 0, len);
             }
 
+            out.flush();
             out.close();
 
 //            HttpURLConnection conn = (HttpURLConnection) url1.openConnection();

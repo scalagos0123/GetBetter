@@ -76,6 +76,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         backBtn.setOnClickListener(this);
         updateCaseBtn.setOnClickListener(this);
 
+        killMediaPlayer();
         nMediaPlayer = new MediaPlayer();
         nMediaController = new MediaController(this) {
             @Override
@@ -322,20 +323,20 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
     }
 
     @Override
-    protected void onPause() {
-
-
-
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
+        nMediaController.hide();
+        killMediaPlayer();
     }
 
-    @Override
-    protected void onDestroy() {
-
-        nMediaController.hide();
-        nMediaPlayer.stop();
-        nMediaPlayer.release();
-        super.onDestroy();
+    private void killMediaPlayer() {
+        if(nMediaPlayer != null) {
+            try{
+                nMediaPlayer.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

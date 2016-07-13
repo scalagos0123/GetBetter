@@ -4,6 +4,7 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
   require_once('db_connect.php');
 
   $caseRecordId = $_POST['caseRecordId'];
+  $urlDir = "http://128.199.205.226/getbetter/uploads/";
 
   if($stmt = $mysqli->prepare("SELECT * FROM tbl_case_record_attachments
     WHERE case_record_id = ?")) {
@@ -19,22 +20,26 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
 
       while($stmt->fetch()) {
 
-        if($case_record_attachment_type_id == 1) {
+        $filePath = $urlDir . $case_file_url;
 
-          $filetype = pathinfo($case_file_url, PATHINFO_EXTENSION);
-          $image = base64_encode_image($case_file_url, $filetype);
+        array_push($result, array('case_attachment_id'=>$case_record_attachment_id,
+        'case_record_id'=>$case_record_id,
+        'description'=>$description,
+        'file_path'=>$$filePath,
+        'case_attachment_type'=>$case_record_attachment_type_id,
+        'uploaded_on'=>$uploaded_on));
 
-          array_push($result, array('case_attachment_id'=>$case_record_attachment_id,
-          'case_record_id'=>$case_record_id,
-          'description'=>$description,
-          'encoded_image'=>$image,
-          'case_attachment_type'=>$case_record_attachment_type_id,
-          'uploaded_on'=>$uploaded_on));
-
-        } else if($case_record_attachment_type_id == 3) {
-           
-
-        }
+        // if($case_record_attachment_type_id == 1) {
+        //
+        //   $filetype = pathinfo($case_file_url, PATHINFO_EXTENSION);
+        //   $image = base64_encode_image($case_file_url, $filetype);
+        //
+        //
+        //
+        // } else if($case_record_attachment_type_id == 3) {
+        //
+        //
+        // }
 
       }
 
