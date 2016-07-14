@@ -735,12 +735,12 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private File createMediaFile(int type) {
 
         String timeStamp = getTimeStamp();
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("Debug", "Oops! Failed create "
-                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_IMAGE_DIRECTORY_NAME + " directory");
+                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
                 return null;
             }
         }

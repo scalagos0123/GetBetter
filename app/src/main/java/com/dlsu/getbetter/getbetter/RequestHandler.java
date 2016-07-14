@@ -62,6 +62,8 @@ class RequestHandler {
                 while ((response = br.readLine()) != null) {
                     sb.append(response).append("\n");
                 }
+            } else {
+                Log.d("connection", "Response is " + conn.getResponseCode() + " " + conn.getResponseMessage());
             }
 
         } catch (Exception e) {
@@ -181,7 +183,10 @@ class RequestHandler {
                 while((line = br.readLine()) != null) {
                     sb.append(line).append("\n");
                 }
+            }else {
+                Log.d("connection", "response: " + conn.getResponseCode() + " " + conn.getResponseMessage());
             }
+
         }catch (Exception e) {
             e.printStackTrace();
         }

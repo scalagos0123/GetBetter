@@ -60,6 +60,8 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private String myJSON;
     private String myJSONAttachments;
     private ArrayList<CaseRecord> caseRecordsData;
+    private ArrayList<Attachment> attachmentPaths;
+    private ArrayList<Attachment> attachmentData;
 
     private DataAdapter getBetterDb;
     private ProgressDialog dDialog = null;
@@ -177,7 +179,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                     result = rh.sendPostRequest(DirectoryConstants.DOWNLOAD_CASE_RECORD_NEW_ATTACHMENTS_SERVER_SCRIPT_URL, data);
                 }
 
-
                 return result;
             }
 
@@ -185,13 +186,15 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             protected void onPostExecute(String s) {
                 dismissProgressDialog();
 
-                StringBuilder message = new StringBuilder(s);
+                Log.e("s", s);
 
-                if(RESULT_MESSAGE.contentEquals(message)) {
+//                StringBuilder message = new StringBuilder(s);
+
+                if(!s.isEmpty() && s != null) {
                     myJSONAttachments = s;
                     insertNewAttachmentsToLocalDB();
 //                    getAudioFile();
-                    featureAlertMessage("Download Complete!");
+//                    featureAlertMessage("Download Complete!");
                 } else {
                     featureAlertMessage("Download Failed.");
                 }
@@ -206,6 +209,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
         String path = "";
         File fileName = null;
+        attachmentPaths = new ArrayList<>();
 
         try{
             JSONObject jsonObject = new JSONObject(myJSONAttachments);
@@ -237,13 +241,22 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 Attachment caseAttachment = new Attachment(caseRecordId, path, description,
                         attachmentTypeId, uploadedOn);
 
-                insertCaseAttachment(caseAttachment);
-                writeFileToDirectory(filePath, fileName);
+                attachmentData.add(caseAttachment);
+
+//                insertCaseAttachment(caseAttachment);
+
+                Attachment fileAttachment = new Attachment(filePath, fileName);
+                attachmentPaths.add(fileAttachment);
+
             }
 
         }catch (JSONException e) {
             e.printStackTrace();
+            featureAlertMessage("Download Failed!");
         }
+
+        writeFileToDirectory(attachmentPaths);
+
     }
 
 //    private void getAudioFile() {
@@ -428,6 +441,8 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         getBetterDb.closeDatabase();
     }
 
+    // TODO: 14/07/2016 merge createAudioFile and createImageFile into one method
+
     private File createAudioFile(String uploaded_on) {
 
         File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
@@ -447,6 +462,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     }
 
     private File createImageFile(String uploaded_on) {
+        // TODO: 14/07/2016 change filename to description name
 
         File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
@@ -465,18 +481,23 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         return profileImageFile;
     }
 
-    private void writeFileToDirectory (String urlPath, File file) {
+    private void writeFileToDirectory (ArrayList<Attachment> attachmentFile) {
 
-        String filePath = Uri.fromFile(file).getPath();
 
         class TransferFiletoLocal extends AsyncTask<String, Integer, Integer> {
+
+            int count, bytesAvailable;
+            int maxBufferSize = 1024 * 1024;
+
+            public TransferFiletoLocal(int count) {
+                this.count = count;
+            }
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 showProgressDialog("Downloading Attachments...");
-                dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
+//                dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
             }
 
@@ -489,6 +510,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 if(s == -1) {
                     featureAlertMessage("Download Failed");
                 } else if (s == 0) {
+                    insertCaseAttachment(attachmentData.get(count));
                     featureAlertMessage("Successfully Downloaded Attachments!");
                 }
             }
@@ -496,7 +518,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-                dDialog.setProgress(values[0]);
+//                dDialog.setProgress(values[0]);
             }
 
             @Override
@@ -522,9 +544,12 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                     out = new FileOutputStream(new File(params[1]));
 
-                    int fileLength = conn.getContentLength();
+                    bytesAvailable = conn.getContentLength();
 
-                    byte data[] = new byte[4096];
+                    int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+
+                    byte data[] = new byte[bufferSize];
                     long total = 0;
                     int count;
 
@@ -532,9 +557,9 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                         total += count;
 
-                        if(fileLength > 0) {
-                            publishProgress((int) total * 100 / fileLength);
-                        }
+//                        if(fileLength > 0) {
+//                            publishProgress((int) total * 100 / fileLength);
+//                        }
 
                         out.write(data, 0, count);
                     }
@@ -566,9 +591,13 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             }
         }
 
-        TransferFiletoLocal transferFiletoLocal = new TransferFiletoLocal();
-        transferFiletoLocal.execute(urlPath, filePath);
-        
+        for(int i = 0; i < attachmentFile.size(); i++) {
+
+            String filePath = Uri.fromFile(attachmentFile.get(i).getFileName()).getPath();
+            TransferFiletoLocal transferFiletoLocal = new TransferFiletoLocal(i);
+            transferFiletoLocal.execute(attachmentFile.get(i).getAttachmentPath(), filePath);
+
+        }
     }
 
     private void writeImageToDirectory(String encodedImage, File file) {
@@ -582,7 +611,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             fos.flush();
             fos.close();
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -608,6 +636,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
     private void showProgressDialog(String message) {
         if(dDialog == null) {
+
             dDialog = new ProgressDialog(DownloadContentActivity.this);
             dDialog.setMessage(message);
             dDialog.setIndeterminate(true);

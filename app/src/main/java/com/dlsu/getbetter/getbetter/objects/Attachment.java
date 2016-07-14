@@ -1,5 +1,7 @@
 package com.dlsu.getbetter.getbetter.objects;
 
+import java.io.File;
+
 /**
  * Created by mikedayupay on 21/02/2016.
  * GetBetter 2016
@@ -11,6 +13,7 @@ public class Attachment {
     private String attachmentDescription;
     private int attachmentType;
     private String uploadedDate;
+    private File fileName;
 
     public Attachment(String attachmentPath, String attachmentDescription, int attachmentType, String uploadedDate) {
         this.attachmentPath = attachmentPath;
@@ -31,6 +34,11 @@ public class Attachment {
         this.attachmentDescription = attachmentDescription;
         this.attachmentType = attachmentType;
         this.uploadedDate = uploadedDate;
+    }
+
+    public Attachment(String attachmentPath, File fileName) {
+        this.attachmentPath = attachmentPath;
+        this.fileName = fileName;
     }
 
     public String getAttachmentPath() {
@@ -71,5 +79,13 @@ public class Attachment {
 
     public void setUploadedDate(String uploadedDate) {
         this.uploadedDate = uploadedDate;
+    }
+
+    public File getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(File fileName) {
+        this.fileName = fileName;
     }
 }

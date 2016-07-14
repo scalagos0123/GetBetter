@@ -1,9 +1,9 @@
 <?php
 
-if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
+if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['case_record_id'])) {
   require_once('db_connect.php');
 
-  $caseRecordId = $_POST['caseRecordId'];
+  $caseRecordId = $_POST['case_record_id'];
   $urlDir = "http://128.199.205.226/getbetter/uploads/";
 
   if($stmt = $mysqli->prepare("SELECT * FROM tbl_case_record_attachments
@@ -25,7 +25,7 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
         array_push($result, array('case_attachment_id'=>$case_record_attachment_id,
         'case_record_id'=>$case_record_id,
         'description'=>$description,
-        'file_path'=>$$filePath,
+        'file_path'=>$filePath,
         'case_attachment_type'=>$case_record_attachment_type_id,
         'uploaded_on'=>$uploaded_on));
 
@@ -40,7 +40,6 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
         //
         //
         // }
-
       }
 
       $stmt->close();
@@ -56,14 +55,14 @@ if(($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
   echo 'Failed to run script';
 }
 
-public function base64_encode_image($filename='',$filetype='')
-{
-  if($filename) {
-    $imgbinary = fread(fopen($filename, 'r'), filesize($filename));
-    return 'data:image/' . $filetype . ';base64,' . base64_encode($imgbinary);
-  }
-
-}
+// public function base64_encode_image($filename='',$filetype='')
+// {
+//   if($filename) {
+//     $imgbinary = fread(fopen($filename, 'r'), filesize($filename));
+//     return 'data:image/' . $filetype . ';base64,' . base64_encode($imgbinary);
+//   }
+//
+// }
 
 
 
