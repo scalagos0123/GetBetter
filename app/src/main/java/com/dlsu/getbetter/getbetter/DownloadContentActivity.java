@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,8 +61,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private String myJSON;
     private String myJSONAttachments;
     private ArrayList<CaseRecord> caseRecordsData;
-    private ArrayList<Attachment> attachmentPaths;
-    private ArrayList<Attachment> attachmentData;
 
     private DataAdapter getBetterDb;
     private ProgressDialog dDialog = null;
@@ -80,6 +79,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         downloadBtn.setOnClickListener(this);
 
         caseRecordsData = new ArrayList<>();
+
         ArrayList<Attachment> caseRecordAttachments = new ArrayList<>();
 
         initializeDatabase();
@@ -186,7 +186,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             protected void onPostExecute(String s) {
                 dismissProgressDialog();
 
-                Log.e("s", s);
+//                Log.e("s", s);
 
 //                StringBuilder message = new StringBuilder(s);
 
@@ -209,11 +209,13 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
         String path = "";
         File fileName = null;
-        attachmentPaths = new ArrayList<>();
+        ArrayList<Attachment> attachmentPaths = new ArrayList<>();
+        ArrayList<Attachment> attachmentData = new ArrayList<>();
 
         try{
             JSONObject jsonObject = new JSONObject(myJSONAttachments);
             JSONArray caseAttachments = jsonObject.getJSONArray(TAG_CASE_ATTACHMENTS);
+            Log.d("CASE ATTACHMENT LENGTH", caseAttachments.length() + "");
 
             for(int i = 0; i < caseAttachments.length(); i++) {
                 JSONObject o = caseAttachments.getJSONObject(i);
@@ -227,16 +229,19 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 //                Log.d("encoded image", encodedImage);
 
 //                writeImageToDirectory(encodedImage, fileName);
-                if(attachmentTypeId == 1) {
+//                if(attachmentTypeId == 1) {
+//
+//                    fileName = createImageFile(uploadedOn);
+//                    path = Uri.fromFile(fileName).getPath();
+//
+//                } else if (attachmentTypeId == 3) {
+//
+//                    fileName = createAudioFile(uploadedOn);
+//                    path = Uri.fromFile(fileName).getPath();
+//                }
 
-                    fileName = createImageFile(uploadedOn);
-                    path = Uri.fromFile(fileName).getPath();
-
-                } else if (attachmentTypeId == 3) {
-
-                    fileName = createAudioFile(uploadedOn);
-                    path = Uri.fromFile(fileName).getPath();
-                }
+                fileName = createAttachmentFile(description, uploadedOn, attachmentTypeId);
+                path = Uri.fromFile(fileName).getPath();
 
                 Attachment caseAttachment = new Attachment(caseRecordId, path, description,
                         attachmentTypeId, uploadedOn);
@@ -253,9 +258,10 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         }catch (JSONException e) {
             e.printStackTrace();
             featureAlertMessage("Download Failed!");
+            Log.d("DownloadContentActivity", e.getMessage());
         }
 
-        writeFileToDirectory(attachmentPaths);
+        writeFileToDirectory(attachmentPaths, attachmentData);
 
     }
 
@@ -441,11 +447,29 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         getBetterDb.closeDatabase();
     }
 
-    // TODO: 14/07/2016 merge createAudioFile and createImageFile into one method
+//    private File createAudioFile(String uploaded_on) {
+//
+//        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+//                DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
+//
+//        if (!mediaStorageDir.exists()) {
+//            if (!mediaStorageDir.mkdirs()) {
+//                Log.d("Debug", "Oops! Failed create "
+//                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
+//                return null;
+//            }
+//        }
+//
+//        File audioFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "AUDIO_" + uploaded_on + ".3gp");
+//
+//        return audioFile;
+//    }
 
-    private File createAudioFile(String uploaded_on) {
+    private File createAttachmentFile(String description, String uploaded_on, int attachmentType) {
 
-        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        File attachmentFile = null;
+
+        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
 
         if (!mediaStorageDir.exists()) {
@@ -456,32 +480,46 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             }
         }
 
-        File audioFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "AUDIO_" + uploaded_on + ".3gp");
+        if(attachmentType == 1) {
 
-        return audioFile;
-    }
+            attachmentFile = new File(mediaStorageDir.getPath() + File.pathSeparator +
+                    description + "_" + uploaded_on + ".jpg");
 
-    private File createImageFile(String uploaded_on) {
-        // TODO: 14/07/2016 change filename to description name
+        } else if (attachmentType == 3 || attachmentType == 5) {
 
-        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
+            attachmentFile = new File(mediaStorageDir.getPath() + File.pathSeparator +
+                    description + "_" + uploaded_on + ".3gp");
 
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("Debug", "Oops! Failed create "
-                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
-                return null;
-            }
+        } else if (attachmentType == 2) {
+
+            attachmentFile = new File(mediaStorageDir.getPath() + File.pathSeparator +
+                    description + "_" + uploaded_on + ".mp4");
         }
 
-        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + uploaded_on + ".jpg");
 
-
-        return profileImageFile;
+        return attachmentFile;
     }
 
-    private void writeFileToDirectory (ArrayList<Attachment> attachmentFile) {
+//    private File createImageFile(String uploaded_on) {
+//
+//        File mediaStorageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
+//
+//        if (!mediaStorageDir.exists()) {
+//            if (!mediaStorageDir.mkdirs()) {
+//                Log.d("Debug", "Oops! Failed create "
+//                        + DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME + " directory");
+//                return null;
+//            }
+//        }
+//
+//        File profileImageFile = new File (mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + uploaded_on + ".jpg");
+//
+//
+//        return profileImageFile;
+//    }
+
+    private void writeFileToDirectory (ArrayList<Attachment> attachmentFile, ArrayList<Attachment> attachmentData) {
 
 
         class TransferFiletoLocal extends AsyncTask<String, Integer, Integer> {
@@ -510,7 +548,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 if(s == -1) {
                     featureAlertMessage("Download Failed");
                 } else if (s == 0) {
-                    insertCaseAttachment(attachmentData.get(count));
+//                    insertCaseAttachment(attachmentData.get(count));
                     featureAlertMessage("Successfully Downloaded Attachments!");
                 }
             }
@@ -544,12 +582,12 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                     out = new FileOutputStream(new File(params[1]));
 
-                    bytesAvailable = conn.getContentLength();
+                    bytesAvailable = in.available();
 
                     int bufferSize = Math.min(bytesAvailable, maxBufferSize);
 
-
-                    byte data[] = new byte[bufferSize];
+//                    byte data[] = new byte[bufferSize];
+                    byte data[] = new byte[16384];
                     long total = 0;
                     int count;
 
@@ -596,7 +634,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             String filePath = Uri.fromFile(attachmentFile.get(i).getFileName()).getPath();
             TransferFiletoLocal transferFiletoLocal = new TransferFiletoLocal(i);
             transferFiletoLocal.execute(attachmentFile.get(i).getAttachmentPath(), filePath);
-
+            insertCaseAttachment(attachmentData.get(i));
         }
     }
 

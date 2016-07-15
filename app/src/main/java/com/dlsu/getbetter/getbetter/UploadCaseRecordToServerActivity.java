@@ -234,7 +234,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
             for(int i = 0; i < caseRecordUpload.size(); i++) {
 
-
                 Log.d("id", caseRecordUpload.get(i).getCaseRecordId() + "");
                 Log.d("user", user);
                 Log.d("hc", healthCenterId + "");
@@ -435,7 +434,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
         result = rh.sendFileRequest(DirectoryConstants.UPLOAD_CASE_RECORD_VIDEO_ATTACHMENTS_SERVER_SCRIPT_URL, attachment.getAttachmentPath());
 
-
         return result;
     }
 
@@ -482,8 +480,8 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         if(cDialog == null) {
             cDialog = new ProgressDialog(UploadCaseRecordToServerActivity.this);
             cDialog.setMessage(message);
-            cDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             cDialog.setIndeterminate(true);
+            cDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         }
         cDialog.show();
     }
