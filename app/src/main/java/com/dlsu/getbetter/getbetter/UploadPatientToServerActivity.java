@@ -43,7 +43,6 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private static final String HEALTH_CENTER_KEY = "healthCenterId";
     private static final String RESULT_MESSAGE = "SUCCESS";
     private static final String TAG_JSON_RESULT = "result";
-    private static final String TAG_UPLOAD_STATUS = "message";
 
     private ArrayList<Patient> patientsUpload;
     private ArrayList<Patient> selectedPatientsList;

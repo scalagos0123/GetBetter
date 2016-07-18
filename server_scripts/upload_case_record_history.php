@@ -1,6 +1,6 @@
 <?php
 
-// if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
   require_once('db_connect.php');
 
 $case_record_id = $_POST['caseRecordId'];
@@ -8,11 +8,8 @@ $case_record_status_id = $_POST['caseRecordStatusId'];
 $updated_by = $_POST['updatedBy'];
 $updated_on = $_POST['updatedOn'];
 
-// $case_record_id = 45029050;
-// $case_record_status_id = 1;
-// $updated_by = 444;
-// $updated_on = "20160512 124300";
-
+$SUCCESS_MESSAGE = 'SUCCESS';
+$FAILED_MESSAGE = 'FAILED';
 
 if($stmt = $mysqli->prepare("INSERT INTO tbl_case_record_history
   (case_record_id, record_status_id, updated_by, updated_on) VALUES (?,?,?,?)")) {
@@ -23,16 +20,21 @@ if($stmt = $mysqli->prepare("INSERT INTO tbl_case_record_history
 
     $stmt->close();
 
-    echo "UPLOAD SUCCESS";
+    echo json_encode(array('result'=>$SUCCESS_MESSAGE));
 
 } else {
-  echo "UPLOAD FAILED";
-}
 
+    echo json_encode(array('result' => $FAILED_MESSAGE));
+
+}
 
 $mysqli->close();
 
-// }
+} else {
+
+  echo json_encode(array('result' => $FAILED_MESSAGE));
+
+}
 
 
 

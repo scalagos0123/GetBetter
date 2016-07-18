@@ -734,7 +734,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
     private File createMediaFile(int type) {
 
-        String timeStamp = getTimeStamp();
+        String timeStamp = getTimeStamp().substring(0, 9);
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
 
         if (!mediaStorageDir.exists()) {
@@ -748,9 +748,17 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         File mediaFile;
 
         if(type == MEDIA_TYPE_IMAGE) {
+
             mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + timeStamp + ".jpg");
+
         } else if (type == MEDIA_TYPE_VIDEO) {
+
             mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "VID_" + timeStamp + ".mp4");
+
+        } else if (type == MEDIA_TYPE_AUDIO) {
+
+            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "AUD_" + timeStamp + ".3gp");
+
         } else {
             return null;
         }

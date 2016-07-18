@@ -75,8 +75,8 @@
         echo json_encode(array('result'=>$SUCCESS_MESSAGE));
       } else {
 
-        $result = array('message'=>$FAILED_MESSAGE);
-        echo json_encode(array('result' => $result));
+
+        echo json_encode(array('result' => $FAILED_MESSAGE));
 
       }
 
@@ -86,8 +86,7 @@
 
   } else {
 
-    $result = array('message'=>$FAILED_MESSAGE);
-    echo json_encode(array('result' => $result));
+    echo json_encode(array('result' => $FAILED_MESSAGE));
 
   }
 

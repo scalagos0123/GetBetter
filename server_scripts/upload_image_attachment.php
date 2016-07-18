@@ -10,6 +10,9 @@
     $attachment_type = $_POST['attachment_type'];
     $uploaded_on = $_POST['uploaded_on'];
 
+    $SUCCESS_MESSAGE = 'SUCCESS';
+    $FAILED_MESSAGE = 'FAILED';
+
     $file_path = "uploads/";
     $full_path = "/var/www/html/getbetter/" . $file_path;
     $attachment_path = $full_path . $attachment_name;
@@ -29,14 +32,14 @@
 
           $stmt->close();
       }
-      echo 'UPLOAD SUCCESS';
+      echo json_encode(array('result'=>$SUCCESS_MESSAGE));
     } else {
-      echo 'UPLOAD FAILED';
+      echo json_encode(array('result' => $FAILED_MESSAGE));
     }
 $mysqli->close();
   }else {
 
-    echo "UPLOAD FAILED";
+    echo json_encode(array('result' => $FAILED_MESSAGE));
   }
 
 

@@ -10,10 +10,8 @@
     $control_number = $_POST['controlNumber'];
     $case_id = 6;
 
-    // $case_record_status_id = $_POST['caseRecordStatusId'];
-    // $updated_by = $_POST['updatedBy'];
-    // $updated_on = $_POST['updatedOn'];
-
+    $SUCCESS_MESSAGE = 'SUCCESS';
+    $FAILED_MESSAGE = 'FAILED';
 
     if($stmt = $mysqli->prepare("INSERT INTO tbl_case_records
       (case_record_id, case_id, user_id, health_center_id, complaint, control_number)
@@ -29,34 +27,20 @@
 
         $stmt->close();
 
-        echo "UPLOAD SUCCESS";
+        echo json_encode(array('result'=>$SUCCESS_MESSAGE));
 
       } else {
-         echo "UPLOAD FAILED";
+
+         echo json_encode(array('result' => $FAILED_MESSAGE));
+
       }
-
-    // if($stmt2 = $mysqli->prepare("INSERT INTO tbl_case_record_history
-    //   (case_record_id, case_record_status_id, updated_by, updated_on) VALUES (?,?,?,?)")) {
-    //
-    //     $stmt2->bind_param('iiis', $case_record_id, $case_record_status_id, $updated_by, $updated_on);
-    //
-    //     $stmt2->execute();
-    //
-    //     $stmt2->close();
-    //
-    //
-    // } else {
-    //   echo "Error Uploading Case Record History";
-    // }
-
-
 
   $mysqli->close();
 
   } else {
-    echo "UPLOAD FAILED";
+
+    echo json_encode(array('result' => $FAILED_MESSAGE));
+
   }
-
-
 
 ?>

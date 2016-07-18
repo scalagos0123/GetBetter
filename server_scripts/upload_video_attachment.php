@@ -10,6 +10,9 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
   $attachment_type = $_POST['attachment_type'];
   $uploaded_on = $_POST['uploaded_on'];
 
+  $SUCCESS_MESSAGE = 'SUCCESS';
+  $FAILED_MESSAGE = 'FAILED';
+
   $file_path = "uploads/";
   $full_path = "/var/www/html/getbetter/" . $file_path;
   $attachment_path = $full_path . $attachment_name;
@@ -29,10 +32,11 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
 
         $stmt->close();
 
-        echo 'Successfully Uploaded';
+        echo json_encode(array('result'=>$SUCCESS_MESSAGE));
       }
 
   } else {
+
     if(move_uploaded_file($video_file, $attachment_path)) {
 
       if($stmt = $mysqli->prepare('INSERT INTO tbl_case_record_attachments
@@ -46,12 +50,16 @@ if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['caseRecordId'])) {
 
           $stmt->close();
         }
-        echo 'Successfully Uploaded';
+        echo json_encode(array('result'=>$SUCCESS_MESSAGE));
+    } else {
+      echo json_encode(array('result' => $FAILED_MESSAGE));
     }
   }
   $mysqli->close();
 } else {
-  echo "Unable to process request!";
+
+  echo json_encode(array('result' => $FAILED_MESSAGE));
+
 }
 
 

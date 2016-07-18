@@ -20,6 +20,10 @@ import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 import com.kosalgeek.android.photoutil.ImageBase64;
 import com.kosalgeek.android.photoutil.ImageLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,7 +46,8 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
     private static final String ENCODED_IMAGE_KEY = "encoded_image";
     private static final String ATTACHMENT_TYPE_ID_KEY = "attachment_type";
     private static final String UPLOADED_ON_KEY = "uploaded_on";
-    private static final String RESULT_MESSAGE = "UPLOAD SUCCESS";
+    private static final String TAG_JSON_RESULT = "result";
+    private static final String RESULT_MESSAGE = "SUCCESS";
 
     private ArrayList<CaseRecord> caseRecordsUpload;
     private ArrayList<Attachment> caseRecordAttachmentsUpload;
@@ -140,7 +145,6 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         CaseRecord caseRecordHistory = getBetterDb.getCaseRecordHistoryUpload(caseRecordId);
         getBetterDb.closeDatabase();
         return caseRecordHistory;
-
 
     }
 
@@ -261,14 +265,13 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
             dismissProgressDialog();
 
-            StringBuilder message = new StringBuilder(s);
+            String message = getServerMessage(s);
 
-//            if(RESULT_MESSAGE.contentEquals(message)) {
-//                uploadCaseRecordHistory();
-//            } else {
-//                featureAlertMessage("Failed to upload Case Record.");
-//            }
-            uploadCaseRecordHistory();
+            if(RESULT_MESSAGE.contentEquals(message)) {
+                uploadCaseRecordHistory();
+            } else {
+                featureAlertMessage("Failed to upload Case Record.");
+            }
         }
 
     }
@@ -306,22 +309,20 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
                 dismissProgressDialog();
 
-                StringBuilder message = new StringBuilder(s);
+                String message = getServerMessage(s);
 
-//                if(RESULT_MESSAGE.contentEquals(message)) {
-//
-//                    for(int i = 0; i < caseRecordId.size(); i++) {
-//                        removeCaseRecordsUpload(caseRecordId.get(i));
-//                    }
-//
-//                    featureAlertMessage("Successfully Uploaded Case Record/s");
-//
-//                } else {
-//                    featureAlertMessage("Failed to upload Case Record Attachments.");
-//                }
-                featureAlertMessage("Successfully Uploaded Case Record/s");
+                if(RESULT_MESSAGE.contentEquals(message)) {
 
+                    for(int i = 0; i < caseRecordId.size(); i++) {
+                        removeCaseRecordsUpload(caseRecordId.get(i));
+                    }
 
+                    featureAlertMessage("Successfully Uploaded Case Record/s");
+
+                } else {
+                    featureAlertMessage("Failed to upload Case Record Attachments.");
+                }
+//                featureAlertMessage("Successfully Uploaded Case Record/s");
             }
         }
 
@@ -368,14 +369,14 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
                 dismissProgressDialog();
 
-                StringBuilder message = new StringBuilder(s);
+                String message = getServerMessage(s);
 
-//                if(RESULT_MESSAGE.contentEquals(message)) {
-//                    uploadCaseRecordAttachments();
-//                } else {
-//                    featureAlertMessage("Failed to upload Case Record History.");
-//                }
-                uploadCaseRecordAttachments();
+                if(RESULT_MESSAGE.contentEquals(message)) {
+                    uploadCaseRecordAttachments();
+                } else {
+                    featureAlertMessage("Failed to upload Case Record History.");
+                }
+
             }
         }
 
@@ -384,14 +385,31 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
     }
 
+    private String getServerMessage(String s) {
+
+        String result = null;
+
+        try{
+
+            JSONObject jsonObject = new JSONObject(s);
+            result = jsonObject.getString(TAG_JSON_RESULT);
+
+            Log.d("UploadCaseActivity", result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     private String uploadImageAttachment(Attachment attachment) {
 
         RequestHandler rh = new RequestHandler();
         String result;
 
         String attachmentName = attachment.getCaseRecordId() + "_" +
-                attachment.getAttachmentDescription() + "_" +
-                attachment.getUploadedDate() + ".jpg";
+                attachment.getAttachmentDescription() + ".jpg";
 
         String image = null;
 
@@ -420,8 +438,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         String result;
 
         String attachmentName = attachment.getCaseRecordId() + "_" +
-                attachment.getAttachmentDescription() + "_" +
-                attachment.getUploadedDate() + ".mp4";
+                attachment.getAttachmentDescription() + ".mp4";
 
 
         HashMap<String, String> data = new HashMap<>();
@@ -443,8 +460,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         String result;
 
         String attachmentName = attachment.getCaseRecordId() + "_" +
-                attachment.getAttachmentDescription() + "_" +
-                attachment.getUploadedDate() + ".3gp";
+                attachment.getAttachmentDescription() + ".3gp";
 
         HashMap<String, String> data = new HashMap<>();
         data.put(CASE_RECORD_ID_KEY, String.valueOf(attachment.getCaseRecordId()));
