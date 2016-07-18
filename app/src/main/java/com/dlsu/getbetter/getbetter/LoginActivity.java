@@ -3,6 +3,7 @@ package com.dlsu.getbetter.getbetter;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +38,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         signInBtn.setOnClickListener(this);
         initializeDatabase();
-
+        emailInput.setError(null);
+        passwordInput.setError(null);
     }
 
     private void initializeDatabase() {
@@ -72,9 +74,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
 
-        if(email.trim().length() > 0 && password.trim().length() > 0) {
+        View focusView = null;
 
-            if(checkLogin(email, password)) {
+        if (email.trim().length() > 0 && password.trim().length() > 0) {
+
+            if (checkLogin(email, password)) {
 
                 systemSessionManager.createUserSession(email);
 //                Intent intent = new Intent(this, HomeActivity.class);
@@ -98,14 +102,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Toast.LENGTH_LONG).show();
             }
 
+        } else if (email.trim().length() == 0) {
+
+            emailInput.setError("Please enter an Email!");
+            focusView = emailInput;
+            focusView.requestFocus();
+
+        } else if (password.trim().length() == 0) {
+
+            passwordInput.setError("Please enter a password!");
+            focusView = passwordInput;
+            focusView.requestFocus();
+
+
         } else {
+
+            emailInput.setError("Please enter an Email!");
+            passwordInput.setError("Please enter a password!");
 
             Toast.makeText(getApplicationContext(),
                     "Please enter Email and Password",
                     Toast.LENGTH_LONG).show();
 
         }
-
 
     }
 }
