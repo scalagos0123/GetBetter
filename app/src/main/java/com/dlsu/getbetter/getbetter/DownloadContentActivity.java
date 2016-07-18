@@ -78,6 +78,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         backBtn.setOnClickListener(this);
         downloadBtn.setOnClickListener(this);
 
+
         caseRecordsData = new ArrayList<>();
 
         ArrayList<Attachment> caseRecordAttachments = new ArrayList<>();
@@ -239,6 +240,8 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 //                    fileName = createAudioFile(uploadedOn);
 //                    path = Uri.fromFile(fileName).getPath();
 //                }
+
+                Log.d("DOWNLOADCONTENTACTIVITY", filePath);
 
                 fileName = createAttachmentFile(description, uploadedOn, attachmentTypeId);
                 path = Uri.fromFile(fileName).getPath();
@@ -496,7 +499,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                     description + "_" + uploaded_on + ".mp4");
         }
 
-
         return attachmentFile;
     }
 
@@ -587,7 +589,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                     int bufferSize = Math.min(bytesAvailable, maxBufferSize);
 
 //                    byte data[] = new byte[bufferSize];
-                    byte data[] = new byte[16384];
+                    byte data[] = new byte[2048];
                     long total = 0;
                     int count;
 
