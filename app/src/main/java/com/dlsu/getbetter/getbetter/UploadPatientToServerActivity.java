@@ -20,6 +20,10 @@ import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 import com.kosalgeek.android.photoutil.ImageBase64;
 import com.kosalgeek.android.photoutil.ImageLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,7 +41,9 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
     private static final String IMAGE_NAME_KEY = "imageName";
     private static final String IMAGE = "image";
     private static final String HEALTH_CENTER_KEY = "healthCenterId";
-    private static final String RESULT_MESSAGE = "UPLOAD SUCCESS";
+    private static final String RESULT_MESSAGE = "SUCCESS";
+    private static final String TAG_JSON_RESULT = "result";
+    private static final String TAG_UPLOAD_STATUS = "message";
 
     private ArrayList<Patient> patientsUpload;
     private ArrayList<Patient> selectedPatientsList;
@@ -229,7 +235,6 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
                 result = rh.sendPostRequest(DirectoryConstants.UPLOAD_PATIENT_SERVER_SCRIPT_URL, data);
             }
 
-
             Log.e("message1", result);
             return result;
         }
@@ -239,21 +244,40 @@ public class UploadPatientToServerActivity extends AppCompatActivity implements 
 
             dismissProgressDialog();
 
-            StringBuilder message = new StringBuilder(s);
-            Log.d("message2", message.toString());
+            String message = getServerMessage(s);
 
 
-            if(RESULT_MESSAGE.contentEquals(message.toString())) {
+            if(RESULT_MESSAGE.contentEquals(message)) {
                 for(int i = 0; i < selectedPatientsList.size(); i++) {
                     removePatientUpload((int) selectedPatientsList.get(i).getId());
                 }
-                featureAlertMessage(s);
+                featureAlertMessage("Successfully Uploaded Patient Record.");
             } else {
                 featureAlertMessage("Failed to upload Patient Record.");
             }
         }
     }
 
+    private String getServerMessage(String s) {
+
+        String result = null;
+
+        try{
+
+            JSONObject jsonObject = new JSONObject(s);
+//            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON_RESULT);
+//            JSONObject c = jsonArray.getJSONObject(0);
+//            result = c.getString(TAG_UPLOAD_STATUS);
+            result = jsonObject.getString(TAG_JSON_RESULT);
+
+            Log.d("UploadCaseActivity", result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 
     private void getStringImage(String currentPhotoPath) {
 

@@ -26,6 +26,9 @@
     $image = $_POST['image'];
     $decoded_image = base64_decode($image);
 
+    $SUCCESS_MESSAGE = 'SUCCESS';
+    $FAILED_MESSAGE = 'FAILED';
+
     if($gender_stmt = $mysqli->prepare("SELECT gender_id FROM tbl_genders WHERE gender_name = ?")) {
 
       $gender_stmt->bind_param('s', $gender);
@@ -65,19 +68,26 @@
 
         $stmt->close();
 
-        echo 'UPLOAD SUCCESS';
+        // array_push($result, array('success' => 'SUCCESS'));
+        // $result = array('message'=>$SUCCESS_MESSAGE);
+        //
+        // echo json_encode(array('result' => $result));
+        echo json_encode(array('result'=>$SUCCESS_MESSAGE));
       } else {
-        echo 'UPLOAD FAILED'
+
+        $result = array('message'=>$FAILED_MESSAGE);
+        echo json_encode(array('result' => $result));
+
       }
 
     }
 
-
-
   $mysqli->close();
 
   } else {
-    echo 'UPLOAD FAILED';
+
+    $result = array('message'=>$FAILED_MESSAGE);
+    echo json_encode(array('result' => $result));
 
   }
 
