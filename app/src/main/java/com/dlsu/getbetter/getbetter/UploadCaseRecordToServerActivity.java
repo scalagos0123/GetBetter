@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordUploadAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
@@ -85,11 +86,15 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         Button backBtn = (Button)findViewById(R.id.upload_caserecord_back_btn);
         Button uploadBtn = (Button)findViewById(R.id.upload_caserecord_upload_btn);
         ListView caseRecordList = (ListView)findViewById(R.id.upload_page_case_record_list);
+        TextView patientNameLabel = (TextView)findViewById(R.id.patient_label);
 
         uploadBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
 
         initializeDatabase();
+        if (patientNameLabel != null) {
+            patientNameLabel.setText(getPatientName((int)userId));
+        }
         new PopulateCaseRecordListTask().execute();
 
         CaseRecordUploadAdapter caseRecordUploadAdapter = new CaseRecordUploadAdapter(this, R.layout.case_record_item_checkbox, caseRecordsUpload);
@@ -118,6 +123,24 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         caseRecordsUpload.addAll(getBetterDb.getCaseRecordsUpload(userId));
         Log.d("case upload size", caseRecordsUpload.size() + "");
         getBetterDb.closeDatabase();
+
+    }
+
+    private String getPatientName (int userId) {
+
+        String patientName;
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        patientName = getBetterDb.getPatientName(userId);
+
+        getBetterDb.closeDatabase();
+
+        return patientName;
 
     }
 
@@ -291,6 +314,8 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
                 String result = "";
                 for(int i = 0; i < caseRecordAttachmentsUpload.size(); i++) {
 
+                    Log.e("type id", caseRecordAttachmentsUpload.get(i).getAttachmentType() + "");
+
                     if(caseRecordAttachmentsUpload.get(i).getAttachmentType() == 1) {
                         result = uploadImageAttachment(caseRecordAttachmentsUpload.get(i));
                     } else if (caseRecordAttachmentsUpload.get(i).getAttachmentType() == 2) {
@@ -405,6 +430,8 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
 
     private String uploadImageAttachment(Attachment attachment) {
 
+//        Log.d("upload activity", "case record id " + attachment.getCaseRecordId());
+
         RequestHandler rh = new RequestHandler();
         String result;
 
@@ -419,6 +446,7 @@ public class UploadCaseRecordToServerActivity extends AppCompatActivity implemen
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
 
         HashMap<String, String> data = new HashMap<>();
         data.put(CASE_RECORD_ID_KEY, String.valueOf(attachment.getCaseRecordId()));
