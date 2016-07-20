@@ -47,9 +47,13 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
     private static final int REQUEST_IMAGE2 = 200;
     private static final int REQUEST_IMAGE3 = 300;
 
-    private static final String PATIENT_INFO_FORM_TITLE = "patientinfoform";
-    private static final String FAMILY_SOCIAL_HISTORY_FORM_TITLE = "familysocialhistoryform";
-    private static final String CHIEF_COMPLAINT_FORM_TITLE = "chiefcomplaintform";
+    private static final String PATIENT_INFO_FORM_TITLE = "Patient Information Form";
+    private static final String FAMILY_SOCIAL_HISTORY_FORM_TITLE = "Family and Social History Form";
+    private static final String CHIEF_COMPLAINT_FORM_TITLE = "Chief Complaint Form";
+
+    private static final String PATIENT_INFO_FORM_FILENAME = "patientinfoform";
+    private static final String FAMILY_SOCIAL_HISTORY_FORM_FILENAME = "familysocialhistoryform";
+    private static final String CHIEF_COMPLAINT_FORM_FILENAME = "chiefcomplaintform";
 
     private String patientInfoImagePath;
     private String familySocialHistoryImagePath;
@@ -233,7 +237,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                 try {
 
                     try {
-                        imageFile = createImageFile(PATIENT_INFO_FORM_TITLE);
+                        imageFile = createImageFile(PATIENT_INFO_FORM_FILENAME);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -251,7 +255,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                 try {
 
                     try {
-                        imageFile = createImageFile(FAMILY_SOCIAL_HISTORY_FORM_TITLE);
+                        imageFile = createImageFile(FAMILY_SOCIAL_HISTORY_FORM_FILENAME);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -270,7 +274,7 @@ public class CaptureDocumentsFragment extends Fragment implements View.OnClickLi
                 try {
 
                     try {
-                        imageFile = createImageFile(CHIEF_COMPLAINT_FORM_TITLE);
+                        imageFile = createImageFile(CHIEF_COMPLAINT_FORM_FILENAME);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

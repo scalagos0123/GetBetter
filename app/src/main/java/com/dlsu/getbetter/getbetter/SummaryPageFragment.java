@@ -785,7 +785,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
 
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5491520L);
+//        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5491520L);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, REQUEST_VIDEO_ATTACHMENT);
     }
