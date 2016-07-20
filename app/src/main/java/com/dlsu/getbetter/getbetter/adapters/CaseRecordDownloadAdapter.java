@@ -120,7 +120,7 @@ public class CaseRecordDownloadAdapter extends ArrayAdapter<CaseRecord>{
 
         if(convertView == null) {
 
-            convertView = inflater.inflate(R.layout.case_record_item_checkbox, parent, false);
+            convertView = inflater.inflate(R.layout.case_record_item_download_checkbox, parent, false);
 
             holder = new ViewHolder();
             holder.patientName = (TextView)convertView.findViewById(R.id.upload_case_record_patient_name);

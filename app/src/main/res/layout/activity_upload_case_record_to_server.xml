@@ -36,15 +36,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/current_user"
+                android:text="Patient Name: "
                 android:textSize="18sp"/>
 
             <TextView
-                android:id="@+id/user_label"
+                android:id="@+id/patient_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textStyle="bold"
                 />
 
         </LinearLayout>
@@ -62,8 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
-            >
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
