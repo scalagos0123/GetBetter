@@ -130,6 +130,11 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             RequestHandler rh = new RequestHandler();
 
             @Override
+            protected void onPreExecute() {
+                showDownloadingDialog("Populating record list...");
+            }
+
+            @Override
             protected String doInBackground(String... params) {
 
                 String result = null;
@@ -141,6 +146,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             @Override
             protected void onPostExecute(String s) {
+                dismissProgressDialog();
                 myJSON = s;
                 populateCaseRecordsList();
 
@@ -160,7 +166,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
             @Override
             protected void onPreExecute() {
-                showProgressDialog("Downloading data...");
+                showDownloadingDialog("Downloading data...");
             }
 
             @SafeVarargs
@@ -204,6 +210,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
         DownloadSelectedData downloadSelectedData = new DownloadSelectedData();
         downloadSelectedData.execute(caseRecords);
+
     }
 
     private void insertNewAttachmentsToLocalDB() {
@@ -537,7 +544,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             protected void onPreExecute() {
                 super.onPreExecute();
                 showProgressDialog("Downloading Attachments...");
-//                dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
             }
 
@@ -558,7 +564,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
             @Override
             protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
-//                dDialog.setProgress(values[0]);
+                dDialog.setProgress(values[0]);
             }
 
             @Override
@@ -584,12 +590,14 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                     out = new FileOutputStream(new File(params[1]));
 
-                    bytesAvailable = in.available();
+//                    bytesAvailable = in.available();
+
+                    bytesAvailable = conn.getContentLength();
 
                     int bufferSize = Math.min(bytesAvailable, maxBufferSize);
 
-//                    byte data[] = new byte[bufferSize];
-                    byte data[] = new byte[2048];
+                    byte data[] = new byte[bufferSize];
+//                    byte data[] = new byte[2048 * 2 * 2];
                     long total = 0;
                     int count;
 
@@ -597,9 +605,9 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
 
                         total += count;
 
-//                        if(fileLength > 0) {
-//                            publishProgress((int) total * 100 / fileLength);
-//                        }
+                        if(bytesAvailable > 0) {
+                            publishProgress((int) total * 100 / bytesAvailable);
+                        }
 
                         out.write(data, 0, count);
                     }
@@ -674,13 +682,29 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         builder.show();
     }
 
-    private void showProgressDialog(String message) {
+    private void showDownloadingDialog(String message) {
         if(dDialog == null) {
 
             dDialog = new ProgressDialog(DownloadContentActivity.this);
             dDialog.setMessage(message);
             dDialog.setIndeterminate(true);
             dDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        }
+        dDialog.show();
+    }
+
+    private void showProgressDialog(String message) {
+
+        if(dDialog == null) {
+
+            dDialog = new ProgressDialog(DownloadContentActivity.this);
+            dDialog.setTitle("Download Status");
+            dDialog.setMessage(message);
+            dDialog.setIndeterminate(false);
+            dDialog.setMax(100);
+            dDialog.setProgress(0);
+            dDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
         }
         dDialog.show();

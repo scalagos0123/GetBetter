@@ -29,6 +29,9 @@ import java.util.Map;
  */
 class RequestHandler {
 
+    private int bytesAvailable;
+    private int totalProgress;
+
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
         URL url;
 
@@ -82,7 +85,7 @@ class RequestHandler {
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
+        int bytesRead, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1024 * 1024;
 
@@ -117,6 +120,8 @@ class RequestHandler {
             buffer = new byte[bufferSize];
 
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            totalProgress = 0;
 
             while (bytesRead > 0) {
                 dos.write(buffer, 0, bufferSize);
@@ -191,10 +196,6 @@ class RequestHandler {
         }
 
         return sb.toString();
-    }
-
-    public void getAudioAttachment(String path, String url) {
-
     }
 
     public void getAudioFile(String path) {
@@ -278,5 +279,13 @@ class RequestHandler {
         }
         return result.toString();
 
+    }
+
+    public int getBytesAvailable() {
+        return bytesAvailable;
+    }
+
+    public int getTotalProgress() {
+        return totalProgress;
     }
 }
