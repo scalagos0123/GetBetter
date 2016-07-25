@@ -13,6 +13,7 @@ public class CaseRecord {
     private String profilePic;
     private String healthCenter;
     private String caseRecordComplaint;
+    private String caseRecordAdditionalNotes;
     private String caseRecordControlNumber;
     private String caseRecordStatus;
     private String caseRecordUpdatedOn;
@@ -36,11 +37,12 @@ public class CaseRecord {
         this.caseRecordControlNumber = caseRecordControlNumber;
     }
 
-    public CaseRecord(int caseRecordId, String patientName, String caseRecordComplaint,
+    public CaseRecord(int caseRecordId, String patientName, String caseRecordComplaint, String caseRecordAdditionalNotes,
                       String healthCenter, String caseRecordStatus, String caseRecordUpdatedOn) {
         this.caseRecordId = caseRecordId;
         this.patientName = patientName;
         this.caseRecordComplaint = caseRecordComplaint;
+        this.caseRecordAdditionalNotes = caseRecordAdditionalNotes;
         this.healthCenter = healthCenter;
         this.caseRecordStatus = caseRecordStatus;
         this.caseRecordUpdatedOn = caseRecordUpdatedOn;
@@ -152,6 +154,14 @@ public class CaseRecord {
 
     public String getCaseRecordStatus() {
         return caseRecordStatus;
+    }
+
+    public String getCaseRecordAdditionalNotes() {
+        return caseRecordAdditionalNotes;
+    }
+
+    public void setCaseRecordAdditionalNotes(String caseRecordAdditionalNotes) {
+        this.caseRecordAdditionalNotes = caseRecordAdditionalNotes;
     }
 
     public boolean isChecked() {

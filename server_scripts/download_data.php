@@ -4,7 +4,7 @@
   require_once('db_connect.php');
 
   if($stmt = $mysqli->prepare('SELECT c.case_record_id, c.user_id,
-    c.complaint, c.health_center_id, d.record_status_id, d.updated_by,
+    c.complaint, c.additional_notes, c.health_center_id, d.record_status_id, d.updated_by,
     d.updated_on FROM tbl_case_records AS c
     INNER JOIN (SELECT h.* FROM tbl_case_record_history AS h
       INNER JOIN (SELECT case_record_id, record_status_id, MAX(updated_on) AS maxdate
@@ -16,7 +16,7 @@
 
       $stmt->execute();
 
-      $stmt->bind_result($case_record_id, $user_id, $complaint, $health_center_id,
+      $stmt->bind_result($case_record_id, $user_id, $complaint, $additional_notes, $health_center_id,
       $record_status_id, $updated_by, $updated_on);
 
       $result = array();
@@ -25,6 +25,7 @@
         array_push($result, array('case_record_id'=>$case_record_id,
         'user_id'=>$user_id,
         'complaint'=>$complaint,
+        'additional_notes'=>$additional_notes,
         'health_center_id'=>$health_center_id,
         'record_status_id'=>$record_status_id,
         'updated_by'=>$updated_by,

@@ -561,6 +561,14 @@ public class DataAdapter {
 
     }
 
+    public void updateCaseRecordAdditionalNotes (int caseRecordId, String additionalNotes) {
+
+        ContentValues cv = new ContentValues();
+        cv.put("additional_notes", additionalNotes);
+
+        getBetterDb.update(CASE_RECORD_TABLE, cv, "_id = " + caseRecordId, null);
+    }
+
     public String getPatientName (int userId) {
 
         String result = null;

@@ -48,6 +48,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
     private static final String TAG_CASE_RECORD_ID = "case_record_id";
     private static final String TAG_USER_ID = "user_id";
     private static final String TAG_COMPLAINT = "complaint";
+    private static final String TAG_ADDITIONAL_NOTES = "additional_notes";
     private static final String TAG_HEALTH_CENTER_ID = "health_center_id";
     private static final String TAG_RECORD_STATUS_ID = "record_status_id";
     private static final String TAG_UPDATED_ON = "updated_on";
@@ -117,6 +118,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 }
             }
 
+            updateCaseRecordAdditionalNotes(selectedCaseRecordList);
             updateLocalCaseRecordHistory(selectedCaseRecordList);
             downloadSelectedData(selectedCaseRecordList);
 
@@ -274,24 +276,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         writeFileToDirectory(attachmentPaths, attachmentData);
 
     }
-
-//    private void getAudioFile() {
-//
-//
-//        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-//        asyncHttpClient.get("http://www.stephaniequinn.com/Music/Commercial%20DEMO%20-%2015.mp3", new FileAsyncHttpResponseHandler(this) {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
-//                Log.e("error connecting", statusCode + "");
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, File file) {
-//                Log.d("filename", file.getAbsolutePath() + " " +file.length());
-//            }
-//
-//        });
-//    }
+    
 
     private void populateCaseRecordsList() {
 
@@ -305,11 +290,12 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 String patientName = getUserName(Integer.parseInt(c.getString(TAG_USER_ID)));
 //                String patientName = c.getString(TAG_USER_ID);
                 String complaint = c.getString(TAG_COMPLAINT);
+                String additionalNotes = c.getString(TAG_ADDITIONAL_NOTES);
                 String healthCenter = getHealthCenterName(Integer.parseInt(c.getString(TAG_HEALTH_CENTER_ID)));
                 String recordStatus = getCaseRecordStatusString(Integer.parseInt(c.getString(TAG_RECORD_STATUS_ID)));
                 String updatedOn = c.getString(TAG_UPDATED_ON);
 
-                CaseRecord caseRecord = new CaseRecord(caseRecordId, patientName, complaint,
+                CaseRecord caseRecord = new CaseRecord(caseRecordId, patientName, complaint, additionalNotes,
                         healthCenter, recordStatus, updatedOn);
                 caseRecord.setCaseRecordStatusId(Integer.parseInt(c.getString(TAG_RECORD_STATUS_ID)));
                 caseRecordsData.add(caseRecord);
@@ -390,6 +376,21 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         getBetterDb.closeDatabase();
 
         return result;
+    }
+
+    private void updateCaseRecordAdditionalNotes(ArrayList<CaseRecord> selectedCaseRecords) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for(int i = 0; i < selectedCaseRecords.size(); i++)
+            getBetterDb.updateCaseRecordAdditionalNotes(selectedCaseRecords.get(i).getCaseRecordId(),
+                    selectedCaseRecords.get(i).getCaseRecordAdditionalNotes());
+
+        getBetterDb.closeDatabase();
     }
 
     private String getHealthCenterName(int healthCenterId) {
