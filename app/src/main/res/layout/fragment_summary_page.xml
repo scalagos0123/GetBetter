@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
         <TextView
             android:id="@+id/home_title"
             android:layout_width="wrap_content"
@@ -54,6 +56,7 @@
 
 
         <!--</android.support.v7.widget.CardView>-->
+
 
         <android.support.v7.widget.CardView
             android:layout_width="1200dp"
@@ -360,6 +363,7 @@
                             android:text="Record Sound"
                             android:textSize="12sp"/>
 
+
                         <Button
                             android:id="@+id/summary_page_estethoscope_btn"
                             android:layout_width="match_parent"
@@ -400,7 +404,7 @@
                         android:paddingLeft="60dp"
                         android:background="@color/redButton"
                         android:text="@string/back_button_text"
-                        android:textColor="@color/cardBackground"/>
+                        android:textColor="@color/cardBackground" />
 
                     <Button
                         android:id="@+id/summary_update_patient_rec_btn"
@@ -434,7 +438,77 @@
 
         </android.support.v7.widget.CardView>
 
-    </RelativeLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/summary_page_record_sound_container"
+            android:layout_width="500dp"
+            android:layout_height="150dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            >
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:background="@drawable/border">
+
+                <TextView
+                    android:id="@+id/summary_page_record_sound_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/record_sound_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@id/summary_page_record_sound_title"
+                    android:layout_marginTop="24dp">
+
+                    <Button
+                        android:id="@+id/summary_page_audio_record_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/record_label_btn"
+                        android:textColor="@color/cardBackground"
+                        android:background="@color/greenButton"
+                        style="?android:borderlessButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/summary_page_audio_stop_record_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stop_label_btn"
+                        android:textColor="@color/cardBackground"
+                        android:background="@color/redButton"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        style="?android:borderlessButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/summary_page_audio_play_recorded_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/play_label_btn"
+                        android:textColor="@color/cardBackground"
+                        android:background="@color/blueButton"
+                        style="?android:borderlessButtonStyle"/>
+
+
+                </LinearLayout>
+
+
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
 
 </FrameLayout>

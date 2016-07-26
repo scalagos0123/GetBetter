@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -90,6 +91,10 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private SummaryPageDataAdapter fileAdapter;
     private RecyclerView.LayoutManager fileListLayoutManager;
     private ImageView summaryProfileImage;
+    private CardView recordSoundContainer;
+    private Button recordSoundbBtn;
+    private Button stopRecordBtn;
+    private Button playSoundBtn;
 
     private MediaPlayer nMediaPlayer;
     private MediaController nMediaController;
@@ -270,11 +275,17 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         Button summarySubmitBtn = (Button) rootView.findViewById(R.id.summary_page_submit_btn);
         Button summaryTakePicBtn = (Button)rootView.findViewById(R.id.summary_page_take_pic_btn);
         Button summaryRecordVideo = (Button)rootView.findViewById(R.id.summary_page_rec_video_btn);
+        Button summaryRecordAudio = (Button)rootView.findViewById(R.id.summary_page_rec_sound_btn);
         Button summaryTakePicDocBtn = (Button)rootView.findViewById(R.id.summary_page_take_pic_doc_btn);
         Button summaryUpdatePatientRecBtn = (Button)rootView.findViewById(R.id.summary_update_patient_rec_btn);
         Button summaryEstethoscopeBtn = (Button)rootView.findViewById(R.id.summary_page_estethoscope_btn);
         Button summarySelectFileBtn = (Button)rootView.findViewById(R.id.summary_page_select_file_btn);
         RecyclerView attachmentFileList = (RecyclerView) rootView.findViewById(R.id.summary_page_files_list);
+
+        recordSoundContainer = (CardView)rootView.findViewById(R.id.summary_page_record_sound_container);
+        recordSoundbBtn = (Button)rootView.findViewById(R.id.summary_page_audio_record_btn);
+        stopRecordBtn = (Button)rootView.findViewById(R.id.summary_page_audio_stop_record_btn);
+        playSoundBtn = (Button)rootView.findViewById(R.id.summary_page_audio_play_recorded_btn);
 
         summaryProfileImage = (ImageView) rootView.findViewById(R.id.profile_picture_display);
 
@@ -289,6 +300,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         summaryTakePicBtn.setOnClickListener(this);
         summaryTakePicDocBtn.setOnClickListener(this);
         summaryRecordVideo.setOnClickListener(this);
+        summaryRecordAudio.setOnClickListener(this);
         summaryUpdatePatientRecBtn.setOnClickListener(this);
         summaryEstethoscopeBtn.setOnClickListener(this);
         summarySelectFileBtn.setOnClickListener(this);
@@ -344,6 +356,15 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
                 new InsertCaseRecordTask().execute();
             }
 
+            if(nMediaPlayer.isPlaying()) {
+                nMediaPlayer.stop();
+                nMediaPlayer.release();
+            }
+
+            if(nMediaController.isShowing()) {
+                nMediaController.hide();
+            }
+
             newPatientDetails.endSession();
             getActivity().finish();
 
@@ -367,6 +388,11 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         } else if (id == R.id.summary_page_select_file_btn) {
 
             featureAlertMessage();
+
+        } else if (id == R.id.summary_page_rec_sound_btn) {
+
+            recordSoundContainer.setVisibility(View.VISIBLE);
+
         }
 //        else if (id == R.id.summary_page_hpi_play) {
 //
@@ -468,6 +494,20 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
             }
         } else if(requestCode == REQUEST_AUDIO_ATTACHMENT) {
 
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(nMediaPlayer.isPlaying()) {
+            nMediaPlayer.stop();
+            nMediaPlayer.release();
+        }
+
+        if(nMediaController.isShowing()) {
+            nMediaController.hide();
         }
     }
 
@@ -735,7 +775,7 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private File createMediaFile(int type) {
 
         String timeStamp = getTimeStamp().substring(0, 9);
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), DirectoryConstants.CASE_RECORD_ATTACHMENT_DIRECTORY_NAME);
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
@@ -749,15 +789,15 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         if(type == MEDIA_TYPE_IMAGE) {
 
-            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "IMG_" + timeStamp + ".jpg");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 
         } else if (type == MEDIA_TYPE_VIDEO) {
 
-            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "VID_" + timeStamp + ".mp4");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".mp4");
 
         } else if (type == MEDIA_TYPE_AUDIO) {
 
-            mediaFile = new File(mediaStorageDir.getPath() + File.pathSeparator + "AUD_" + timeStamp + ".3gp");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "AUD_" + timeStamp + ".3gp");
 
         } else {
             return null;

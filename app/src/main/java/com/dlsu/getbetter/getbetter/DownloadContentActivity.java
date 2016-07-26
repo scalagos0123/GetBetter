@@ -276,7 +276,7 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
         writeFileToDirectory(attachmentPaths, attachmentData);
 
     }
-    
+
 
     private void populateCaseRecordsList() {
 

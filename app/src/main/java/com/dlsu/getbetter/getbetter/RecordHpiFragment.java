@@ -51,7 +51,7 @@ public class RecordHpiFragment extends Fragment implements View.OnClickListener 
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+        outputFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath() + "/" +
                 "hpi_recording_" + timeStamp + ".3gp";
 
         hpiRecorder = new MediaRecorder();

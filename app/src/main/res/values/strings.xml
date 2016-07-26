@@ -97,4 +97,8 @@
     <string name="take_picture_button_text">Take Picture</string>
     <string name="attachments">Attachments</string>
     <string name="files">Files</string>
+    <string name="record_label_btn">Record</string>
+    <string name="stop_label_btn">Stop</string>
+    <string name="play_label_btn">Play</string>
+    <string name="record_sound_title">Record Sound</string>
 </resources>
