@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -95,12 +96,16 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
     private Button recordSoundbBtn;
     private Button stopRecordBtn;
     private Button playSoundBtn;
+    private Button doneRecordBtn;
+    private Button cancelRecordBtn;
 
+    private MediaRecorder hpiRecorder;
     private MediaPlayer nMediaPlayer;
     private MediaController nMediaController;
     private Handler nHandler = new Handler();
 
     private Uri fileUri;
+    private String audioOutputFile;
 
     private DataAdapter getBetterDb;
     private NewPatientSessionManager newPatientDetails;
@@ -286,6 +291,8 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         recordSoundbBtn = (Button)rootView.findViewById(R.id.summary_page_audio_record_btn);
         stopRecordBtn = (Button)rootView.findViewById(R.id.summary_page_audio_stop_record_btn);
         playSoundBtn = (Button)rootView.findViewById(R.id.summary_page_audio_play_recorded_btn);
+        doneRecordBtn = (Button)rootView.findViewById(R.id.summary_page_record_audio_done_btn);
+        cancelRecordBtn = (Button)rootView.findViewById(R.id.summary_page_record_audio_cancel_btn);
 
         summaryProfileImage = (ImageView) rootView.findViewById(R.id.profile_picture_display);
 
@@ -296,6 +303,10 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         summaryAgeGender.setText(patientAgeGender);
         summaryChiefComplaint.setText(chiefComplaint);
 
+        recordSoundContainer.setVisibility(View.GONE);
+        stopRecordBtn.setEnabled(false);
+        playSoundBtn.setEnabled(false);
+
         summarySubmitBtn.setOnClickListener(this);
         summaryTakePicBtn.setOnClickListener(this);
         summaryTakePicDocBtn.setOnClickListener(this);
@@ -304,6 +315,12 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
         summaryUpdatePatientRecBtn.setOnClickListener(this);
         summaryEstethoscopeBtn.setOnClickListener(this);
         summarySelectFileBtn.setOnClickListener(this);
+
+        recordSoundbBtn.setOnClickListener(this);
+        stopRecordBtn.setOnClickListener(this);
+        playSoundBtn.setOnClickListener(this);
+        doneRecordBtn.setOnClickListener(this);
+        cancelRecordBtn.setOnClickListener(this);
 
         attachmentFileList.setHasFixedSize(true);
         attachmentFileList.setLayoutManager(fileListLayoutManager);
@@ -387,28 +404,74 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         } else if (id == R.id.summary_page_select_file_btn) {
 
+
             featureAlertMessage();
 
         } else if (id == R.id.summary_page_rec_sound_btn) {
 
+            audioOutputFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath() + "/" +
+                    "hpi_recording_" + getTimeStamp().substring(0,9) + ".3gp";
+            hpiRecorder = new MediaRecorder();
+            hpiRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            hpiRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            hpiRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+            hpiRecorder.setOutputFile(audioOutputFile);
             recordSoundContainer.setVisibility(View.VISIBLE);
 
+        } else if (id == R.id.summary_page_audio_record_btn) {
+
+            try {
+                hpiRecorder.prepare();
+                hpiRecorder.start();
+
+            } catch (IllegalStateException | IOException e) {
+
+                e.printStackTrace();
+
+            }
+
+            stopRecordBtn.setEnabled(true);
+
+
+        } else if (id == R.id.summary_page_audio_stop_record_btn) {
+
+            hpiRecorder.stop();
+            hpiRecorder.release();
+            hpiRecorder = null;
+
+            stopRecordBtn.setEnabled(false);
+            playSoundBtn.setEnabled(true);
+
+
+        } else if (id == R.id.summary_page_audio_play_recorded_btn) {
+
+            MediaPlayer mp = new MediaPlayer();
+
+            try {
+
+                mp.setDataSource(audioOutputFile);
+            } catch (IOException e ) {
+
+                e.printStackTrace();
+
+            }
+
+            try {
+                mp.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mp.start();
+
+
+        } else if (id == R.id.summary_page_record_audio_done_btn) {
+
+
+        } else if (id == R.id.summary_page_record_audio_cancel_btn) {
+
+
         }
-//        else if (id == R.id.summary_page_hpi_play) {
-//
-//            nMediaPlayer.start();
-//            hpiPlayBtn.setEnabled(false);
-//            hpiPauseBtn.setEnabled(true);
-//
-//
-//        } else if (id == R.id.summary_page_hpi_pause) {
-//
-//            if(isPlaying()) {
-//                nMediaPlayer.pause();
-//                hpiPlayBtn.setEnabled(true);
-//            }
-//
-//        }
     }
 
     @Override
@@ -828,6 +891,11 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 //        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5491520L);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, REQUEST_VIDEO_ATTACHMENT);
+    }
+
+    private void recordSound() {
+
+
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {

@@ -7,7 +7,7 @@
         />
 
     <solid
-        android:color="@color/cardview_light_background"
+        android:color="@color/cardview_dark_background"
         />
 
     <padding
