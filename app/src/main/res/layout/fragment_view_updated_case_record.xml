@@ -109,6 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/info_box"
+                android:orientation="vertical"
                 android:layout_marginStart="32dp">
 
                 <TextView
@@ -123,8 +124,11 @@
                     android:id="@+id/detail_instruction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="12sp"/>
+                    android:layout_marginTop="4dp"
+                    android:text="@string/lorem_ipsum"
+                    android:textSize="12sp"
+                    android:textAlignment="viewStart"
+                    android:lines="8"/>
 
             </LinearLayout>
 

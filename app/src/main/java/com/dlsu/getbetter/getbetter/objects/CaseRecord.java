@@ -60,11 +60,12 @@ public class CaseRecord {
         this.caseRecordUpdatedOn = caseRecordUpdatedOn;
     }
 
-    public CaseRecord(int caseRecordId, String complaint, int userId, String caseRecordControlNumber) {
+    public CaseRecord(int caseRecordId, String complaint, int userId, String caseRecordControlNumber, String caseRecordAdditionalNotes) {
         this.caseRecordId = caseRecordId;
         this.caseRecordComplaint = complaint;
         this.userId = userId;
         this.caseRecordControlNumber = caseRecordControlNumber;
+        this.caseRecordAdditionalNotes = caseRecordAdditionalNotes;
     }
 
 

@@ -434,11 +434,12 @@ public class DataAdapter {
         Cursor c = getBetterDb.rawQuery(sql, null);
 
         c.moveToFirst();
-        Log.d("control number", c.getString(c.getColumnIndexOrThrow("control_number")));
+//        Log.d("control number", c.getString(c.getColumnIndexOrThrow("control_number")));
         CaseRecord result = new CaseRecord(c.getInt(c.getColumnIndexOrThrow("_id")),
                 c.getString(c.getColumnIndexOrThrow("complaint")),
                 c.getInt(c.getColumnIndexOrThrow("user_id")),
-                c.getString(c.getColumnIndexOrThrow("control_number")));
+                c.getString(c.getColumnIndexOrThrow("control_number")),
+                c.getString(c.getColumnIndexOrThrow("additional_notes")));
 
         c.close();
 

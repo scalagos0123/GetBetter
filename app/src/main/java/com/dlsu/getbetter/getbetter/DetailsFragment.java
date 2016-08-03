@@ -4,38 +4,49 @@ package com.dlsu.getbetter.getbetter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
+import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements MediaController.MediaPlayerControl {
 
     private DataAdapter getBetterDb;
-
+    private MediaPlayer nMediaPlayer;
+    private MediaController nMediaController;
+    private Handler nHandler = new Handler();
 
     private CaseRecord caseRecord;
     private ImageView profilePic;
     private Patient patientInfo;
+    private ArrayList<Attachment> caseAttachments;
 
 
     public DetailsFragment() {
@@ -52,8 +63,9 @@ public class DetailsFragment extends Fragment {
         if(getArguments().containsKey("case record id")) {
             caseRecordId = getArguments().getInt("case record id");
             getCaseDetails(caseRecordId);
+            getCaseAttachments(caseRecordId);
+            prepareMediaPlayer();
         }
-
 
     }
 
@@ -66,8 +78,12 @@ public class DetailsFragment extends Fragment {
         TextView ageGender = (TextView)rootView.findViewById(R.id.detail_age_gender);
         TextView chiefComplaint = (TextView)rootView.findViewById(R.id.detail_chief_complaint);
         TextView controlNumber = (TextView)rootView.findViewById(R.id.detail_control_number);
+        TextView additionalNotes = (TextView)rootView.findViewById(R.id.detail_instruction);
         Button viewUpdatedCaseBtn = (Button)rootView.findViewById(R.id.detail_view_case_btn);
         profilePic = (ImageView)rootView.findViewById(R.id.detail_picture_display);
+
+        nMediaController.setMediaPlayer(DetailsFragment.this);
+        nMediaController.setAnchorView(rootView.findViewById(R.id.detail_hpi_media_player));
 
         int[] birthdateTemp = new int[3];
         String patientAgeGender = "";
@@ -99,6 +115,7 @@ public class DetailsFragment extends Fragment {
         patientName.setText(caseRecord.getPatientName());
         chiefComplaint.setText(caseRecord.getCaseRecordComplaint());
         controlNumber.setText(caseRecord.getCaseRecordControlNumber());
+        additionalNotes.setText(caseRecord.getCaseRecordAdditionalNotes());
 
         viewUpdatedCaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +126,8 @@ public class DetailsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        startMediaPlayer();
 
 
         return rootView;
@@ -147,7 +166,38 @@ public class DetailsFragment extends Fragment {
         caseRecord.setProfilePic(patientInfo.getProfileImageBytes());
 
         getBetterDb.closeDatabase();
+    }
 
+    private void getCaseAttachments(int caseRecordId) {
+
+        try {
+            getBetterDb.openDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        caseAttachments = new ArrayList<>();
+        caseAttachments.addAll(getBetterDb.getCaseRecordAttachments(caseRecordId));
+
+        getBetterDb.closeDatabase();
+
+    }
+
+    private String getHpiOutputFile() {
+
+        String result = "";
+
+        if(caseAttachments.isEmpty()) {
+            Log.e("attachments is empty", "true");
+        } else {
+            for(int i = 0; i < caseAttachments.size(); i++) {
+
+                if(caseAttachments.get(i).getAttachmentType() == 5) {
+                    result = caseAttachments.get(i).getAttachmentPath();
+                }
+            }
+        }
+        return result;
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
@@ -173,6 +223,132 @@ public class DetailsFragment extends Fragment {
         mImageView.setImageBitmap(bitmap);
     }
 
+    private void startMediaPlayer() {
 
+        nMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                nHandler.post(new Runnable() {
+                    public void run() {
+                        nMediaController.show(0);
+                        nMediaController.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nMediaPlayer.start();
+                            }
+                        });
 
+                    }
+                });
+            }
+        });
+    }
+
+    private void prepareMediaPlayer() {
+
+        killMediaPlayer();
+        String recordedHPIOutputFile = getHpiOutputFile();
+        nMediaPlayer = new MediaPlayer();
+        nMediaController = new MediaController(this.getContext()) {
+            @Override
+            public void hide() {
+
+            }
+        };
+        //Uri hpiRecordingUri = Uri.parse(recordedHpiOutputFile);
+
+        nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        try {
+            nMediaPlayer.setDataSource(recordedHPIOutputFile);
+            nMediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void killMediaPlayer() {
+        nMediaController.hide();
+        if(nMediaPlayer != null) {
+            try{
+                nMediaPlayer.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        killMediaPlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        killMediaPlayer();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        killMediaPlayer();
+    }
+
+    @Override
+    public void start() {
+        nMediaPlayer.start();
+    }
+
+    @Override
+    public void pause() {
+        if(nMediaPlayer.isPlaying())
+            nMediaPlayer.pause();
+    }
+
+    @Override
+    public int getDuration() {
+        return nMediaPlayer.getDuration();
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return nMediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void seekTo(int pos) {
+        nMediaPlayer.seekTo(pos);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return nMediaPlayer.isPlaying();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return (nMediaPlayer.getCurrentPosition() * 100) / nMediaPlayer.getDuration();
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return false;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return false;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
+    }
 }
