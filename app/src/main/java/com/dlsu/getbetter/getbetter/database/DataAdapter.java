@@ -508,7 +508,8 @@ public class DataAdapter {
     public ArrayList<Attachment> getCaseRecordAttachments (int caseRecordId) {
 
         ArrayList<Attachment> attachments = new ArrayList<>();
-        String sql = "SELECT * FROM tbl_case_record_attachments WHERE case_record_id = " + caseRecordId;
+        String sql = "SELECT * FROM tbl_case_record_attachments WHERE case_record_attachment_type_id IN (1,2,3,4) AND " +
+                "case_record_id = " + caseRecordId;
 
         Cursor c = getBetterDb.rawQuery(sql, null);
 
