@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.dlsu.getbetter.getbetter.LoginActivity;
+import com.dlsu.getbetter.getbetter.activities.LoginActivity;
 
 import java.util.HashMap;
 

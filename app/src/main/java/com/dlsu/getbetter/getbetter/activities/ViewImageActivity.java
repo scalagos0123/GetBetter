@@ -1,4 +1,4 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.dlsu.getbetter.getbetter.R;
 
 public class ViewImageActivity extends AppCompatActivity implements View.OnClickListener {
 

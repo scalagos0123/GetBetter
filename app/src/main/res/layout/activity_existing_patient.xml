@@ -7,7 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
-    tools:context="com.dlsu.getbetter.getbetter.ExistingPatientActivity">
+    tools:context=".activities.ExistingPatientActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -139,7 +139,8 @@
                         android:text="@string/back_button_text"
                         android:textColor="@color/cardBackground"
                         android:paddingLeft="100dp"
-                        android:paddingRight="100dp"/>
+                        android:paddingRight="100dp"
+                        />
 
                     <Button
                         android:id="@+id/create_update_case_record_btn"
