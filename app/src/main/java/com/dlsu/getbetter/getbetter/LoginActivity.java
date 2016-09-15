@@ -97,6 +97,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
             } else {
+                if (!email.contains("@")) {
+                    emailInput.setError("Invalid email");
+                }
+
                 Toast.makeText(getApplicationContext(),
                         "Email/Password is incorrect",
                         Toast.LENGTH_LONG).show();

@@ -98,7 +98,7 @@
                             android:id="@+id/email_input"
                             android:hint="@string/email_address"
                             android:inputType="textEmailAddress"
-                            />
+                            android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -110,7 +110,8 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/password_input"
                             android:hint="@string/password"
-                            android:inputType="textPassword"/>
+                            android:inputType="textPassword"
+                            android:singleLine="true" />
 
                     </android.support.design.widget.TextInputLayout>
 
