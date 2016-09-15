@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.MediaController;
 
+import com.dlsu.getbetter.getbetter.activities.ViewImageActivity;
 import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
@@ -54,7 +55,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-//  TODO: 04/05/2016 audio capture attachment
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -754,9 +754,9 @@ public class SummaryPageFragment extends Fragment implements View.OnClickListene
 
         ArrayList<Integer> storedIds;
         int caseRecordId;
-        int a = 25173;
-        int c = 13424;
-        int m = 31252;
+        int a = 251;
+        int c = 134;
+        int m = 312;
         int generatedRandomId = m / 2;
 
         generatedRandomId = (a * generatedRandomId + c) % m;
