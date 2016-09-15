@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.activities.ExistingPatientActivity;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;
 

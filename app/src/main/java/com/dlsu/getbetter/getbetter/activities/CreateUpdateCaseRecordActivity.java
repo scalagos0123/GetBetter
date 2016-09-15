@@ -1,7 +1,11 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dlsu.getbetter.getbetter.R;
+import com.dlsu.getbetter.getbetter.UploadCaseRecordToServerActivity;
 import com.dlsu.getbetter.getbetter.adapters.CaseRecordAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;
@@ -163,10 +169,26 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 
         } else if (id == R.id.upload_case_record) {
 
-            Intent i = new Intent(this, UploadCaseRecordToServerActivity.class);
-            i.putExtra("patientId", patientId);
-            startActivity(i);
+            if(getInternetConnectivityStatus()) {
 
+                Intent i = new Intent(this, UploadCaseRecordToServerActivity.class);
+                i.putExtra("patientId", patientId);
+                startActivity(i);
+
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Internet Connection Status");
+                builder.setMessage("Cannot upload data without Internet Connection, Please connect to the Internet first.");
+
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
+            }
 
         } else if (id == R.id.case_records_back_btn) {
 
@@ -202,7 +224,16 @@ public class CreateUpdateCaseRecordActivity extends AppCompatActivity implements
 //            progressDialog.hide();
 //            progressDialog.dismiss();
         }
+    }
 
+    private boolean getInternetConnectivityStatus() {
+
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
 
 }

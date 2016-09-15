@@ -1,4 +1,4 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dlsu.getbetter.getbetter.R;
+import com.dlsu.getbetter.getbetter.UpdatePatientRecordActivity;
+import com.dlsu.getbetter.getbetter.UploadPatientToServerActivity;
 import com.dlsu.getbetter.getbetter.adapters.ExistingPatientAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Patient;

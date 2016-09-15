@@ -1,4 +1,4 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +18,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dlsu.getbetter.getbetter.R;
 import com.dlsu.getbetter.getbetter.adapters.SummaryPageDataAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
@@ -71,7 +72,6 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         ImageView profilePic = (ImageView)findViewById(R.id.profile_picture_display);
         Button backBtn = (Button)findViewById(R.id.view_case_back_btn);
         Button updateCaseBtn = (Button)findViewById(R.id.update_case_record_btn);
-
 
         backBtn.setOnClickListener(this);
         updateCaseBtn.setOnClickListener(this);
@@ -205,6 +205,7 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
         } catch(SQLException e ){
             e.printStackTrace();
         }
+
     }
 
     private void getCaseRecord(int caseRecordId) {
@@ -272,13 +273,11 @@ public class ViewCaseRecordActivity extends AppCompatActivity implements MediaCo
 
         if(id == R.id.view_case_back_btn) {
 
-
             finish();
 
         } else if (id == R.id.update_case_record_btn) {
 
         }
-
     }
 
     private void setPic(ImageView mImageView, String mCurrentPhotoPath) {

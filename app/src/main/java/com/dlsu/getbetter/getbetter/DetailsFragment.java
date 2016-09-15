@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.activities.ViewCaseRecordActivity;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.Attachment;
 import com.dlsu.getbetter.getbetter.objects.CaseRecord;

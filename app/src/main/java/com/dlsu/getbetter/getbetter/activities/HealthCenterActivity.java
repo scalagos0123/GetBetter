@@ -1,4 +1,4 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.R;
+import com.dlsu.getbetter.getbetter.activities.HomeActivity;
 import com.dlsu.getbetter.getbetter.adapters.HealthCenterListAdapter;
 import com.dlsu.getbetter.getbetter.database.DataAdapter;
 import com.dlsu.getbetter.getbetter.objects.HealthCenter;

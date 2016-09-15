@@ -1,7 +1,12 @@
-package com.dlsu.getbetter.getbetter;
+package com.dlsu.getbetter.getbetter.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +14,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dlsu.getbetter.getbetter.AddInstructionsCaseFragment;
+import com.dlsu.getbetter.getbetter.ClosedCaseFragment;
+import com.dlsu.getbetter.getbetter.DetailsFragment;
+import com.dlsu.getbetter.getbetter.DiagnosedCaseFragment;
+import com.dlsu.getbetter.getbetter.DownloadContentActivity;
+import com.dlsu.getbetter.getbetter.R;
+import com.dlsu.getbetter.getbetter.UrgentCaseFragment;
 import com.dlsu.getbetter.getbetter.sessionmanagers.SystemSessionManager;
 
 import java.util.HashMap;
@@ -99,10 +111,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         } else if (id == R.id.download_content_btn) {
 
-//            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
-            Intent intent = new Intent(this, DownloadContentActivity.class);
+            if(getInternetConnectivityStatus()) {
 
-            startActivity(intent);
+                //            systemSessionManager.setHealthCenter(healthCenterName, String.valueOf(healthCenterId));
+                Intent intent = new Intent(this, DownloadContentActivity.class);
+                startActivity(intent);
+
+            } else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Internet Connection Status");
+                builder.setMessage("Cannot download data without Internet Connection, Please connect to the Internet first.");
+
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
+            }
+
 
 
         } else if (id == R.id.logout_btn) {
@@ -130,5 +160,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().replace(R.id.case_detail, fragment).commit();
         }
+    }
+
+    private boolean getInternetConnectivityStatus() {
+
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
 }
