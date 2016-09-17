@@ -101,33 +101,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (!email.contains("@")) {
                     emailInput.setError("Invalid email");
                 }
-
-                Toast.makeText(getApplicationContext(),
-                        "Email/Password is incorrect",
-                        Toast.LENGTH_LONG).show();
+//
+//                Toast.makeText(getApplicationContext(),
+//                        "Email/Password is incorrect",
+//                        Toast.LENGTH_LONG).show();
             }
 
         } else if (email.trim().length() == 0) {
 
-            emailInput.setError("Please enter an Email!");
+            emailInput.setError("Email Required");
             focusView = emailInput;
             focusView.requestFocus();
 
         } else if (password.trim().length() == 0) {
 
-            passwordInput.setError("Please enter a password!");
+            passwordInput.setError("Password Required");
             focusView = passwordInput;
             focusView.requestFocus();
 
 
         } else {
 
-            emailInput.setError("Please enter an Email!");
-            passwordInput.setError("Please enter a password!");
+            emailInput.setError("Email Required");
+//            passwordInput.setError("Please enter a password!");
 
-            Toast.makeText(getApplicationContext(),
-                    "Please enter Email and Password",
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(),
+//                    "Please enter Email and Password",
+//                    Toast.LENGTH_LONG).show();
 
         }
 

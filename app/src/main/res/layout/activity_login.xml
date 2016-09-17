@@ -12,22 +12,22 @@
     tools:context=".activities.LoginActivity">
 
 
-    <!--<ImageView-->
-        <!--android:id="@+id/login_title"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:src="@drawable/getbetter"/>-->
-
-    <TextView
+    <ImageView
         android:id="@+id/login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/app_name"
-        android:textSize="48sp"
-        android:textColor="@color/cardBackground"
-        android:layout_marginBottom="20dp"/>
+        android:src="@drawable/getbetter1"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/login_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:text="@string/app_name"-->
+        <!--android:textSize="48sp"-->
+        <!--android:textColor="@color/cardBackground"-->
+        <!--android:layout_marginBottom="20dp"/>-->
 
     <android.support.v7.widget.CardView
         android:id="@+id/login_container"
@@ -107,7 +107,7 @@
                             android:id="@+id/email_input"
                             android:hint="@string/email_address"
                             android:inputType="textEmailAddress"
-                            android:singleLine="true" />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -120,8 +120,8 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/password_input"
                             android:hint="@string/password"
-                            android:inputType="textPassword"
-                            android:singleLine="true" />
+                            android:password="true"
+                            android:maxLines="1"/>
 
                     </android.support.design.widget.TextInputLayout>
 
