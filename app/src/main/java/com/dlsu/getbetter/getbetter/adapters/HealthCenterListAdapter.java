@@ -1,15 +1,20 @@
 package com.dlsu.getbetter.getbetter.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dlsu.getbetter.getbetter.R;
 import com.dlsu.getbetter.getbetter.objects.HealthCenter;
 
 import java.util.ArrayList;
+
+import com.balysv.materialripple.MaterialRippleLayout;
 
 /**
  * Created by mikedayupay on 26/06/2016.
@@ -58,6 +63,19 @@ public class HealthCenterListAdapter extends RecyclerView.Adapter<HealthCenterLi
 
     @Override
     public HealthCenterListAdapter.HealthCenterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+//        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+//        MaterialRippleLayout materialRippleLayout = new MaterialRippleLayout(parent.getContext());
+//        materialRippleLayout.measure(MaterialRippleLayout.LayoutParams.MATCH_PARENT, MaterialRippleLayout.LayoutParams.WRAP_CONTENT);
+//        MaterialRippleLayout.LayoutParams mrl = new MaterialRippleLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+//        View v = MaterialRippleLayout.on(inflater.inflate(R.layout.health_center_list_item, parent, false))
+//                .rippleOverlay(true)
+//                .rippleAlpha(0.2f)
+//                .rippleColor(0xFF585858)
+//                .rippleHover(true)
+//                .create();
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.health_center_list_item, parent, false);
 

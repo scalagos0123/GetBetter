@@ -4,7 +4,7 @@
         <bitmap android:src="@drawable/background"/>
     </item>
 
-    <item android:drawable="@drawable/getbetter1"
+    <item android:drawable="@drawable/getbetter2"
         android:gravity="center">
 
         <!--<bitmap android:src="@drawable/getbetter"-->

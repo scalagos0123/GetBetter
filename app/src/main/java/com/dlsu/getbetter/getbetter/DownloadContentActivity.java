@@ -288,7 +288,6 @@ public class DownloadContentActivity extends AppCompatActivity implements View.O
                 JSONObject c = caseRecords.getJSONObject(i);
                 int caseRecordId = Integer.parseInt(c.getString(TAG_CASE_RECORD_ID));
                 String patientName = getUserName(Integer.parseInt(c.getString(TAG_USER_ID)));
-//                String patientName = c.getString(TAG_USER_ID);
                 String complaint = c.getString(TAG_COMPLAINT);
                 String additionalNotes = c.getString(TAG_ADDITIONAL_NOTES);
                 String healthCenter = getHealthCenterName(Integer.parseInt(c.getString(TAG_HEALTH_CENTER_ID)));
