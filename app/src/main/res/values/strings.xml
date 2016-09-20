@@ -75,7 +75,7 @@
     <string name="view_case_record_button_text">View Case Record</string>
     <string name="search_case_record_hint">Search Case Record</string>
     <string name="select_data_to_be_downloaded">SELECT DATA TO BE DOWNLOADED</string>
-    <string name="create_new_patient_record_button_text">CREATE NEW PATIENT RECORD</string>
+    <string name="create_new_patient_record_button_text">NEW PATIENT RECORD</string>
     <string name="upload_patient_record_button_text">Upload Patient Record</string>
     <string name="update_patient_record_button_text">Update Patient Record</string>
     <string name="create_update_case_record_button_text">Create/Update Case Record</string>

@@ -78,18 +78,6 @@
                         android:textStyle="bold"
                         android:id="@+id/textView" />
 
-                    <Button
-                        android:id="@+id/create_new_patient_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/create_new_patient_record_button_text"
-                        android:background="@color/greenButton"
-                        android:textColor="@color/cardBackground"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignBottom="@+id/textView"
-                        android:paddingLeft="18dp"
-                        android:paddingRight="18dp"/>
 
                 </RelativeLayout>
 
@@ -100,11 +88,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/search_patient_hint" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -143,24 +126,14 @@
                         />
 
                     <Button
-                        android:id="@+id/create_update_case_record_btn"
+                        android:id="@+id/create_new_patient_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:background="@color/blueButton"
-                        android:text="@string/create_update_case_record_button_text"
+                        android:text="@string/create_new_patient_record_button_text"
+                        android:background="@color/greenButton"
                         android:textColor="@color/cardBackground"
-                        android:paddingRight="18dp"
-                        android:paddingLeft="18dp"/>
-
-                    <Button
-                        android:id="@+id/update_patient_record_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/create_update_case_record_btn"
-                        android:layout_marginRight="18dp"
-                        android:text="@string/update_patient_record_button_text"
-                        android:background="@color/neutralButton"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:paddingLeft="32dp"
                         android:paddingRight="32dp"/>
 
@@ -168,10 +141,11 @@
                         android:id="@+id/upload_patient_record"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/update_patient_record_btn"
-                        android:layout_marginRight="18dp"
+                        android:layout_toLeftOf="@id/create_new_patient_btn"
+                        android:layout_marginRight="8dp"
                         android:text="@string/upload_patient_record_button_text"
-                        android:background="@color/neutralButton"
+                        android:textColor="@color/cardBackground"
+                        android:background="@color/blueButton"
                         android:paddingLeft="32dp"
                         android:paddingRight="32dp"/>
 
