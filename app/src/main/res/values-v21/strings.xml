@@ -63,4 +63,10 @@
     <string name="play_label_btn">Play</string>
     <string name="record_sound_title">Record Sound</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tellus et sapien dignissim pretium. Donec mollis euismod tortor, at congue neque tincidunt at. Vivamus neque turpis, ultrices a iaculis a, sagittis at lacus. Aliquam id eros a neque fringilla aliquam. Nam porta elit non pharetra sodales. Sed fringilla nec tellus et vulputate. Vivamus feugiat id nibh eget tristique. Integer placerat, ex id placerat pulvinar, nibh tellus hendrerit ex, et tincidunt sem nibh eu turpis.</string>
+    <string name="civil_status_placeholder">Civil Status Placeholder</string>
+    <string name="blood_type_placeholder">Blood Type Placeholder</string>
+    <string name="contact_info_placeholder">Contact Info Placeholder</string>
+    <string name="address_placeholder">Address Placeholder</string>
+    <string name="number_of_case_records_placeholder">Number of Case Records Placeholder</string>
+    <string name="new_case_record_button_text">New Case Record</string>
 </resources>

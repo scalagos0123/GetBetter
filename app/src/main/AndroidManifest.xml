@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -64,7 +64,8 @@
             android:screenOrientation="sensorLandscape" />
         <activity android:name=".activities.ViewCaseRecordActivity" />
         <activity android:name=".activities.ViewImageActivity" />
-        <activity android:name=".activities.HealthCenterActivity"></activity>
+        <activity android:name=".activities.HealthCenterActivity" />
+        <activity android:name=".activities.ViewPatientActivity"></activity>
     </application>
 
 </manifest>

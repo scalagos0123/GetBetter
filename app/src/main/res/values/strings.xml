@@ -104,4 +104,10 @@
         at. Vivamus neque turpis, ultrices a iaculis a, sagittis at lacus. Aliquam id eros a neque
         fringilla aliquam. Nam porta elit non pharetra sodales. Sed fringilla nec tellus et
         vulputate.</string>
+    <string name="civil_status_placeholder">Civil Status Placeholder</string>
+    <string name="blood_type_placeholder">Blood Type Placeholder</string>
+    <string name="contact_info_placeholder">Contact Info Placeholder</string>
+    <string name="address_placeholder">Address Placeholder</string>
+    <string name="number_of_case_records_placeholder">Number of Case Records Placeholder</string>
+    <string name="new_case_record_button_text">New Case Record</string>
 </resources>
