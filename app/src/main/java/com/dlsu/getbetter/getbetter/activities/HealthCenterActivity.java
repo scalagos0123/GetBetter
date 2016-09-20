@@ -23,7 +23,6 @@ public class HealthCenterActivity extends AppCompatActivity {
 
     private DataAdapter getBetterDb;
     private SystemSessionManager systemSessionManager;
-
     private ArrayList<HealthCenter> healthCenters;
 
     @Override
@@ -37,17 +36,13 @@ public class HealthCenterActivity extends AppCompatActivity {
 
         HashMap<String, String> user = systemSessionManager.getUserDetails();
         String userName = user.get(SystemSessionManager.LOGIN_USER_NAME);
-
         TextView userLabel = (TextView)findViewById(R.id.hc_user_label);
+        RecyclerView healthCenterRecycler = (RecyclerView)findViewById(R.id.hc_recycler_view);
 
         userLabel.setText(userName);
-
         healthCenters = new ArrayList<>();
-
         initializeDatabase();
         getHealthCenterList();
-
-        RecyclerView healthCenterRecycler = (RecyclerView)findViewById(R.id.hc_recycler_view);
 
         if (healthCenterRecycler != null) {
             healthCenterRecycler.setHasFixedSize(true);

@@ -62,7 +62,6 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
         RecyclerView existingPatientListView = (RecyclerView) findViewById(R.id.existing_patient_list);
         RecyclerView.LayoutManager existingPatientLayoutManager = new LinearLayoutManager(this);
 
-
         existingPatients = new ArrayList<>();
         initializeDatabase();
         new GetPatientListTask().execute(healthCenterId);
@@ -170,7 +169,6 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
             super.onPreExecute();
             progressDialog.setMessage("Populating Patient List...");
             progressDialog.show();
-
         }
 
         @Override
