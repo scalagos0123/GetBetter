@@ -4,12 +4,12 @@
         <bitmap android:src="@drawable/background"/>
     </item>
 
-    <item android:drawable="@drawable/getbetter2"
-        android:gravity="center">
-
-        <!--<bitmap android:src="@drawable/getbetter"-->
-            <!--android:tileMode="disabled"-->
-         <!--android:gravity="center"/>-->
+    <!--<item android:drawable="@drawable/getbetter2"-->
+        <!--android:gravity="center">-->
+    <item>
+        <bitmap android:src="@drawable/getbetter3"
+            android:tileMode="disabled"
+            android:gravity="center" />
 
     </item>
 
