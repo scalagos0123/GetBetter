@@ -1,6 +1,7 @@
 package com.dlsu.getbetter.getbetter.activities;
 
 import android.content.Intent;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,8 +18,8 @@ import java.sql.SQLException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText emailInput;
-    private EditText passwordInput;
+    private TextInputEditText emailInput;
+    private TextInputEditText passwordInput;
     private Button registerUserBtn;
 
     private SystemSessionManager systemSessionManager;
@@ -32,15 +33,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         systemSessionManager = new SystemSessionManager(getApplicationContext());
 
 
-        emailInput = (EditText)findViewById(R.id.email_input);
-        passwordInput = (EditText)findViewById(R.id.password_input);
+        emailInput = (TextInputEditText)findViewById(R.id.email_input);
+        passwordInput = (TextInputEditText)findViewById(R.id.password_input);
         Button signInBtn = (Button) findViewById(R.id.sign_in_btn);
 //        registerUserBtn = (Button)findViewById(R.id.register_user_btn);
 
         signInBtn.setOnClickListener(this);
         initializeDatabase();
-        emailInput.setError(null);
-        passwordInput.setError(null);
+//        emailInput.setError("Test");
+//        passwordInput.setError(null);
     }
 
     private void initializeDatabase() {
@@ -76,6 +77,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String password = passwordInput.getText().toString();
 
         View focusView = null;
+        emailInput.setError(null);
+        passwordInput.setError(null);
 
         if (email.trim().length() > 0 && password.trim().length() > 0) {
 
@@ -100,6 +103,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 if (!email.contains("@")) {
                     emailInput.setError("Invalid email");
+                    emailInput.requestFocus();
                 }
 //
 //                Toast.makeText(getApplicationContext(),
@@ -107,28 +111,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                        Toast.LENGTH_LONG).show();
             }
 
-        } else if (email.trim().length() == 0) {
-
-            emailInput.setError("Email Required");
-            focusView = emailInput;
-            focusView.requestFocus();
-
-        } else if (password.trim().length() == 0) {
-
-            passwordInput.setError("Password Required");
-            focusView = passwordInput;
-            focusView.requestFocus();
-
-
         } else {
 
-            emailInput.setError("Email Required");
+            if (email.trim().length() == 0) {
+
+                emailInput.setError("Email Required");
+                focusView = emailInput;
+                focusView.requestFocus();
+
+            } else if (password.trim().length() == 0) {
+
+                passwordInput.setError("Password Required");
+                focusView = passwordInput;
+                focusView.requestFocus();
+
 //            passwordInput.setError("Please enter a password!");
 
 //            Toast.makeText(getApplicationContext(),
 //                    "Please enter Email and Password",
 //                    Toast.LENGTH_LONG).show();
 
+            }
         }
 
     }
