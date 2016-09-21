@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.dlsu.getbetter.getbetter.AddInstructionsCaseFragment;
 import com.dlsu.getbetter.getbetter.ClosedCaseFragment;
 import com.dlsu.getbetter.getbetter.DetailsFragment;
