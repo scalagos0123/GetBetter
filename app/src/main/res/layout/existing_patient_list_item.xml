@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         >
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,10 +34,22 @@
                 android:layout_height="wrap_content"
                 android:text="@string/patient_name_placeholder"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/upload_patient_item_profile_image"
                 android:layout_toEndOf="@+id/upload_patient_item_profile_image" />
+
+            <TextView
+                android:id="@+id/existing_patient_item_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/age_gender_placeholder"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/upload_patient_item_name"
+                android:layout_toEndOf="@id/upload_patient_item_name"
+                android:layout_marginLeft="100dp"
+                android:layout_marginStart="100dp"/>
 
             <TextView
                 android:id="@+id/existing_patient_item_birthdate"
@@ -47,20 +60,10 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="100dp"
                 android:layout_marginStart="100dp"
-                android:layout_toRightOf="@+id/upload_patient_item_name"
-                android:layout_toEndOf="@+id/upload_patient_item_name" />
+                android:layout_toRightOf="@+id/existing_patient_item_gender"
+                android:layout_toEndOf="@+id/existing_patient_item_gender" />
 
-            <TextView
-                android:id="@+id/existing_patient_item_gender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/age_gender_placeholder"
-                android:textSize="16sp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/existing_patient_item_birthdate"
-                android:layout_toEndOf="@id/existing_patient_item_birthdate"
-                android:layout_marginLeft="100dp"
-                android:layout_marginStart="100dp"/>
+
 
         </RelativeLayout>
 
