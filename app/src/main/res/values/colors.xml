@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#607D8B</color>
+    <color name="rippleColor">#FF9EAAEC</color>
     <color name="cardBackground">#FFF</color>
     <color name="blueButton">#2980B9</color>
     <color name="neutralButton">#F4F3ED</color>

@@ -52,8 +52,6 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
         Button newPatientRecBtn = (Button) findViewById(R.id.create_new_patient_btn);
         Button uploadPatientRecBtn = (Button) findViewById(R.id.upload_patient_record);
-        Button updatePatientRecBtn = (Button) findViewById(R.id.update_patient_record_btn);
-        Button createUpdateCaseRecBtn = (Button) findViewById(R.id.create_update_case_record_btn);
         Button backBtn = (Button)findViewById(R.id.existing_patient_back_btn);
 
         TextView userLabel = (TextView)findViewById(R.id.user_label);
@@ -75,18 +73,20 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
             @Override
             public void onItemClick(View view, int position) {
-                Log.e("Patient Click", existingPatients.get(position).getId() + "");
+//                Log.e("Patient Click", existingPatients.get(position).getId() + "");
                 selectedPatientId = existingPatients.get(position).getId();
-                patientFirstName = existingPatients.get(position).getFirstName();
-                patientLastName = existingPatients.get(position).getLastName();
+//                patientFirstName = existingPatients.get(position).getFirstName();
+//                patientLastName = existingPatients.get(position).getLastName();
+                Intent intent = new Intent(ExistingPatientActivity.this, ViewPatientActivity.class);
+                intent.putExtra("patientId", selectedPatientId);
+                startActivity(intent);
+                finish();
             }
         });
 
 
         newPatientRecBtn.setOnClickListener(this);
         uploadPatientRecBtn.setOnClickListener(this);
-        updatePatientRecBtn.setOnClickListener(this);
-        createUpdateCaseRecBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
     }
 
@@ -131,29 +131,6 @@ public class ExistingPatientActivity extends AppCompatActivity implements View.O
 
             Intent intent = new Intent(this, UploadPatientToServerActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.update_patient_record_btn) {
-
-            if(selectedPatientId == null) {
-                Toast.makeText(this, "Please select a patient", Toast.LENGTH_LONG).show();
-            }else {
-                Intent intent = new Intent(this, UpdatePatientRecordActivity.class);
-                intent.putExtra("selectedPatient", selectedPatientId);
-                startActivity(intent);
-            }
-
-        } else if (id == R.id.create_update_case_record_btn) {
-
-            if(selectedPatientId == null) {
-                Toast.makeText(this, "Please select a patient", Toast.LENGTH_LONG).show();
-            } else {
-
-                Intent intent = new Intent(this, CreateUpdateCaseRecordActivity.class);
-                intent.putExtra("selectedPatient", selectedPatientId);
-                intent.putExtra("firstname", patientFirstName);
-                intent.putExtra("lastname", patientLastName);
-                startActivity(intent);
-            }
 
         } else if (id == R.id.existing_patient_back_btn) {
             finish();
